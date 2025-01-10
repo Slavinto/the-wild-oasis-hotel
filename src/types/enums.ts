@@ -11,6 +11,13 @@ export enum RowOrientations {
     Vertical = "vertical",
 }
 
+export enum FormRowLabels {
+    FullName = "Full name",
+    EmailAddress = "Email address",
+    Password = "Password (min 8 characters)",
+    RepeatPassword = "Repeat password",
+}
+
 // ==============================Rows===========================
 // ==============================Buttons========================
 export enum ButtonVariations {
@@ -26,3 +33,12 @@ export enum ButtonSizes {
 }
 
 // ==============================Buttons========================
+// ==============================Input==========================
+export enum InputIds {
+    FullName = "fullName",
+    Email = "email",
+    Password = "password",
+    PasswordConfirm = "passwordConfirm",
+}
+// ==============================Input==========================
+// ==============================Input==========================

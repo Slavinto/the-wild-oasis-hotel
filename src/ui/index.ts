@@ -12,6 +12,7 @@ export { default as FileInput } from "./FileInput";
 // export { default as Filter } from "./Filter";
 // export { default as Flag } from "./Flag";
 export { default as Form } from "./Form";
+export { default as FormRow } from "./FormRow";
 export { default as Header } from "./Header";
 export { default as Heading } from "./Heading";
 export { default as Input } from "./Input";

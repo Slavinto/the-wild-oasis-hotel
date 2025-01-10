@@ -62,6 +62,7 @@ interface ButtonProps {
     size?: ButtonSizes;
     variation?: ButtonVariations;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    type?: HTMLButtonElement["type"];
 }
 
 const Button: FC<PropsWithChildren<ButtonProps>> = ({
@@ -69,9 +70,15 @@ const Button: FC<PropsWithChildren<ButtonProps>> = ({
     size = ButtonSizes.Medium,
     variation = ButtonVariations.Primary,
     onClick,
+    type = "button",
 }) => {
     return (
-        <StyledButton size={size} variation={variation} onClick={onClick}>
+        <StyledButton
+            type={type}
+            size={size}
+            variation={variation}
+            onClick={onClick}
+        >
             {children}
         </StyledButton>
     );

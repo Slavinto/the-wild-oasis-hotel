@@ -1,3 +1,4 @@
+import { InputIds } from "@/types/enums";
 import { FC, useState } from "react";
 import styled from "styled-components";
 
@@ -12,16 +13,19 @@ const StyledInput = styled.input`
 interface InputProps {
     type?: HTMLInputElement["type"];
     placeholder?: string;
+    id?: InputIds;
 }
 
 const Input: FC<InputProps> = ({
     type = "text",
     placeholder = "Input something",
+    id = "",
 }) => {
     const [inputValue, setInputValue] = useState("");
 
     return (
         <StyledInput
+            id={id}
             type={type}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
