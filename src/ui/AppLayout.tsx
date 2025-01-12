@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Header, LayoutWrapper, Main, Sidebar } from "@/ui";
+import { ContentContainer, Header, LayoutWrapper, Main, Sidebar } from "@/ui";
 
 const AppLayout = () => {
     return (
@@ -7,7 +7,9 @@ const AppLayout = () => {
             <Header />
             <Sidebar />
             <Main>
-                <Outlet />
+                <ContentContainer>
+                    <Outlet />
+                </ContentContainer>
             </Main>
         </LayoutWrapper>
     );

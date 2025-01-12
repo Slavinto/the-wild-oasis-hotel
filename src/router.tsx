@@ -9,13 +9,13 @@ import {
     Settings,
     Users,
 } from "@/pages";
-import { ErrorFallback } from "@/ui";
-import { AppLayout } from "@/ui";
+import { ErrorFallback, AppLayout } from "@/ui";
 
 export const router = createBrowserRouter([
     {
         // path: "/",
         element: <AppLayout />,
+        errorElement: <ErrorFallback />,
         children: [
             {
                 index: true,

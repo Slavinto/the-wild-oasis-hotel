@@ -1,16 +1,10 @@
 import { handleError } from "@/utils/helpers";
 import supabase from "./supabaseClient";
-import { Tables } from "./supabaseTypes";
-import { PostgrestError } from "@supabase/supabase-js";
-
-export interface SupabaseSettingsTable {
-    data: Tables<"settings"> | null;
-    error: PostgrestError | null;
-}
+import { SupabaseResponse, Tables } from "./supabaseTypes";
 
 export async function getSettings() {
     try {
-        const { data, error }: SupabaseSettingsTable = await supabase
+        const { data, error }: SupabaseResponse<"settings"> = await supabase
             .from("settings")
             .select("*")
             .single();
@@ -29,7 +23,7 @@ export async function getSettings() {
 export async function updateSetting(newSetting: {
     setting: Tables<"settings">;
 }) {
-    const { data, error }: SupabaseSettingsTable = await supabase
+    const { data, error }: SupabaseResponse<"settings"> = await supabase
         .from("settings")
         .update(newSetting.setting)
         // There is only ONE row of settings, and it has the ID=1, and so this is the updated one

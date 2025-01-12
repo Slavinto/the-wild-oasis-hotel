@@ -7,7 +7,7 @@ type TablesArgType =
     | "settings"
     | { schema: keyof Database };
 
-export interface SupabaseResponse<TableName extends TablesArgType> {
+export interface SupabaseResponseItem<TableName extends TablesArgType> {
     data: Tables<TableName> | null;
     error: PostgrestError | null;
 }

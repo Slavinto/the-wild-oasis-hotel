@@ -1,4 +1,5 @@
 import { ButtonSizes, ButtonVariations } from "@/types/enums";
+import { UseMutateFunction } from "@tanstack/react-query";
 import { FC, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 
@@ -59,14 +60,19 @@ const StyledButton = styled.button<ButtonProps>`
 `;
 
 interface ButtonProps {
+    disabled?: boolean;
     size?: ButtonSizes;
     variation?: ButtonVariations;
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    onClick?:
+        | React.MouseEventHandler<HTMLButtonElement>
+        | ((id: number) => void)
+        | UseMutateFunction;
     type?: HTMLButtonElement["type"];
 }
 
 const Button: FC<PropsWithChildren<ButtonProps>> = ({
     children,
+    disabled = false,
     size = ButtonSizes.Medium,
     variation = ButtonVariations.Primary,
     onClick,
@@ -74,6 +80,7 @@ const Button: FC<PropsWithChildren<ButtonProps>> = ({
 }) => {
     return (
         <StyledButton
+            disabled={disabled}
             type={type}
             size={size}
             variation={variation}

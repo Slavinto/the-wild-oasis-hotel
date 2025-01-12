@@ -11,24 +11,44 @@ const StyledInput = styled.input`
 `;
 
 interface InputProps {
+    isControlled?: boolean;
+    defaultValue?: string | number;
     type?: HTMLInputElement["type"];
     placeholder?: string;
-    id?: InputIds;
+    id?: InputIds | string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    value?: string;
+    disabled?: boolean;
 }
-
 const Input: FC<InputProps> = ({
+    isControlled = false,
+    defaultValue = "",
     type = "text",
     placeholder = "Input something",
     id = "",
+    onChange,
+    value = "",
+    disabled = false,
 }) => {
     const [inputValue, setInputValue] = useState("");
 
-    return (
+    return isControlled ? (
         <StyledInput
             id={id}
+            disabled={disabled}
             type={type}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            value={onChange ? value : inputValue}
+            onChange={
+                onChange ? onChange : (e) => setInputValue(e.target.value)
+            }
+            placeholder={placeholder}
+        />
+    ) : (
+        <StyledInput
+            id={id}
+            disabled={disabled}
+            type={type}
+            defaultValue={typeof defaultValue === "string" ? "" : 0}
             placeholder={placeholder}
         />
     );

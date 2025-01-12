@@ -16,6 +16,7 @@ export enum FormRowLabels {
     EmailAddress = "Email address",
     Password = "Password (min 8 characters)",
     RepeatPassword = "Repeat password",
+    AvatarImage = "Avatar image",
 }
 
 // ==============================Rows===========================
