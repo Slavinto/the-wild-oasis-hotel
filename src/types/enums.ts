@@ -11,12 +11,21 @@ export enum RowOrientations {
     Vertical = "vertical",
 }
 
-export enum FormRowLabels {
+export enum CreateUserFormRowLabels {
     FullName = "Full name",
     EmailAddress = "Email address",
     Password = "Password (min 8 characters)",
     RepeatPassword = "Repeat password",
     AvatarImage = "Avatar image",
+}
+
+export enum CreateCabinRowLabels {
+    CabinName = "Cabin name",
+    MaximumCapacity = "Maximum capacity",
+    RegularPrice = "Regular price",
+    Discount = "Discount",
+    DescriptionForWebsite = "Description for website",
+    CabinPhoto = "Cabin photo",
 }
 
 // ==============================Rows===========================

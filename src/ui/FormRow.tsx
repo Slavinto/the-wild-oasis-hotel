@@ -1,29 +1,63 @@
-import { FormRowLabels, RowOrientations } from "@/types/enums";
+import { CreateCabinRowLabels } from "@/types/enums";
 import { FC, PropsWithChildren } from "react";
 import styled from "styled-components";
-import Row from "./Row";
+import { FieldError } from "react-hook-form";
 
 interface FormRowProps {
-    label?: FormRowLabels;
-    error?: string;
+    htmlFor?: string;
+    label?: CreateCabinRowLabels;
+    error?: FieldError;
 }
 
-const StyledLabel = styled.label``;
+const StyledFormRow = styled.div`
+    display: grid;
+    align-items: center;
+    grid-template-columns: 24rem 1fr;
+    /* 1.2fr; */
+    gap: 2.4rem;
+
+    padding: 1.2rem 0;
+
+    &:first-child {
+        padding-top: 0;
+    }
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+
+    &:not(:last-child) {
+        border-bottom: 1px solid var(--color-grey-100);
+    }
+
+    &:has(button) {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1.2rem;
+    }
+`;
+
+const StyledLabel = styled.label`
+    font-weight: 500;
+`;
+
+const StyledError = styled.span`
+    font-size: 1.4rem;
+    color: var(--color-red-700);
+`;
 
 const FormRow: FC<PropsWithChildren<FormRowProps>> = ({
     children,
+    htmlFor,
     label,
     error,
 }) => {
     return (
-        <Row type={RowOrientations.Horizontal}>
-            <StyledLabel>
-                {label && <span>{label}</span>}
-                {error && <span>{error}</span>}
-                {children}
-            </StyledLabel>
-            ;
-        </Row>
+        <StyledFormRow>
+            {label && <StyledLabel htmlFor={htmlFor}>{label}</StyledLabel>}
+            {children}
+            {error?.message && <StyledError>{error.message}</StyledError>}
+        </StyledFormRow>
     );
 };
 

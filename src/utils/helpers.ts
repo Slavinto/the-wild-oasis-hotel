@@ -1,3 +1,4 @@
+import { Cabin, SupabaseCabin } from "@/types/interfaces";
 import { formatDistance, parseISO, differenceInDays } from "date-fns";
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
@@ -34,7 +35,27 @@ export const formatCurrency = (value: number | bigint) =>
 export const handleError = (incError: unknown): Error => {
     if (incError instanceof Error) {
         return incError;
+    } else if (
+        incError &&
+        typeof incError === "object" &&
+        "message" in incError
+    ) {
+        return new Error(JSON.stringify(incError.message));
     } else {
         return new Error(JSON.stringify(incError));
     }
+};
+
+export const createSupabaseCabinFromCabin = (cabin: Cabin): SupabaseCabin => {
+    const { name, maxCapacity, regularPrice, discount, description, imageUrl } =
+        cabin;
+    return {
+        id: Date.now(),
+        name,
+        max_capacity: maxCapacity,
+        regular_price: regularPrice,
+        discount,
+        description,
+        image_url: imageUrl,
+    };
 };

@@ -1,3 +1,5 @@
+import { handleError } from "@/utils/helpers";
+import { useRouteError } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledErrorFallback = styled.main`
@@ -31,9 +33,10 @@ const StyledBox = styled.div`
 `;
 
 const ErrorFallback = () => {
+    const error = handleError(useRouteError());
     return (
         <StyledErrorFallback>
-            <StyledBox>Error message here</StyledBox>
+            <StyledBox>{error.message}</StyledBox>
         </StyledErrorFallback>
     );
 };

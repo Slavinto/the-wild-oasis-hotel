@@ -1,5 +1,7 @@
 import { PostgrestError } from "@supabase/supabase-js";
 
+export type SupabaseBuckets = "cabin-images" | "avatars";
+
 type TablesArgType =
     | "bookings"
     | "cabins"

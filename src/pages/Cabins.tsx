@@ -13,10 +13,10 @@ function Cabins() {
         queryKey: ["cabins"],
         queryFn: getCabins,
     });
+    console.log({ data });
     if (error) {
         throw error;
     }
-
     return (
         <>
             <Row type={RowOrientations.Horizontal}>

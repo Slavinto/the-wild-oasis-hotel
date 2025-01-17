@@ -1,8 +1,14 @@
 import { FC, PropsWithChildren } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const StyledContainer = styled.div`
-    max-width: 100rem;
+const StyledContainer = styled.div.withConfig({
+    shouldForwardProp: (prop) => prop !== "maxWidth",
+})<StyledContainerProps>`
+    ${(props) =>
+        css`
+            max-width: ${props.maxWidth};
+        `}
+    /* max-width: 100rem; */
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -10,13 +16,14 @@ const StyledContainer = styled.div`
 `;
 
 interface StyledContainerProps {
-    tmp?: string;
+    maxWidth?: string;
 }
 
 const ContentContainer: FC<PropsWithChildren<StyledContainerProps>> = ({
     children,
+    maxWidth = "100rem",
 }) => {
-    return <StyledContainer>{children}</StyledContainer>;
+    return <StyledContainer maxWidth={maxWidth}>{children}</StyledContainer>;
 };
 
 export default ContentContainer;

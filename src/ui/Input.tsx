@@ -1,5 +1,5 @@
 import { InputIds } from "@/types/enums";
-import { FC, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import styled from "styled-components";
 
 const StyledInput = styled.input`
@@ -10,7 +10,7 @@ const StyledInput = styled.input`
     box-shadow: var(--shadow-sm);
 `;
 
-interface InputProps {
+interface InputProps extends React.ComponentPropsWithoutRef<"input"> {
     isControlled?: boolean;
     defaultValue?: string | number;
     type?: HTMLInputElement["type"];
@@ -20,38 +20,49 @@ interface InputProps {
     value?: string;
     disabled?: boolean;
 }
-const Input: FC<InputProps> = ({
-    isControlled = false,
-    defaultValue = "",
-    type = "text",
-    placeholder = "Input something",
-    id = "",
-    onChange,
-    value = "",
-    disabled = false,
-}) => {
-    const [inputValue, setInputValue] = useState("");
 
-    return isControlled ? (
-        <StyledInput
-            id={id}
-            disabled={disabled}
-            type={type}
-            value={onChange ? value : inputValue}
-            onChange={
-                onChange ? onChange : (e) => setInputValue(e.target.value)
-            }
-            placeholder={placeholder}
-        />
-    ) : (
-        <StyledInput
-            id={id}
-            disabled={disabled}
-            type={type}
-            defaultValue={typeof defaultValue === "string" ? "" : 0}
-            placeholder={placeholder}
-        />
-    );
-};
+const Input = forwardRef<HTMLInputElement, InputProps>(
+    (
+        {
+            isControlled = false,
+            defaultValue = "",
+            type = "text",
+            placeholder = "Input something",
+            id = "",
+            onChange,
+            value = "",
+            disabled = false,
+            ...props
+        },
+        ref
+    ) => {
+        const [inputValue, setInputValue] = useState("");
+
+        return isControlled ? (
+            <StyledInput
+                ref={ref}
+                id={id}
+                disabled={disabled}
+                type={type}
+                value={onChange ? value : inputValue}
+                onChange={
+                    onChange ? onChange : (e) => setInputValue(e.target.value)
+                }
+                placeholder={placeholder}
+                {...props}
+            />
+        ) : (
+            <StyledInput
+                ref={ref}
+                id={id}
+                disabled={disabled}
+                type={type}
+                defaultValue={typeof defaultValue === "string" ? "" : 0}
+                placeholder={placeholder}
+                {...props}
+            />
+        );
+    }
+);
 
 export default Input;

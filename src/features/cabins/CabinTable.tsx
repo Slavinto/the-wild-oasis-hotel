@@ -12,7 +12,7 @@ const Table = styled.div`
 
 const TableHeader = styled.header`
     display: grid;
-    grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
+    grid-template-columns: 6.4rem 1.8fr 2.2fr 1fr 1fr 1fr;
     column-gap: 2.4rem;
     align-items: center;
 
