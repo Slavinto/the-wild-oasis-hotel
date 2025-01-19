@@ -5,7 +5,8 @@ export interface Cabin {
     discount: number;
     description: string;
     imageUrl: string;
-    image?: string;
+    // is being added to cabin on create cabin form submit
+    image: File | null;
 }
 
 export interface SupabaseCabin {

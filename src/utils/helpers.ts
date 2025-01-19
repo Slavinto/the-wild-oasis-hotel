@@ -1,3 +1,5 @@
+import { Tables } from "@/services/supabaseTypes";
+import { cabinValues } from "@/types/constants";
 import { Cabin, SupabaseCabin } from "@/types/interfaces";
 import { formatDistance, parseISO, differenceInDays } from "date-fns";
 
@@ -46,7 +48,10 @@ export const handleError = (incError: unknown): Error => {
     }
 };
 
-export const createSupabaseCabinFromCabin = (cabin: Cabin): SupabaseCabin => {
+type SupabaseCabinFromCabin = {
+    (cabin: Cabin): SupabaseCabin;
+};
+export const createSupabaseCabinFromCabin: SupabaseCabinFromCabin = (cabin) => {
     const { name, maxCapacity, regularPrice, discount, description, imageUrl } =
         cabin;
     return {
@@ -57,5 +62,51 @@ export const createSupabaseCabinFromCabin = (cabin: Cabin): SupabaseCabin => {
         discount,
         description,
         image_url: imageUrl,
+    };
+};
+
+export const checkIsTableCabin = (
+    value: unknown
+): value is Tables<"cabins"> => {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        typeof (value as Tables<"cabins">).created_at === "string" &&
+        "description" in value &&
+        ((value as Tables<"cabins">).description === null ||
+            typeof (value as Tables<"cabins">).description === "string") &&
+        "discount" in value &&
+        ((value as Tables<"cabins">).discount === null ||
+            typeof (value as Tables<"cabins">).discount === "number") &&
+        typeof (value as Tables<"cabins">).id === "number" &&
+        "image_url" in value &&
+        ((value as Tables<"cabins">).image_url === null ||
+            typeof (value as Tables<"cabins">).image_url === "string") &&
+        "max_capacity" in value &&
+        ((value as Tables<"cabins">).max_capacity === null ||
+            typeof (value as Tables<"cabins">).max_capacity === "number") &&
+        "name" in value &&
+        ((value as Tables<"cabins">).name === null ||
+            typeof (value as Tables<"cabins">).name === "string") &&
+        "regular_price" in value &&
+        ((value as Tables<"cabins">).regular_price === null ||
+            typeof (value as Tables<"cabins">).regular_price === "number")
+    );
+};
+
+type CabinFromSupabaseTableCabin = {
+    (cabin: Tables<"cabins">): Cabin;
+};
+export const createCabinFromSupabaseTableCabin: CabinFromSupabaseTableCabin = (
+    cabin
+) => {
+    return {
+        description: cabin?.description || "",
+        discount: cabin?.discount || cabinValues.MininmumDiscount,
+        imageUrl: cabin?.image_url || "",
+        maxCapacity: cabin?.max_capacity || cabinValues.MaximumCapacity,
+        name: cabin?.name || "",
+        regularPrice: cabin?.regular_price || cabinValues.MinimumPrice,
+        image: null,
     };
 };

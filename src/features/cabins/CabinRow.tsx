@@ -1,12 +1,14 @@
+import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { removeCabin } from "@/services/apiCabins";
 import { Tables } from "@/services/supabaseTypes";
 import { ButtonSizes, ButtonVariations } from "@/types/enums";
 import { Button } from "@/ui";
 import { formatCurrency } from "@/utils/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FC } from "react";
+import { FC, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
+import CreateCabinForm from "./CreateCabinForm";
 
 const TableRow = styled.div`
     display: grid;
@@ -63,15 +65,16 @@ type MutateContextType =
 
 const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
     const queryClient = useQueryClient();
-
+    const [showForm, setShowForm] = useState(false);
+    console.log({ cabin });
     if (!cabin) throw new Error(`Error. Invalid cabin object: ${cabin}`);
     if (!cabin.id || !cabin.name)
         throw new Error("Error. Invalid cabin name or id.");
 
-    const { name, id } = cabin;
+    const { name } = cabin;
 
     const { mutate, isPending } = useMutation({
-        mutationFn: () => removeCabin(id),
+        mutationFn: () => removeCabin(cabin),
         onMutate: async (cabinId) => {
             const confirmed = window.confirm(
                 `Are you sure you want to remove this cabin?`
@@ -115,24 +118,42 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
     const { image_url, max_capacity, regular_price, discount } = cabin;
 
     return (
-        <TableRow role='row'>
-            <Img
-                src={image_url || ""}
-                className={image_url ? "hasImage" : ""}
-            />
-            <Cabin>{name}</Cabin>
-            <div className=''>fits up to {max_capacity || 0} guests</div>
-            <Price>{formatCurrency(regular_price || 0)}</Price>
-            <Discount>{formatCurrency(discount || 0)}</Discount>
-            <Button
-                disabled={isPending}
-                onClick={mutate}
-                size={ButtonSizes.Small}
-                variation={ButtonVariations.Danger}
-            >
-                Remove
-            </Button>
-        </TableRow>
+        <>
+            <TableRow role='row'>
+                <Img
+                    src={image_url || ""}
+                    className={image_url ? "hasImage" : ""}
+                />
+                <Cabin>{name}</Cabin>
+                <div className=''>fits up to {max_capacity || 0} guests</div>
+                <Price>{formatCurrency(regular_price || 0)}</Price>
+                <Discount>{formatCurrency(discount || 0)}</Discount>
+                <div className='' style={{ display: "flex", gap: "1rem" }}>
+                    <Button
+                        size={ButtonSizes.Small}
+                        variation={ButtonVariations.Secondary}
+                        onClick={() => setShowForm((prev) => !prev)}
+                    >
+                        {
+                            <span style={{ fontSize: "1.8rem" }}>
+                                <HiOutlinePencilSquare />
+                            </span>
+                        }
+                    </Button>
+                    <Button
+                        disabled={isPending}
+                        onClick={mutate}
+                        size={ButtonSizes.Small}
+                        variation={ButtonVariations.Danger}
+                    >
+                        Remove
+                    </Button>
+                </div>
+            </TableRow>
+            {showForm && (
+                <CreateCabinForm setShowForm={setShowForm} cabin={cabin} />
+            )}
+        </>
     );
 };
 

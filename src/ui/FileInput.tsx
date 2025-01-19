@@ -1,6 +1,7 @@
+import { forwardRef } from "react";
 import styled from "styled-components";
 
-const FileInput = styled.input.attrs({ type: "file" })`
+const StyledFileInput = styled.input.attrs({ type: "file" })`
     font-size: 1.4rem;
     border-radius: var(--border-radius-sm);
 
@@ -22,4 +23,30 @@ const FileInput = styled.input.attrs({ type: "file" })`
     }
 `;
 
+interface FileInputProps extends React.ComponentPropsWithoutRef<"input"> {
+    type?: HTMLInputElement["type"];
+    id: string;
+    accept?: string;
+    disabled?: boolean;
+    onChange?: React.ChangeEventHandler;
+}
+
+const FileInput = forwardRef<HTMLInputElement, FileInputProps>(
+    ({ id, accept, disabled, onChange, ...props }, ref) => {
+        return (
+            <div style={{ display: "flex" }}>
+                <StyledFileInput
+                    ref={ref}
+                    id={id}
+                    accept={accept}
+                    disabled={disabled}
+                    onChange={onChange}
+                    {...props}
+                />
+            </div>
+        );
+    }
+);
+
 export default FileInput;
+// export default StyledFileInput;

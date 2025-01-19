@@ -1,5 +1,5 @@
 import { InputIds } from "@/types/enums";
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 const StyledInput = styled.input`
@@ -25,29 +25,25 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     (
         {
             isControlled = false,
-            defaultValue = "",
+            defaultValue,
             type = "text",
             placeholder = "Input something",
-            id = "",
+            id,
             onChange,
-            value = "",
+            value,
             disabled = false,
             ...props
         },
         ref
     ) => {
-        const [inputValue, setInputValue] = useState("");
-
         return isControlled ? (
             <StyledInput
                 ref={ref}
                 id={id}
                 disabled={disabled}
                 type={type}
-                value={onChange ? value : inputValue}
-                onChange={
-                    onChange ? onChange : (e) => setInputValue(e.target.value)
-                }
+                value={value}
+                onChange={onChange}
                 placeholder={placeholder}
                 {...props}
             />
@@ -57,7 +53,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 id={id}
                 disabled={disabled}
                 type={type}
-                defaultValue={typeof defaultValue === "string" ? "" : 0}
+                defaultValue={defaultValue}
                 placeholder={placeholder}
                 {...props}
             />
