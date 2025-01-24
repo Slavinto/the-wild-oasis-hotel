@@ -22,6 +22,26 @@ export const getCabins = async () => {
     }
 };
 
+export const getCabinById = async (id: number): Promise<Tables<"cabins">> => {
+    try {
+        const { data, error } = await supabase
+            .from("cabins")
+            .select()
+            .eq("id", id);
+        if (error) {
+            throw error;
+        } else if (!data) {
+            throw new Error("Failed to fetch cabin data");
+        }
+
+        return data[0];
+    } catch (error) {
+        const newError = handleError(error);
+        console.log({ newError });
+        throw handleError(newError);
+    }
+};
+
 export const deleteCabinImage = async (cabin: Cabin | Tables<"cabins">) => {
     try {
         const bucketName = bucketNames.cabinImages;
@@ -46,8 +66,15 @@ export const deleteCabinImage = async (cabin: Cabin | Tables<"cabins">) => {
     }
 };
 
-export const createOrUpdateCabin = async (cabin: Cabin, id?: number) => {
-    const newCabin = createSupabaseCabinFromCabin(cabin);
+export const createOrUpdateCabin = async (cabin?: Cabin, id?: number) => {
+    if (!cabin && !id) {
+        throw new Error("No cabin object and cabin id found");
+    }
+
+    const newCabin = cabin
+        ? createSupabaseCabinFromCabin(cabin)
+        : await getCabinById(id!);
+
     const bucketName = bucketNames.cabinImages;
     const query = supabase.from(supabaseTables.cabins);
     // newCabin gets old imageUrl in case of updating a cabin

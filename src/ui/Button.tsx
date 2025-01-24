@@ -1,4 +1,6 @@
+import { Tables } from "@/services/supabaseTypes";
 import { ButtonSizes, ButtonVariations } from "@/types/enums";
+import { Cabin } from "@/types/interfaces";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { FC, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
@@ -66,7 +68,7 @@ interface ButtonProps {
     onClick?:
         | React.MouseEventHandler<HTMLButtonElement>
         | ((id: number) => void)
-        | UseMutateFunction;
+        | UseMutateFunction<Tables<"cabins">, Error, Cabin>;
     type?: HTMLButtonElement["type"];
 }
 

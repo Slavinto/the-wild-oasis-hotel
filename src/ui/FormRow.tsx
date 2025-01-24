@@ -1,13 +1,7 @@
-import { CreateCabinRowLabels } from "@/types/enums";
+import { CreateCabinRowLabels, UpdateSettingsFormLabels } from "@/types/enums";
 import { FC, PropsWithChildren } from "react";
 import styled from "styled-components";
 import { FieldError } from "react-hook-form";
-
-interface FormRowProps {
-    htmlFor?: string;
-    label?: CreateCabinRowLabels;
-    error?: FieldError;
-}
 
 const StyledFormRow = styled.div`
     display: grid;
@@ -45,6 +39,12 @@ const StyledError = styled.span`
     font-size: 1.4rem;
     color: var(--color-red-700);
 `;
+
+interface FormRowProps {
+    htmlFor?: string;
+    label?: CreateCabinRowLabels | UpdateSettingsFormLabels;
+    error?: FieldError;
+}
 
 const FormRow: FC<PropsWithChildren<FormRowProps>> = ({
     children,

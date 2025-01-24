@@ -28,6 +28,13 @@ export enum CreateCabinRowLabels {
     CabinPhoto = "Cabin photo",
 }
 
+export enum UpdateSettingsFormLabels {
+    MinNightsBooking = "Minimum nights/booking",
+    MaxNightsBooking = "Maximum nights/booking",
+    MaxGuestsBooking = "Maximum guests/booking",
+    BreakfastPrice = "Breakfast price",
+}
+
 // ==============================Rows===========================
 // ==============================Buttons========================
 export enum ButtonVariations {
@@ -40,6 +47,13 @@ export enum ButtonSizes {
     Small = "small",
     Medium = "medium",
     Large = "large",
+}
+
+export enum CabinRowFunctions {
+    Create = "create",
+    Update = "update",
+    Duplicate = "duplicate",
+    Delete = "delete",
 }
 
 // ==============================Buttons========================

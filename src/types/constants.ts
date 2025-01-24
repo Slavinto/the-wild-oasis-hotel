@@ -14,7 +14,16 @@ export const bucketNames = {
 } as const;
 
 export type BucketNames = (typeof bucketNames)[keyof typeof bucketNames];
+
 // ==============================Cabin==========================
+// ==============================Settings==========================
+export const settingValues = {
+    MinimumNightsMinValue: 1,
+    MaximumNightsMinValue: 1,
+    MaximumGuests: 10,
+    MinimumGuests: 1,
+} as const;
+// ==============================Settings==========================
 // ==============================Supabase==========================
 // ==============================Tables==========================
 export const supabaseTables = {

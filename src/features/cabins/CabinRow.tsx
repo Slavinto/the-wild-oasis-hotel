@@ -1,14 +1,19 @@
+import { HiOutlineDocumentDuplicate } from "react-icons/hi2";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
-import { removeCabin } from "@/services/apiCabins";
 import { Tables } from "@/services/supabaseTypes";
-import { ButtonSizes, ButtonVariations } from "@/types/enums";
+import {
+    ButtonSizes,
+    ButtonVariations,
+    CabinRowFunctions,
+} from "@/types/enums";
 import { Button } from "@/ui";
 import { formatCurrency } from "@/utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FC, useState } from "react";
-import toast from "react-hot-toast";
+import { FC } from "react";
 import styled from "styled-components";
 import CreateCabinForm from "./CreateCabinForm";
+import { useDeleteCabinRow } from "@/features/cabins/useDeleteCabinRow";
+// import { useCabins } from "./useCabins";
+import { useCreateOrUpdateCabin } from "./useCreateOrUpdateCabin";
 
 const TableRow = styled.div`
     display: grid;
@@ -55,67 +60,27 @@ const Discount = styled.div`
 
 interface CabinRowProps {
     cabin?: Tables<"cabins">;
+    setCurrentCabinId?: (id: number) => void;
 }
 
-type MutateContextType =
-    | {
-          prevCabins: Tables<"cabins"> | undefined;
-      }
-    | undefined;
+const CabinRow: FC<CabinRowProps> = ({ cabin, setCurrentCabinId }) => {
+    // logic for deleting form and form visibility extracted to useCabinRow
+    // editing cabin data and creating cabin logic is in the createCabinForm
+    const {
+        showForm,
+        setShowForm,
+        mutate: deleteCabin,
+        isDeleting,
+    } = useDeleteCabinRow(cabin!);
+    // using hook for cabin duplication
+    const { mutate: duplicateCabin, isUpdating: isDuplicating } =
+        useCreateOrUpdateCabin(cabin!, CabinRowFunctions.Duplicate);
 
-const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
-    const queryClient = useQueryClient();
-    const [showForm, setShowForm] = useState(false);
-    console.log({ cabin });
-    if (!cabin) throw new Error(`Error. Invalid cabin object: ${cabin}`);
-    if (!cabin.id || !cabin.name)
-        throw new Error("Error. Invalid cabin name or id.");
+    // const { isPending: isLoading } = useCabins();
 
-    const { name } = cabin;
+    if (!cabin) return null;
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => removeCabin(cabin),
-        onMutate: async (cabinId) => {
-            const confirmed = window.confirm(
-                `Are you sure you want to remove this cabin?`
-            );
-            if (!confirmed) {
-                throw new Error("Error. Cancelled by user");
-            }
-
-            // optimistically update the UI
-            const prevCabins = queryClient.getQueryData(["cabins"]);
-            queryClient.setQueryData(
-                ["cabins"],
-                (oldCabins: Tables<"cabins">[]) =>
-                    oldCabins.filter((oldCabin) => oldCabin.id !== cabinId)
-            );
-
-            // return context to rollback
-            return { prevCabins } as MutateContextType;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["cabins"] });
-            toast.success("Cabin successfully deleted");
-        },
-        onError: (
-            error: Error,
-            cabinId: number,
-            context: MutateContextType
-        ) => {
-            // rollback UI changes if update failed
-            if (context?.prevCabins) {
-                queryClient.setQueryData(["cabins"], context.prevCabins);
-            }
-            toast.error(error.message);
-            throw new Error(
-                `Error. Failed to remove a cabin ${cabinId}: ${JSON.stringify(
-                    error
-                )}`
-            );
-        },
-    });
-    const { image_url, max_capacity, regular_price, discount } = cabin;
+    const { name, image_url, max_capacity, regular_price, discount } = cabin;
 
     return (
         <>
@@ -127,9 +92,14 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
                 <Cabin>{name}</Cabin>
                 <div className=''>fits up to {max_capacity || 0} guests</div>
                 <Price>{formatCurrency(regular_price || 0)}</Price>
-                <Discount>{formatCurrency(discount || 0)}</Discount>
+                {discount ? (
+                    <Discount>{formatCurrency(discount || 0)}</Discount>
+                ) : (
+                    <span>&mdash;</span>
+                )}
                 <div className='' style={{ display: "flex", gap: "1rem" }}>
                     <Button
+                        // update cabin button
                         size={ButtonSizes.Small}
                         variation={ButtonVariations.Secondary}
                         onClick={() => setShowForm((prev) => !prev)}
@@ -141,8 +111,22 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
                         }
                     </Button>
                     <Button
-                        disabled={isPending}
-                        onClick={mutate}
+                        // duplicate cabin button
+                        disabled={isDuplicating}
+                        size={ButtonSizes.Small}
+                        variation={ButtonVariations.Secondary}
+                        onClick={duplicateCabin}
+                    >
+                        {
+                            <span style={{ fontSize: "1.8rem" }}>
+                                <HiOutlineDocumentDuplicate />
+                            </span>
+                        }
+                    </Button>
+                    <Button
+                        // delete cabin button
+                        disabled={isDeleting}
+                        onClick={deleteCabin}
                         size={ButtonSizes.Small}
                         variation={ButtonVariations.Danger}
                     >
@@ -151,7 +135,12 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
                 </div>
             </TableRow>
             {showForm && (
-                <CreateCabinForm setShowForm={setShowForm} cabin={cabin} />
+                <CreateCabinForm
+                    setShowForm={setShowForm}
+                    cabin={cabin}
+                    setCurrentCabinId={setCurrentCabinId}
+                    cabinFunction={CabinRowFunctions.Update}
+                />
             )}
         </>
     );

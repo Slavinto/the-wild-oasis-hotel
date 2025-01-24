@@ -7,114 +7,57 @@ import {
     ContentContainer,
     FormRow,
 } from "@/ui";
-import { ButtonVariations, CreateCabinRowLabels } from "@/types/enums";
+import {
+    ButtonVariations,
+    CabinRowFunctions,
+    CreateCabinRowLabels,
+} from "@/types/enums";
 import { cabinValues } from "@/types/constants";
-import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
-import { createOrUpdateCabin } from "@/services/apiCabins";
+import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { Cabin } from "@/types/interfaces";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tables } from "@/services/supabaseTypes";
 import toast from "react-hot-toast";
-import {
-    createCabinFromSupabaseTableCabin,
-    createSupabaseCabinFromCabin,
-} from "@/utils/helpers";
-
-type MutateContextType =
-    | {
-          prevCabins: Tables<"cabins"> | undefined;
-      }
-    | undefined;
+import { useCreateOrUpdateCabin } from "./useCreateOrUpdateCabin";
 
 function CreateCabinForm({
     cabin: dbCabin,
     setShowForm,
+    setCurrentCabinId,
+    cabinFunction,
 }: {
     cabin?: Tables<"cabins">;
-    setShowForm: (state: boolean) => void;
+    setShowForm?: (state: boolean) => void;
+    setCurrentCabinId?: (cabinId: number) => void;
+    cabinFunction: CabinRowFunctions;
 }) {
-    const currentCabinId = dbCabin?.id;
-    const cabin = dbCabin
-        ? createCabinFromSupabaseTableCabin(dbCabin)
-        : undefined;
-    const defaultValues = cabin ? { defaultValues: cabin } : {};
+    const {
+        cabin,
+        form,
+        currentValues,
+        mutate: updateCabin,
+        isUpdating,
+        isFormChanged,
+        // currentCabinId we get when we update a cabin and when we create it's undefined
+        currentCabinId,
+    } = useCreateOrUpdateCabin(dbCabin as Tables<"cabins">, cabinFunction);
     const {
         register,
         handleSubmit,
         reset,
         setValue,
         formState: { errors },
-        watch,
-    } = useForm<Cabin>(defaultValues);
-
-    const currentValues = watch();
-    const isFormChanged =
-        JSON.stringify(currentValues) !== JSON.stringify(cabin);
-
-    // console.log({ defaultValues });
-    console.log({ currentValues });
-    // console.log({ isFormChanged });
-
-    const queryClient = useQueryClient();
-    const { mutate, isPending } = useMutation({
-        mutationFn: currentCabinId
-            ? (newCabin) => createOrUpdateCabin(newCabin, currentCabinId)
-            : createOrUpdateCabin,
-        onMutate: async (newCabin) => {
-            // optimistically update the UI
-            const prevCabins = queryClient.getQueryData(["cabins"]);
-            queryClient.setQueryData(
-                ["cabins"],
-                (oldCabins: Tables<"cabins">[]) => [
-                    ...oldCabins,
-                    createSupabaseCabinFromCabin(newCabin),
-                ]
-            );
-
-            // return context to rollback
-            return { prevCabins } as MutateContextType;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["cabins"] });
-            toast.success(
-                `Cabin successfully ${cabin ? "updated" : "created"}`
-            );
-        },
-        onError: (
-            error: Error,
-            newCabin: Cabin,
-            context: MutateContextType
-        ) => {
-            const errMsg = JSON.parse(error.message);
-            // rollback UI changes if create cabin fails
-            if (context?.prevCabins) {
-                queryClient.setQueryData(["cabins"], context.prevCabins);
-            }
-            toast.error(errMsg);
-            throw new Error(
-                `Error. Failed to remove a cabin ${
-                    newCabin.name
-                }: ${JSON.stringify(error)}`
-            );
-        },
-        // runs after all other code
-        onSettled: () => {
-            reset();
-        },
-    });
+    } = form;
 
     const onSubmit: SubmitHandler<Cabin> = async (formData) => {
-        console.log({ handleSubmit: formData });
-        // upload cabin image file to supabase storage bucket
-        // if (formData.image) {
-        //     const formDataWithImageFile = {
-        //         ...formData,
-        //         image: formData.image,
-        //     };
-        //     mutate(formDataWithImageFile);
-        // }
-        mutate(formData);
-        setShowForm(false);
+        if (currentCabinId && setCurrentCabinId) {
+            setCurrentCabinId(currentCabinId);
+        } else if (!currentCabinId && setCurrentCabinId) {
+            setCurrentCabinId(0);
+        }
+        updateCabin({ ...formData });
+        if (setShowForm) {
+            setShowForm(false);
+        }
     };
 
     const onError: SubmitErrorHandler<Cabin> = async (formData) => {
@@ -144,7 +87,7 @@ function CreateCabinForm({
                 >
                     <Input
                         isControlled={true}
-                        disabled={isPending}
+                        disabled={isUpdating}
                         type='text'
                         id='name'
                         placeholder=''
@@ -160,7 +103,7 @@ function CreateCabinForm({
                 >
                     <Input
                         isControlled={true}
-                        disabled={isPending}
+                        disabled={isUpdating}
                         type='number'
                         id='maxCapacity'
                         placeholder={`${cabinValues.MinimumCapacity} - ${cabinValues.MaximumCapacity} guests`}
@@ -184,7 +127,7 @@ function CreateCabinForm({
                 >
                     <Input
                         isControlled={true}
-                        disabled={isPending}
+                        disabled={isUpdating}
                         type='number'
                         id='regularPrice'
                         placeholder=''
@@ -205,7 +148,7 @@ function CreateCabinForm({
                 >
                     <Input
                         isControlled={true}
-                        disabled={isPending}
+                        disabled={isUpdating}
                         type='number'
                         id='discount'
                         {...register("discount", {
@@ -229,7 +172,7 @@ function CreateCabinForm({
                     error={errors?.description}
                 >
                     <Textarea
-                        disabled={isPending}
+                        disabled={isUpdating}
                         type='text'
                         id='description'
                         {...register("description", {
@@ -248,7 +191,7 @@ function CreateCabinForm({
                         <span>{currentValues.image?.name}</span>
                     ) : (
                         <FileInput
-                            disabled={isPending}
+                            disabled={isUpdating}
                             id='image'
                             accept='image/*'
                             {...(register("image"),
@@ -263,7 +206,7 @@ function CreateCabinForm({
                 <FormRow>
                     {/* type is an HTML attribute! */}
                     <Button
-                        disabled={isPending || isFormChanged}
+                        disabled={isUpdating || isFormChanged}
                         variation={ButtonVariations.Secondary}
                         type='reset'
                         onClick={() => (cabin ? reset(cabin) : {})}
@@ -271,7 +214,7 @@ function CreateCabinForm({
                         Cancel
                     </Button>
                     <Button
-                        disabled={isPending || !isFormChanged}
+                        disabled={isUpdating || !isFormChanged}
                         variation={
                             !isFormChanged
                                 ? ButtonVariations.Secondary
