@@ -1,6 +1,6 @@
 import { handleError } from "@/utils/helpers";
 import supabase from "./supabaseClient";
-import { Tables } from "./supabaseTypes";
+import { Setting } from "@/features/settings/settingsTypes";
 
 export async function getSettings() {
     try {
@@ -13,18 +13,14 @@ export async function getSettings() {
             console.error(error);
             throw error;
         }
+        console.log({ data });
         return data;
     } catch (error) {
         throw handleError(error);
     }
 }
 
-type NewSettingType = Omit<Tables<"settings">, "id" | "created_at">;
-type SettingsProp<K extends keyof NewSettingType> = Record<K, NewSettingType>;
-// We expect a newSetting object that looks like {setting: newValue}
-export async function updateSetting(newSetting: {
-    setting: SettingsProp<keyof NewSettingType>;
-}) {
+export async function updateSetting(newSetting: Setting) {
     const { data, error } = await supabase
         .from("settings")
         .update(newSetting.setting)
