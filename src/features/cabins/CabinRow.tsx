@@ -136,7 +136,7 @@ const CabinRow: FC<CabinRowProps> = ({ cabin, setCurrentCabinId }) => {
             </TableRow>
             {showForm && (
                 <CreateCabinForm
-                    setShowForm={setShowForm}
+                    onCloseModal={setShowForm}
                     cabin={cabin}
                     setCurrentCabinId={setCurrentCabinId}
                     cabinFunction={CabinRowFunctions.Update}

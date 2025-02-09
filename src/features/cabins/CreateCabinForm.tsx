@@ -24,11 +24,13 @@ function CreateCabinForm({
     setShowForm,
     setCurrentCabinId,
     cabinFunction,
+    onCloseModal,
 }: {
     cabin?: Tables<"cabins">;
     setShowForm?: (state: boolean) => void;
     setCurrentCabinId?: (cabinId: number) => void;
     cabinFunction: CabinRowFunctions;
+    onCloseModal?: () => void;
 }) {
     const {
         cabin,
@@ -39,7 +41,11 @@ function CreateCabinForm({
         isFormChanged,
         // currentCabinId we get when we update a cabin and when we create it's undefined
         currentCabinId,
-    } = useCreateOrUpdateCabin(dbCabin as Tables<"cabins">, cabinFunction);
+    } = useCreateOrUpdateCabin(
+        dbCabin as Tables<"cabins">,
+        cabinFunction,
+        onCloseModal
+    );
     const {
         register,
         handleSubmit,
@@ -78,7 +84,10 @@ function CreateCabinForm({
     };
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit, onError)}>
+        <Form
+            onSubmit={handleSubmit(onSubmit, onError)}
+            type={onCloseModal ? "modal" : "normal"}
+        >
             <ContentContainer maxWidth='70rem'>
                 <FormRow
                     htmlFor={"name"}
@@ -205,13 +214,22 @@ function CreateCabinForm({
 
                 <FormRow>
                     {/* type is an HTML attribute! */}
+
                     <Button
-                        disabled={isUpdating || isFormChanged}
+                        disabled={isUpdating || !isFormChanged}
                         variation={ButtonVariations.Secondary}
-                        type='reset'
-                        onClick={() => (cabin ? reset(cabin) : {})}
+                        type='button'
+                        onClick={onCloseModal}
                     >
                         Cancel
+                    </Button>
+                    <Button
+                        disabled={isUpdating || !isFormChanged}
+                        variation={ButtonVariations.Secondary}
+                        type='reset'
+                        onClick={() => reset(cabin)}
+                    >
+                        Reset Form
                     </Button>
                     <Button
                         disabled={isUpdating || !isFormChanged}

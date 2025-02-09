@@ -1,14 +1,13 @@
+import AddCabin from "@/features/cabins/AddCabin";
 import CabinRow from "@/features/cabins/CabinRow";
 import CabinTable from "@/features/cabins/CabinTable";
-import CreateCabinForm from "@/features/cabins/CreateCabinForm";
 import { getCabins } from "@/services/apiCabins";
-import { CabinRowFunctions, RowOrientations } from "@/types/enums";
+import { RowOrientations } from "@/types/enums";
 import { Button, Heading, Row, Spinner, SpinnerMini } from "@/ui";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 function Cabins() {
-    const [showForm, setShowForm] = useState(false);
     const [currentCabinId, setCurrentCabinId] = useState<number>();
     const { data, error, isLoading } = useQuery({
         queryKey: ["cabins"],
@@ -63,15 +62,7 @@ function Cabins() {
                             )
                     )}
                 </CabinTable>
-                {showForm && (
-                    <CreateCabinForm
-                        setCurrentCabinId={setCurrentCabinId}
-                        cabinFunction={CabinRowFunctions.Create}
-                    />
-                )}
-                <Button onClick={() => setShowForm((prev) => !prev)}>
-                    {showForm ? "Hide Form" : "Add new cabin"}
-                </Button>
+                <AddCabin setCurrentCabinId={setCurrentCabinId} />
             </Row>
         </>
     );

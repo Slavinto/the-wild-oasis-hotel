@@ -18,7 +18,8 @@ type MutateContextType =
 
 export const useCreateOrUpdateCabin = (
     dbCabin: Tables<"cabins">,
-    cabinRowFunction: CabinRowFunctions
+    cabinRowFunction: CabinRowFunctions,
+    onCloseModal?: () => void
 ) => {
     // if isDuplicating flag is true using create cabin option
     const currentCabinId = dbCabin?.id;
@@ -79,6 +80,7 @@ export const useCreateOrUpdateCabin = (
         // runs after all other code
         onSettled: () => {
             reset();
+            onCloseModal?.();
         },
     });
     return {

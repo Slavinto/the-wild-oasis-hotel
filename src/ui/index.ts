@@ -23,7 +23,7 @@ export { default as Logo } from "./Logo";
 export { default as Main } from "./Main";
 export { default as MainNav } from "./MainNav";
 // export { default as Menus } from "./Menus";
-// export { default as Modal } from "./Modal";
+export { default as Modal } from "./Modal";
 export { default as NavigationLink } from "./NavigationLink";
 // export { default as Pagination } from "./Pagination";
 export { default as Row } from "./Row";

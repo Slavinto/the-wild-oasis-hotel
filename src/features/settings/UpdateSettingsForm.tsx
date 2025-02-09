@@ -34,7 +34,7 @@ function UpdateSettingsForm() {
         }
     }, [data, reset]);
 
-    if (!data || isLoading || isUpdating) {
+    if (!data || isLoading) {
         // throw new Error("Failed to load settings data from db");
         return <Spinner />;
     }
@@ -87,6 +87,7 @@ function UpdateSettingsForm() {
                     isControlled={true}
                     type='number'
                     id='min_booking_period'
+                    disabled={isUpdating}
                     {...register("min_booking_period", {
                         required: "This value is required",
                         min: {
@@ -107,6 +108,7 @@ function UpdateSettingsForm() {
                     isControlled={true}
                     type='number'
                     id='max_booking_period'
+                    disabled={isUpdating}
                     {...register("max_booking_period", {
                         required: "This value is required",
                         validate: (inputValue) => {
@@ -135,6 +137,7 @@ function UpdateSettingsForm() {
                     isControlled={true}
                     type='number'
                     id='max_guests_per_booking'
+                    disabled={isUpdating}
                     {...register("max_guests_per_booking", {
                         required: "This value is required",
                         min: {
@@ -155,6 +158,7 @@ function UpdateSettingsForm() {
                     isControlled={true}
                     type='number'
                     id='breakfast_price'
+                    disabled={isUpdating}
                     {...register("breakfast_price", {
                         required: "This value is required",
                         min: {
