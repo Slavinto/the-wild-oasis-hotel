@@ -35,5 +35,13 @@ export const supabaseTables = {
 export type SupabaseTables =
     (typeof supabaseTables)[keyof typeof supabaseTables];
 
+export const cabinTableColumns = [
+    "",
+    "Cabin",
+    "Capacity",
+    "Price",
+    "Discount",
+    "",
+];
 // ==============================Tables==========================
 // ==============================Supabase==========================

@@ -58,35 +58,39 @@ const StyledButton = styled.button<ButtonProps>`
     border-radius: var(--border-radius-sm);
     box-shadow: var(--shadow-sm);
     ${(props) => props.size && sizes[props.size]}
-    ${(props) => props.variation && variations[props.variation]}
+    ${(props) => props.$variation && variations[props.$variation]}
+    ${(props) => props.$customstyles && { ...props.$customstyles }}
 `;
 
 interface ButtonProps {
     disabled?: boolean;
     size?: ButtonSizes;
-    variation?: ButtonVariations;
     onClick?:
         | React.MouseEventHandler<HTMLButtonElement>
         | ((id: number) => void)
         | UseMutateFunction<Tables<"cabins">, Error, Cabin>;
     type?: HTMLButtonElement["type"];
+    $variation?: ButtonVariations;
+    $customstyles?: React.CSSProperties;
 }
 
 const Button: FC<PropsWithChildren<ButtonProps>> = ({
     children,
     disabled = false,
     size = ButtonSizes.Medium,
-    variation = ButtonVariations.Primary,
     onClick,
     type = "button",
+    $variation = ButtonVariations.Primary,
+    $customstyles,
 }) => {
     return (
         <StyledButton
             disabled={disabled}
             type={type}
             size={size}
-            variation={variation}
             onClick={onClick}
+            $variation={$variation}
+            $customstyles={$customstyles}
         >
             {children}
         </StyledButton>

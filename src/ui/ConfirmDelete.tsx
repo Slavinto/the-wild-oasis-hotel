@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import Button from "./Button";
-import { ButtonVariations, Headings } from "@/types/enums";
+import { AppEntities, ButtonVariations, Headings } from "@/types/enums";
 import { Heading } from "@/ui";
-// import Heading from "./Heading";
 
 const StyledConfirmDelete = styled.div`
     width: 40rem;
@@ -25,10 +24,14 @@ const StyledConfirmDelete = styled.div`
 function ConfirmDelete({
     resourceName,
     onConfirm,
+    onCloseModal,
+    // onCancel,
     disabled,
 }: {
-    resourceName: string;
+    resourceName: AppEntities;
     onConfirm: () => void;
+    onCloseModal?: () => void;
+    // onCancel: () => void;
     disabled: boolean;
 }) {
     return (
@@ -41,12 +44,17 @@ function ConfirmDelete({
 
             <div>
                 <Button
-                    variation={ButtonVariations.Secondary}
+                    $variation={ButtonVariations.Secondary}
                     disabled={disabled}
+                    onClick={onCloseModal}
                 >
                     Cancel
                 </Button>
-                <Button variation={ButtonVariations.Danger} disabled={disabled}>
+                <Button
+                    $variation={ButtonVariations.Danger}
+                    disabled={disabled}
+                    onClick={onConfirm}
+                >
                     Delete
                 </Button>
             </div>

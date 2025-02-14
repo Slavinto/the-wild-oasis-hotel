@@ -59,7 +59,7 @@ function UpdatePasswordForm() {
                 <Button
                     onClick={reset}
                     type='reset'
-                    variation={ButtonVariations.Secondary}
+                    $variation={ButtonVariations.Secondary}
                 >
                     Cancel
                 </Button>

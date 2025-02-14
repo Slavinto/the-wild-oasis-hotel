@@ -1,4 +1,15 @@
-import { ReactNode, createContext } from "react";
+import { useClickOutsideModal } from "@/hooks/useClickOutsideModal";
+import { ModalWindows } from "@/types/enums";
+import {
+    Dispatch,
+    ReactElement,
+    ReactNode,
+    SetStateAction,
+    cloneElement,
+    createContext,
+    useContext,
+    useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { HiMiniXMark } from "react-icons/hi2";
 import styled from "styled-components";
@@ -51,38 +62,85 @@ const Button = styled.button`
         color: var(--color-grey-500);
     }
 `;
+
 // modal interface
 interface IModal {
-    onClose?: () => void;
+    open: Dispatch<SetStateAction<ModalWindows | null>>;
+    close: () => void;
+    openWindowName: ModalWindows | null;
 }
 
 // modal context
-const ModalContext = createContext<IModal>({});
+const ModalContext = createContext<IModal>({} as IModal);
+
+const Modal = ({ children }: { children: ReactNode }) => {
+    const [openWindowName, setOpenWindowName] = useState<ModalWindows | null>(
+        null
+    );
+
+    const close = () => setOpenWindowName(null);
+    const open = setOpenWindowName;
+
+    return (
+        <ModalContext.Provider value={{ open, close, openWindowName }}>
+            {children}
+        </ModalContext.Provider>
+    );
+};
+
+const Open = ({
+    children,
+    opens: openWindowName,
+}: {
+    children: ReactElement;
+    opens: ModalWindows;
+}) => {
+    const { open } = useContext(ModalContext);
+
+    return cloneElement(children, {
+        onClick: () => {
+            open(openWindowName);
+            // if (openWindowName === ModalWindows.DeleteCabinConfirm) {
+            // }
+            if (children.props?.onClick) {
+                // an onClick handler function from original button
+                children.props.onClick();
+            }
+        },
+        $customstyles: {
+            alignSelf: "start",
+        },
+    });
+};
 
 const Window = ({
-    onClose,
+    name,
     children,
 }: {
-    onClose: () => void;
-    children: ReactNode;
+    name: ModalWindows;
+    children: ReactElement;
 }) => {
+    const { openWindowName, close } = useContext(ModalContext);
+    const { ref } = useClickOutsideModal(close);
+
+    if (name !== openWindowName) return null;
+    // attaching close handler
+    const nestedContent = cloneElement(children, { onCloseModal: close });
+
     return createPortal(
-        <ModalContext.Provider value={{ onClose }}>
-            <Window.Overlay onClick={onClose}>
-                <Window.StyledModal onClick={(e) => e.stopPropagation()}>
-                    {children}
-                    <Window.Button onClick={onClose}>
-                        <HiMiniXMark />
-                    </Window.Button>
-                </Window.StyledModal>
-            </Window.Overlay>
-        </ModalContext.Provider>,
+        <Overlay>
+            <StyledModal ref={ref}>
+                <Button onClick={close}>
+                    <HiMiniXMark />
+                </Button>
+                {nestedContent}
+            </StyledModal>
+        </Overlay>,
         document.body
     );
 };
 
-Window.Overlay = Overlay;
-Window.StyledModal = StyledModal;
-Window.Button = Button;
+Modal.Open = Open;
+Modal.Window = Window;
 
-export default Window;
+export default Modal;

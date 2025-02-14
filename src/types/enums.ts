@@ -1,3 +1,10 @@
+// ==============================Generic=======================
+
+export enum AppEntities {
+    Cabin = "cabin",
+}
+
+// ==============================Generic=======================
 // ==============================Headings=======================
 export enum Headings {
     H1 = "h1",
@@ -57,6 +64,16 @@ export enum CabinRowFunctions {
 }
 
 // ==============================Buttons========================
+// ==============================Modals========================
+
+export enum ModalWindows {
+    CabinForm = "cabin-form",
+    DeleteCabinConfirm = "delete-cabin-confirm",
+    UpdateCabin = "update-cabin",
+    Table = "table",
+}
+
+// ==============================Modals========================
 // ==============================Input==========================
 export enum InputIds {
     FullName = "fullName",

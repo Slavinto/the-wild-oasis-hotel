@@ -18,20 +18,24 @@ import { Cabin } from "@/types/interfaces";
 import { Tables } from "@/services/supabaseTypes";
 import toast from "react-hot-toast";
 import { useCreateOrUpdateCabin } from "./useCreateOrUpdateCabin";
+import { useCabinsContext } from "./CabinContext";
 
 function CreateCabinForm({
     cabin: dbCabin,
     setShowForm,
-    setCurrentCabinId,
+    // setCurrentCabinId,
     cabinFunction,
     onCloseModal,
 }: {
     cabin?: Tables<"cabins">;
-    setShowForm?: (state: boolean) => void;
-    setCurrentCabinId?: (cabinId: number) => void;
+    setShowForm?: () => void;
+    // (state: boolean) => void;
+    // setCurrentCabinId?: (cabinId: number) => void;
     cabinFunction: CabinRowFunctions;
     onCloseModal?: () => void;
 }) {
+    const { currentCabinId, onSetCabinId: setCurrentCabinId } =
+        useCabinsContext();
     const {
         cabin,
         form,
@@ -40,7 +44,7 @@ function CreateCabinForm({
         isUpdating,
         isFormChanged,
         // currentCabinId we get when we update a cabin and when we create it's undefined
-        currentCabinId,
+        // currentCabinId,
     } = useCreateOrUpdateCabin(
         dbCabin as Tables<"cabins">,
         cabinFunction,
@@ -62,7 +66,7 @@ function CreateCabinForm({
         }
         updateCabin({ ...formData });
         if (setShowForm) {
-            setShowForm(false);
+            setShowForm();
         }
     };
 
@@ -217,7 +221,7 @@ function CreateCabinForm({
 
                     <Button
                         disabled={isUpdating || !isFormChanged}
-                        variation={ButtonVariations.Secondary}
+                        $variation={ButtonVariations.Secondary}
                         type='button'
                         onClick={onCloseModal}
                     >
@@ -225,7 +229,7 @@ function CreateCabinForm({
                     </Button>
                     <Button
                         disabled={isUpdating || !isFormChanged}
-                        variation={ButtonVariations.Secondary}
+                        $variation={ButtonVariations.Secondary}
                         type='reset'
                         onClick={() => reset(cabin)}
                     >
@@ -233,7 +237,7 @@ function CreateCabinForm({
                     </Button>
                     <Button
                         disabled={isUpdating || !isFormChanged}
-                        variation={
+                        $variation={
                             !isFormChanged
                                 ? ButtonVariations.Secondary
                                 : ButtonVariations.Primary

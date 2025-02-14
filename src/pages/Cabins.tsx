@@ -1,70 +1,30 @@
 import AddCabin from "@/features/cabins/AddCabin";
-import CabinRow from "@/features/cabins/CabinRow";
+import { CabinsContext } from "@/features/cabins/CabinContext";
+import CabinRows from "@/features/cabins/CabinRows";
 import CabinTable from "@/features/cabins/CabinTable";
-import { getCabins } from "@/services/apiCabins";
 import { RowOrientations } from "@/types/enums";
-import { Button, Heading, Row, Spinner, SpinnerMini } from "@/ui";
-import { useIsMutating, useQuery } from "@tanstack/react-query";
+import { Heading, Row } from "@/ui";
 import { useState } from "react";
 
 function Cabins() {
     const [currentCabinId, setCurrentCabinId] = useState<number>();
-    const { data, error, isLoading } = useQuery({
-        queryKey: ["cabins"],
-        queryFn: getCabins,
-    });
 
-    const isMutating = useIsMutating();
+    const onSetCabinId = (cabinId: number) => setCurrentCabinId(cabinId);
 
-    if (error) {
-        throw error;
-    }
     return (
-        <>
-            <Row type={RowOrientations.Horizontal}>
-                <Heading text='Manage Cabins' />
-            </Row>
-            <Row>
-                <CabinTable>
-                    {isLoading ? (
-                        <Spinner />
-                    ) : (
-                        data &&
-                        data
-                            .sort(
-                                (prevCabin, cabin) =>
-                                    new Date(prevCabin.created_at).getTime() -
-                                    new Date(cabin.created_at).getTime()
-                            )
-                            .map((cabin) =>
-                                // trying to identify that a cabin with particular id is being updated
-                                isMutating === 1 &&
-                                currentCabinId === cabin.id ? (
-                                    <div
-                                        key={cabin.id}
-                                        className=''
-                                        style={{
-                                            height: "7.3rem",
-                                            display: "flex",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <SpinnerMini />
-                                    </div>
-                                ) : (
-                                    <CabinRow
-                                        key={cabin.id}
-                                        cabin={cabin}
-                                        // setting id to identify which cabin will be updated
-                                        setCurrentCabinId={setCurrentCabinId}
-                                    />
-                                )
-                            )
-                    )}
-                </CabinTable>
-                <AddCabin setCurrentCabinId={setCurrentCabinId} />
-            </Row>
-        </>
+        <CabinsContext.Provider value={{ currentCabinId, onSetCabinId }}>
+            <>
+                <Row type={RowOrientations.Horizontal}>
+                    <Heading text='Manage Cabins' />
+                </Row>
+                <Row>
+                    <CabinTable>
+                        <CabinRows />
+                    </CabinTable>
+                    <AddCabin />
+                </Row>
+            </>
+        </CabinsContext.Provider>
     );
 }
 

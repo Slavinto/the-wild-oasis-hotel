@@ -1,44 +1,37 @@
+import { Table } from "@/ui";
 import { FC, PropsWithChildren } from "react";
-import styled from "styled-components";
+// import styled from "styled-components";
 
-const Table = styled.div`
-    border: 1px solid var(--color-grey-200);
+// const TableHeader = styled.header`
+//     display: grid;
+//     grid-template-columns: 6.4rem 1.8fr 2.2fr 1fr 1fr 1fr;
+//     column-gap: 2.4rem;
+//     align-items: center;
 
-    font-size: 1.4rem;
-    background-color: var(--color-grey-0);
-    border-radius: 7px;
-    overflow: hidden;
-`;
-
-const TableHeader = styled.header`
-    display: grid;
-    grid-template-columns: 6.4rem 1.8fr 2.2fr 1fr 1fr 1fr;
-    column-gap: 2.4rem;
-    align-items: center;
-
-    background-color: var(--color-grey-50);
-    border-bottom: 1px solid var(--color-grey-100);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    font-weight: 600;
-    color: var(--color-grey-600);
-    padding: 1.6rem 2.4rem;
-`;
+//     background-color: var(--color-grey-50);
+//     border-bottom: 1px solid var(--color-grey-100);
+//     text-transform: uppercase;
+//     letter-spacing: 0.4px;
+//     font-weight: 600;
+//     color: var(--color-grey-600);
+//     padding: 1.6rem 2.4rem;
+// `;
 
 const CabinTable: FC<PropsWithChildren> = ({ children }) => {
     return (
-        <Table role='table'>
-            <TableHeader role='row'>
-                <div className=''></div>
-                <div className=''>Cabin</div>
-                <div className=''>Capacity</div>
-                <div className=''>Price</div>
-                <div className=''>Discount</div>
-                <div className=''></div>
-            </TableHeader>
-            {children}
+        <Table columns='6.4rem 1.8fr 2.2fr 1fr 1fr 1fr'>
+            <Table.Header />
+            <Table.Body>{children}</Table.Body>
         </Table>
     );
 };
+{
+    /* <div className=''></div>
+<div className=''>Cabin</div>
+<div className=''>Capacity</div>
+<div className=''>Price</div>
+<div className=''>Discount</div>
+<div className=''></div> */
+}
 
 export default CabinTable;

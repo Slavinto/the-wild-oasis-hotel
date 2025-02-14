@@ -48,7 +48,7 @@ function CheckinBooking() {
                     Check in booking #{bookingId}
                 </Button>
                 <Button
-                    variation={ButtonVariations.Secondary}
+                    $variation={ButtonVariations.Secondary}
                     onClick={moveBack}
                 >
                     Back

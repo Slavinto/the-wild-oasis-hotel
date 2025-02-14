@@ -43,7 +43,7 @@ function UpdateUserDataForm() {
                 />
             </FormRow>
             <FormRow>
-                <Button type='reset' variation={ButtonVariations.Secondary}>
+                <Button type='reset' $variation={ButtonVariations.Secondary}>
                     Cancel
                 </Button>
                 <Button>Update account</Button>

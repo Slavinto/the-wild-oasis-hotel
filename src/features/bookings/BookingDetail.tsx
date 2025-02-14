@@ -45,7 +45,7 @@ function BookingDetail() {
 
             <ButtonGroup>
                 <Button
-                    variation={ButtonVariations.Secondary}
+                    $variation={ButtonVariations.Secondary}
                     onClick={moveBack}
                 >
                     Back

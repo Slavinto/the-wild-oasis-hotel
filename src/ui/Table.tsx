@@ -1,60 +1,113 @@
+import { cabinTableColumns } from "@/types/constants";
+import { createContext, ReactNode, useContext } from "react";
+// import { TiSortNumerically } from "react-icons/ti";
 import styled from "styled-components";
 
+interface CommonRowProps {
+    $columns?: string;
+}
+
 const StyledTable = styled.div`
-  border: 1px solid var(--color-grey-200);
+    border: 1px solid var(--color-grey-200);
 
-  font-size: 1.4rem;
-  background-color: var(--color-grey-0);
-  border-radius: 7px;
-  overflow: hidden;
+    font-size: 1.4rem;
+    background-color: var(--color-grey-0);
+    border-radius: 7px;
+    overflow: hidden;
 `;
 
-const CommonRow = styled.div`
-  display: grid;
-  grid-template-columns: ${(props) => props.columns};
-  column-gap: 2.4rem;
-  align-items: center;
-  transition: none;
+const CommonRow = styled.div<CommonRowProps>`
+    display: grid;
+    grid-template-columns: ${(props) => props.$columns};
+    column-gap: 2.4rem;
+    align-items: center;
+    transition: none;
 `;
 
-const StyledHeader = styled(CommonRow)`
-  padding: 1.6rem 2.4rem;
+const StyledHeader = styled(CommonRow)<CommonRowProps>`
+    padding: 1.6rem 2.4rem;
 
-  background-color: var(--color-grey-50);
-  border-bottom: 1px solid var(--color-grey-100);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  font-weight: 600;
-  color: var(--color-grey-600);
+    background-color: var(--color-grey-50);
+    border-bottom: 1px solid var(--color-grey-100);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+    color: var(--color-grey-600);
 `;
 
 const StyledRow = styled(CommonRow)`
-  padding: 1.2rem 2.4rem;
+    padding: 1.2rem 2.4rem;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
+    &:not(:last-child) {
+        border-bottom: 1px solid var(--color-grey-100);
+    }
 `;
 
 const StyledBody = styled.section`
-  margin: 0.4rem 0;
+    margin: 0.4rem 0;
 `;
 
 const Footer = styled.footer`
-  background-color: var(--color-grey-50);
-  display: flex;
-  justify-content: center;
-  padding: 1.2rem;
+    background-color: var(--color-grey-50);
+    display: flex;
+    justify-content: center;
+    padding: 1.2rem;
 
-  /* This will hide the footer when it contains no child elements. Possible thanks to the parent selector :has 🎉 */
-  &:not(:has(*)) {
-    display: none;
-  }
+    /* This will hide the footer when it contains no child elements. Possible thanks to the parent selector :has 🎉 */
+    &:not(:has(*)) {
+        display: none;
+    }
 `;
 
 const Empty = styled.p`
-  font-size: 1.6rem;
-  font-weight: 500;
-  text-align: center;
-  margin: 2.4rem;
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-align: center;
+    margin: 2.4rem;
 `;
+
+const TableContext = createContext<{ columns: string } | null>(null);
+
+export default function Table({
+    columns,
+    children,
+}: {
+    columns: string;
+    children: ReactNode;
+}) {
+    return (
+        <TableContext.Provider value={{ columns }}>
+            <StyledTable>{children}</StyledTable>
+        </TableContext.Provider>
+    );
+}
+
+const useTableContext = () => {
+    const context = useContext(TableContext);
+    if (!context) throw new Error("Failed to find Table context.");
+    return context;
+};
+
+Table.Header = function TableHeader() {
+    const { columns } = useTableContext();
+    return (
+        <StyledHeader $columns={columns}>
+            {cabinTableColumns.map((colName, idx) => (
+                <div key={idx + colName}>
+                    {colName !== "" ? `${colName.toUpperCase()}` : ""}
+                </div>
+            ))}
+        </StyledHeader>
+    );
+};
+
+Table.Row = function TableRow({ children }: { children: ReactNode }) {
+    const { columns } = useTableContext();
+    return <StyledRow $columns={columns}>{children}</StyledRow>;
+};
+
+Table.Body = function TableBody({ children }: { children: ReactNode }) {
+    return <StyledBody>{children}</StyledBody>;
+};
+
+Table.Footer = function TableFooter({ children }: { children: ReactNode }) {};

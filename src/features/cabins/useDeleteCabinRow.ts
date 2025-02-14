@@ -1,7 +1,7 @@
 import { removeCabin } from "@/services/apiCabins";
 import { Tables } from "@/services/supabaseTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+// import { useState } from "react";
 import toast from "react-hot-toast";
 
 type MutateContextType =
@@ -11,7 +11,6 @@ type MutateContextType =
     | undefined;
 
 export const useDeleteCabinRow = (cabin: Tables<"cabins">) => {
-    const [showForm, setShowForm] = useState(false);
     const queryClient = useQueryClient();
     if (!cabin) throw new Error(`Error. Invalid cabin object: ${cabin}`);
     if (!cabin.id || !cabin.name)
@@ -20,13 +19,6 @@ export const useDeleteCabinRow = (cabin: Tables<"cabins">) => {
     const { mutate, isPending: isDeleting } = useMutation({
         mutationFn: () => removeCabin(cabin),
         onMutate: async (cabinId) => {
-            const confirmed = window.confirm(
-                `Are you sure you want to remove this cabin?`
-            );
-            if (!confirmed) {
-                throw new Error("Error. Cancelled by user");
-            }
-
             // optimistically update the UI
             const prevCabins = queryClient.getQueryData(["cabins"]);
             queryClient.setQueryData(
@@ -59,5 +51,5 @@ export const useDeleteCabinRow = (cabin: Tables<"cabins">) => {
             );
         },
     });
-    return { showForm, setShowForm, mutate, isDeleting };
+    return { mutate, isDeleting };
 };

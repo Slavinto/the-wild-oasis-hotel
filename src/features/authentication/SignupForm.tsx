@@ -24,7 +24,7 @@ function SignupForm() {
 
             <FormRow>
                 {/* type is an HTML attribute! */}
-                <Button variation={ButtonVariations.Secondary} type='reset'>
+                <Button $variation={ButtonVariations.Secondary} type='reset'>
                     Cancel
                 </Button>
                 <Button>Create new user</Button>
