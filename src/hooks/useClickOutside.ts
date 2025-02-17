@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export const useClickOutsideModal = (
+export const useClickOutside = (
     handler: () => void,
     listenCapturing: boolean = true
 ) => {

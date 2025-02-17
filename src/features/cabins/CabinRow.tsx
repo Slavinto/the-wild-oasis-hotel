@@ -1,5 +1,6 @@
 import { HiOutlineDocumentDuplicate } from "react-icons/hi2";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { HiEllipsisVertical } from "react-icons/hi2";
 import { Tables } from "@/services/supabaseTypes";
 import {
     AppEntities,
@@ -10,23 +11,13 @@ import {
 } from "@/types/enums";
 import { Button, ConfirmDelete, Modal, Table } from "@/ui";
 import { formatCurrency } from "@/utils/helpers";
-import { FC } from "react";
+import { cloneElement, FC, ReactNode } from "react";
 import styled from "styled-components";
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabinRow } from "@/features/cabins/useDeleteCabinRow";
 import { useCreateOrUpdateCabin } from "./useCreateOrUpdateCabin";
-
-// const TableRow = styled.div`
-//     display: grid;
-//     grid-template-columns: 6.4rem 1.8fr 2.2fr 1fr 1fr 1fr;
-//     column-gap: 2.4rem;
-//     align-items: center;
-//     padding: 1.4rem 2.4rem;
-
-//     &:not(:last-child) {
-//         border-bottom: 1px solid var(--color-grey-100);
-//     }
-// `;
+import { Menu } from "@/ui";
+import { CabinRowMenuOptions } from "@/types/components";
 
 const Img = styled.img`
     display: block;
@@ -90,7 +81,7 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
             ) : (
                 <span>&mdash;</span>
             )}
-            <div className='' style={{ display: "flex", gap: "1rem" }}>
+            <Menu id={cabin.id}>
                 <Modal>
                     <Modal.Open opens={ModalWindows.UpdateCabin}>
                         <Button
@@ -143,7 +134,27 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
                         />
                     </Modal.Window>
                 </Modal>
-            </div>
+                <Menu.Body>
+                    <Menu.Toggle>
+                        <HiEllipsisVertical />
+                    </Menu.Toggle>
+                    <Menu.List>
+                        <Menu.Buttons
+                            data={CabinRowMenuOptions}
+                            render={(buttonContent: ReactNode) => (
+                                <li
+                                    key={
+                                        buttonContent?.toString() +
+                                        Math.random().toString()
+                                    }
+                                >
+                                    <Menu.Button>{buttonContent}</Menu.Button>
+                                </li>
+                            )}
+                        />
+                    </Menu.List>
+                </Menu.Body>
+            </Menu>
         </Table.Row>
     );
 };

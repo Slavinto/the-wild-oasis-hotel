@@ -1,18 +1,16 @@
-import { useClickOutsideModal } from "@/hooks/useClickOutsideModal";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import { ModalWindows } from "@/types/enums";
 import {
-    Dispatch,
     ReactElement,
     ReactNode,
-    SetStateAction,
     cloneElement,
-    createContext,
     useContext,
     useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { HiMiniXMark } from "react-icons/hi2";
 import styled from "styled-components";
+import { ModalContext } from "./ModalContext";
 
 const StyledModal = styled.div`
     position: fixed;
@@ -63,16 +61,6 @@ const Button = styled.button`
     }
 `;
 
-// modal interface
-interface IModal {
-    open: Dispatch<SetStateAction<ModalWindows | null>>;
-    close: () => void;
-    openWindowName: ModalWindows | null;
-}
-
-// modal context
-const ModalContext = createContext<IModal>({} as IModal);
-
 const Modal = ({ children }: { children: ReactNode }) => {
     const [openWindowName, setOpenWindowName] = useState<ModalWindows | null>(
         null
@@ -100,8 +88,6 @@ const Open = ({
     return cloneElement(children, {
         onClick: () => {
             open(openWindowName);
-            // if (openWindowName === ModalWindows.DeleteCabinConfirm) {
-            // }
             if (children.props?.onClick) {
                 // an onClick handler function from original button
                 children.props.onClick();
@@ -121,7 +107,7 @@ const Window = ({
     children: ReactElement;
 }) => {
     const { openWindowName, close } = useContext(ModalContext);
-    const { ref } = useClickOutsideModal(close);
+    const { ref } = useClickOutside(close);
 
     if (name !== openWindowName) return null;
     // attaching close handler

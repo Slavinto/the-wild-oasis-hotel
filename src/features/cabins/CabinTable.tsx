@@ -1,27 +1,35 @@
-import { Table } from "@/ui";
-import { FC, PropsWithChildren } from "react";
-// import styled from "styled-components";
+import { Spinner, Table } from "@/ui";
+import CabinRows from "./CabinRows";
+import { cabinTableColumns } from "@/types/constants";
+import { useCabins } from "./useCabins";
+import CabinRow from "./CabinRow";
+import { Tables } from "@/services/supabaseTypes";
 
-// const TableHeader = styled.header`
-//     display: grid;
-//     grid-template-columns: 6.4rem 1.8fr 2.2fr 1fr 1fr 1fr;
-//     column-gap: 2.4rem;
-//     align-items: center;
-
-//     background-color: var(--color-grey-50);
-//     border-bottom: 1px solid var(--color-grey-100);
-//     text-transform: uppercase;
-//     letter-spacing: 0.4px;
-//     font-weight: 600;
-//     color: var(--color-grey-600);
-//     padding: 1.6rem 2.4rem;
-// `;
-
-const CabinTable: FC<PropsWithChildren> = ({ children }) => {
+const CabinTable = () => {
+    const { cabins, isLoading } = useCabins();
+    const sortedCabins = cabins?.sort(
+        (prevItem, item) =>
+            new Date(prevItem.created_at).getTime() -
+            new Date(item.created_at).getTime()
+    );
     return (
-        <Table columns='6.4rem 1.8fr 2.2fr 1fr 1fr 1fr'>
+        <Table
+            columns='minmax(6.4rem, 1fr) minmax(5rem, 1.8fr) minmax(7rem, 2.2fr) minmax(5rem, 1fr) minmax(5rem, 1fr) minmax(15rem, 1fr)'
+            colNames={cabinTableColumns}
+        >
             <Table.Header />
-            <Table.Body>{children}</Table.Body>
+            {isLoading ? (
+                <Spinner />
+            ) : sortedCabins ? (
+                <Table.Body
+                    data={sortedCabins}
+                    render={(cabin: Tables<"cabins">) => (
+                        <CabinRow key={cabin.id} cabin={cabin} />
+                    )}
+                />
+            ) : (
+                <Table.Empty />
+            )}
         </Table>
     );
 };

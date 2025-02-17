@@ -1,6 +1,6 @@
-import { cabinTableColumns } from "@/types/constants";
-import { createContext, ReactNode, useContext } from "react";
-// import { TiSortNumerically } from "react-icons/ti";
+import { Tables } from "@/services/supabaseTypes";
+import { TableContext, useTableContext } from "@/ui/table/TableContext";
+import { ReactNode } from "react";
 import styled from "styled-components";
 
 interface CommonRowProps {
@@ -18,7 +18,8 @@ const StyledTable = styled.div`
 
 const CommonRow = styled.div<CommonRowProps>`
     display: grid;
-    grid-template-columns: ${(props) => props.$columns};
+    grid-template-columns: ${(props) =>
+        props.$columns || "1fr 1fr 1fr 1fr 1fr 1fr"};
     column-gap: 2.4rem;
     align-items: center;
     transition: none;
@@ -44,7 +45,7 @@ const StyledRow = styled(CommonRow)`
 `;
 
 const StyledBody = styled.section`
-    margin: 0.4rem 0;
+    margin: 0.4rem;
 `;
 
 const Footer = styled.footer`
@@ -66,33 +67,28 @@ const Empty = styled.p`
     margin: 2.4rem;
 `;
 
-const TableContext = createContext<{ columns: string } | null>(null);
-
 export default function Table({
     columns,
+    colNames,
     children,
 }: {
     columns: string;
+    colNames: string[];
     children: ReactNode;
 }) {
     return (
-        <TableContext.Provider value={{ columns }}>
-            <StyledTable>{children}</StyledTable>
+        <TableContext.Provider value={{ columns, colNames }}>
+            <StyledTable role='table'>{children}</StyledTable>
         </TableContext.Provider>
     );
 }
 
-const useTableContext = () => {
-    const context = useContext(TableContext);
-    if (!context) throw new Error("Failed to find Table context.");
-    return context;
-};
-
 Table.Header = function TableHeader() {
-    const { columns } = useTableContext();
+    const { columns, colNames } = useTableContext();
+    console.log({ colNames });
     return (
-        <StyledHeader $columns={columns}>
-            {cabinTableColumns.map((colName, idx) => (
+        <StyledHeader as='header' role='row' $columns={columns}>
+            {colNames.map((colName, idx) => (
                 <div key={idx + colName}>
                     {colName !== "" ? `${colName.toUpperCase()}` : ""}
                 </div>
@@ -103,11 +99,27 @@ Table.Header = function TableHeader() {
 
 Table.Row = function TableRow({ children }: { children: ReactNode }) {
     const { columns } = useTableContext();
+
     return <StyledRow $columns={columns}>{children}</StyledRow>;
 };
 
-Table.Body = function TableBody({ children }: { children: ReactNode }) {
-    return <StyledBody>{children}</StyledBody>;
+// a type for incoming table data
+type AppTables = Tables<"cabins">[];
+
+Table.Body = function TableBody({
+    data,
+    render,
+}: {
+    data: AppTables;
+    render: (item: Tables<"cabins">) => ReactNode;
+}) {
+    return <StyledBody>{data.map(render)}</StyledBody>;
 };
 
-Table.Footer = function TableFooter({ children }: { children: ReactNode }) {};
+Table.Empty = function TableEmty() {
+    return <Empty>No data to display at the moment</Empty>;
+};
+
+Table.Footer = function TableFooter({ children }: { children: ReactNode }) {
+    return <Footer>{children}</Footer>;
+};

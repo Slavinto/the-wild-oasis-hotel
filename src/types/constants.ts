@@ -24,7 +24,6 @@ export const settingValues = {
     MinimumGuests: 1,
 } as const;
 // ==============================Settings==========================
-// ==============================Supabase==========================
 // ==============================Tables==========================
 export const supabaseTables = {
     bookings: "bookings",
@@ -44,4 +43,8 @@ export const cabinTableColumns = [
     "",
 ];
 // ==============================Tables==========================
-// ==============================Supabase==========================
+// ==============================Menus==========================
+
+// export const CabinRowMenuOptions = ["Duplicate", "Edit", "Delete"];
+
+// ==============================Menus==========================

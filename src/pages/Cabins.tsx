@@ -1,6 +1,6 @@
 import AddCabin from "@/features/cabins/AddCabin";
 import { CabinsContext } from "@/features/cabins/CabinContext";
-import CabinRows from "@/features/cabins/CabinRows";
+
 import CabinTable from "@/features/cabins/CabinTable";
 import { RowOrientations } from "@/types/enums";
 import { Heading, Row } from "@/ui";
@@ -18,9 +18,7 @@ function Cabins() {
                     <Heading text='Manage Cabins' />
                 </Row>
                 <Row>
-                    <CabinTable>
-                        <CabinRows />
-                    </CabinTable>
+                    <CabinTable />
                     <AddCabin />
                 </Row>
             </>
