@@ -85,7 +85,7 @@ export default function Table({
 
 Table.Header = function TableHeader() {
     const { columns, colNames } = useTableContext();
-    console.log({ colNames });
+    // console.log({ colNames });
     return (
         <StyledHeader as='header' role='row' $columns={columns}>
             {colNames.map((colName, idx) => (

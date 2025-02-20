@@ -88,10 +88,6 @@ const Open = ({
     return cloneElement(children, {
         onClick: () => {
             open(openWindowName);
-            if (children.props?.onClick) {
-                // an onClick handler function from original button
-                children.props.onClick();
-            }
         },
         $customstyles: {
             alignSelf: "start",
@@ -107,15 +103,19 @@ const Window = ({
     children: ReactElement;
 }) => {
     const { openWindowName, close } = useContext(ModalContext);
-    const { ref } = useClickOutside(close);
+    const { ref } = useClickOutside(close, true, ".modal-content");
 
     if (name !== openWindowName) return null;
+
     // attaching close handler
     const nestedContent = cloneElement(children, { onCloseModal: close });
 
     return createPortal(
         <Overlay>
-            <StyledModal ref={ref}>
+            <StyledModal
+                ref={ref as React.LegacyRef<HTMLDivElement>}
+                className='modal-content'
+            >
                 <Button onClick={close}>
                     <HiMiniXMark />
                 </Button>

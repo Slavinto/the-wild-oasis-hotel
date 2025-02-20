@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { forwardRef, ReactNode, useRef, useState } from "react";
 import styled from "styled-components";
 import { MenuContext, MenuPosition, useMenuContext } from "./MenuContext";
 import { useClickOutside } from "@/hooks/useClickOutside";
@@ -29,10 +29,6 @@ const StyledToggle = styled.button`
     }
 `;
 
-// interface StyledListPosition {
-//     $position: { x: number; y: number };
-// }
-
 const StyledList = styled.ul<MenuPosition>`
     position: fixed;
 
@@ -42,7 +38,19 @@ const StyledList = styled.ul<MenuPosition>`
 
     right: ${(props) => props?.$position.x}px;
     top: ${(props) => props?.$position.y}px;
+    z-index: 900;
 `;
+
+const ItemList = forwardRef<
+    HTMLUListElement,
+    React.ComponentPropsWithoutRef<"ul"> & MenuPosition
+>(({ children, $position, ...props }, ref) => {
+    return (
+        <StyledList ref={ref} $position={$position} {...props}>
+            {children}
+        </StyledList>
+    );
+});
 
 const StyledButton = styled.button`
     width: 100%;
@@ -82,6 +90,10 @@ export default function Menu({
     const closeMenu = () => setOpenId(null);
     const openMenu = () => setOpenId(id);
 
+    // useEffect(() => {
+    //     console.log({ openId });
+    // }, [openId]);
+
     return (
         <MenuContext.Provider
             value={{
@@ -97,25 +109,20 @@ export default function Menu({
     );
 }
 
-Menu.Button = function MenuButton({ children }: { children: ReactNode }) {
-    return <StyledButton>{children}</StyledButton>;
-};
-
-Menu.Body = function MenuBody({ children }: { children: ReactNode }) {
-    const { closeMenu } = useMenuContext();
-    const { ref } = useClickOutside(closeMenu!);
-    //
-    return <div ref={ref}>{children}</div>;
-};
-
 Menu.Toggle = function MenuToggle({ children }: { children: ReactNode }) {
     const { openId, openMenu, closeMenu, setPosition } = useMenuContext();
+
     const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log(openId);
         if (!openId) {
-            console.log("first");
             const rect = e.currentTarget.getBoundingClientRect();
-            setPosition?.({ $position: { x: rect.right, y: rect.bottom } });
+
+            const position = {
+                $position: {
+                    x: window.innerWidth - rect.left - rect.width,
+                    y: rect.bottom + 8,
+                },
+            };
+            setPosition?.(position);
             openMenu?.();
         } else {
             closeMenu?.();
@@ -126,21 +133,50 @@ Menu.Toggle = function MenuToggle({ children }: { children: ReactNode }) {
 };
 
 Menu.List = function MenuList({ children }: { children: ReactNode }) {
-    const { openId, position } = useMenuContext();
-    if (!position) return null;
+    const { openId, position, closeMenu } = useMenuContext();
+
+    // if false is being passed as second arg closeMenu or other handler will run at bubbling phase
+    const { ref } = useClickOutside(closeMenu!, true, ".modal-content");
+
+    if (!position || !ref) return null;
+
     const output = openId ? (
-        <StyledList $position={position.$position}>{children}</StyledList>
+        // <ItemList
+        //     ref={ref as React.LegacyRef<HTMLUListElement>}
+        //     $position={position.$position}
+        // >
+        //     {children}
+        // </ItemList>
+        <StyledList
+            ref={ref as React.MutableRefObject<HTMLUListElement>}
+            $position={position.$position}
+        >
+            {children}
+        </StyledList>
     ) : null;
     return createPortal(output, document.body);
-    // return <StyledList>{children}</StyledList>;
 };
 
-Menu.Buttons = function MenuButtons({
-    data,
-    render,
+Menu.Button = function MenuButton({
+    onClick,
+    disabled,
+    children,
 }: {
-    data: ReactNode[];
-    render: (button: ReactNode) => ReactNode;
+    onClick?: (e: React.MouseEvent) => void;
+    disabled: boolean;
+    children: ReactNode;
 }) {
-    return data.map(render);
+    const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+    const handler = (e: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("button handler running");
+        // attached onClick handler in Modal.Open -> opens the corresponding modal Window
+        onClick?.(e);
+    };
+
+    return (
+        <StyledButton ref={buttonRef} onClick={handler} disabled={disabled}>
+            {children}
+        </StyledButton>
+    );
 };

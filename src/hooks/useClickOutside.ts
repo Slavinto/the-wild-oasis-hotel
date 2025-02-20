@@ -2,13 +2,18 @@ import { useEffect, useRef } from "react";
 
 export const useClickOutside = (
     handler: () => void,
-    listenCapturing: boolean = true
+    listenCapturing: boolean = true,
+    ignoreClass?: string
 ) => {
-    const ref = useRef<HTMLDivElement | null>(null);
+    const ref = useRef<HTMLDivElement | HTMLUListElement | null>(null);
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) {
+            if (
+                ref.current &&
+                !ref.current.contains(e.target as Node) &&
+                !(e.target as HTMLElement)?.closest(ignoreClass || "")
+            ) {
                 handler();
             }
         };
@@ -16,7 +21,7 @@ export const useClickOutside = (
         return () => {
             document.removeEventListener("click", handleClick, listenCapturing);
         };
-    }, [handler, ref, listenCapturing]);
+    }, [handler, ref, listenCapturing, ignoreClass]);
 
     return { ref };
 };

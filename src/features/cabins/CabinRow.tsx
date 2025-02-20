@@ -1,23 +1,22 @@
-import { HiOutlineDocumentDuplicate } from "react-icons/hi2";
-import { HiOutlinePencilSquare } from "react-icons/hi2";
-import { HiEllipsisVertical } from "react-icons/hi2";
-import { Tables } from "@/services/supabaseTypes";
 import {
-    AppEntities,
-    ButtonSizes,
-    ButtonVariations,
-    CabinRowFunctions,
-    ModalWindows,
-} from "@/types/enums";
-import { Button, ConfirmDelete, Modal, Table } from "@/ui";
-import { formatCurrency } from "@/utils/helpers";
-import { cloneElement, FC, ReactNode } from "react";
+    HiOutlineDocumentDuplicate,
+    HiOutlinePencilSquare,
+    HiEllipsisVertical,
+    HiOutlineTrash,
+} from "react-icons/hi2";
+import { Tables } from "@/services/supabaseTypes";
+import { AppEntities, CabinRowFunctions, ModalWindows } from "@/types/enums";
+import { ConfirmDelete, Modal, Table } from "@/ui";
+import {
+    createCabinFromSupabaseTableCabin,
+    formatCurrency,
+} from "@/utils/helpers";
+import { FC } from "react";
 import styled from "styled-components";
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabinRow } from "@/features/cabins/useDeleteCabinRow";
 import { useCreateOrUpdateCabin } from "./useCreateOrUpdateCabin";
 import { Menu } from "@/ui";
-import { CabinRowMenuOptions } from "@/types/components";
 
 const Img = styled.img`
     display: block;
@@ -67,6 +66,14 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
 
     const { name, image_url, max_capacity, regular_price, discount } = cabin;
 
+    const handleDuplicate: React.EventHandler<React.MouseEvent> = () => {
+        duplicateCabin(createCabinFromSupabaseTableCabin(cabin!));
+    };
+
+    const handleConfirmDelete = () => {
+        deleteCabin(cabin.id);
+    };
+
     return (
         <Table.Row>
             <Img
@@ -82,81 +89,80 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
                 <span>&mdash;</span>
             )}
             <Menu id={cabin.id}>
-                <Modal>
-                    <Modal.Open opens={ModalWindows.UpdateCabin}>
-                        <Button
-                            // update cabin button
-                            size={ButtonSizes.Small}
-                            $variation={ButtonVariations.Secondary}
-                        >
-                            {
-                                <span style={{ fontSize: "1.8rem" }}>
-                                    <HiOutlinePencilSquare />
-                                </span>
-                            }
-                        </Button>
-                    </Modal.Open>
-                    <Modal.Window name={ModalWindows.UpdateCabin}>
-                        <CreateCabinForm
-                            cabin={cabin}
-                            cabinFunction={CabinRowFunctions.Update}
-                        />
-                    </Modal.Window>
-                </Modal>
-                <Button
-                    // duplicate cabin button
-                    disabled={isDuplicating}
-                    size={ButtonSizes.Small}
-                    $variation={ButtonVariations.Secondary}
-                    onClick={duplicateCabin}
-                >
-                    {
-                        <span style={{ fontSize: "1.8rem" }}>
-                            <HiOutlineDocumentDuplicate />
-                        </span>
-                    }
-                </Button>
-                <Modal>
-                    <Modal.Open opens={ModalWindows.DeleteCabinConfirm}>
-                        <Button
-                            // delete cabin button
-                            size={ButtonSizes.Small}
-                            $variation={ButtonVariations.Danger}
-                        >
-                            Remove
-                        </Button>
-                    </Modal.Open>
-                    <Modal.Window name={ModalWindows.DeleteCabinConfirm}>
-                        <ConfirmDelete
-                            onConfirm={deleteCabin as () => void}
-                            disabled={isDeleting}
-                            resourceName={AppEntities.Cabin}
-                        />
-                    </Modal.Window>
-                </Modal>
-                <Menu.Body>
-                    <Menu.Toggle>
-                        <HiEllipsisVertical />
-                    </Menu.Toggle>
-                    <Menu.List>
-                        <Menu.Buttons
-                            data={CabinRowMenuOptions}
-                            render={(buttonContent: ReactNode) => (
-                                <li
-                                    key={
-                                        buttonContent?.toString() +
-                                        Math.random().toString()
-                                    }
-                                >
-                                    <Menu.Button>{buttonContent}</Menu.Button>
-                                </li>
-                            )}
-                        />
-                    </Menu.List>
-                </Menu.Body>
+                <Menu.Toggle>
+                    <HiEllipsisVertical />
+                </Menu.Toggle>
+                <Menu.List>
+                    <Modal>
+                        {/* edit button */}
+                        <Modal.Open opens={ModalWindows.UpdateCabin}>
+                            <Menu.Button
+                                onClick={() => {
+                                    console.log("a props onClick");
+                                }}
+                                disabled={isDuplicating}
+                            >
+                                <HiOutlinePencilSquare />
+                                <span>Edit</span>
+                            </Menu.Button>
+                        </Modal.Open>
+                        <Modal.Window name={ModalWindows.UpdateCabin}>
+                            <CreateCabinForm
+                                cabin={cabin}
+                                cabinFunction={CabinRowFunctions.Update}
+                            />
+                        </Modal.Window>
+                    </Modal>
+                    {/* duplicate button - no modal */}
+                    <Menu.Button
+                        onClick={handleDuplicate}
+                        disabled={isDuplicating}
+                    >
+                        <HiOutlineDocumentDuplicate />
+                        <span>Duplicate</span>
+                    </Menu.Button>
+                    <Modal>
+                        {/* delete button */}
+                        <Modal.Open opens={ModalWindows.DeleteCabinConfirm}>
+                            <Menu.Button disabled={isDeleting}>
+                                <HiOutlineTrash />
+                                <span>Delete</span>
+                            </Menu.Button>
+                        </Modal.Open>
+                        <Modal.Window name={ModalWindows.DeleteCabinConfirm}>
+                            <ConfirmDelete
+                                onConfirm={handleConfirmDelete}
+                                disabled={isDeleting}
+                                resourceName={AppEntities.Cabin}
+                            />
+                        </Modal.Window>
+                    </Modal>
+                </Menu.List>
             </Menu>
         </Table.Row>
     );
 };
 
 export default CabinRow;
+
+{
+    /* <Modal>
+    <Modal.Open opens={ModalWindows.UpdateCabin}>
+        <Menu.Button
+            onClick={() => {
+                console.log("menu button clicked");
+            }}
+            disabled={isDuplicating}
+        >
+            <HiOutlinePencilSquare />
+            <span>Edit</span>
+        </Menu.Button>
+    </Modal.Open>
+    <Modal.Window name={ModalWindows.UpdateCabin}>
+        <CreateCabinForm
+            cabin={cabin}
+            cabinFunction={CabinRowFunctions.Update}
+        />
+    </Modal.Window>
+</Modal>; */
+}
