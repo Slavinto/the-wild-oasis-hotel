@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useRef, useState } from "react";
+import { ReactNode, useState } from "react";
 import styled from "styled-components";
 import { MenuContext, MenuPosition, useMenuContext } from "./MenuContext";
 import { useClickOutside } from "@/hooks/useClickOutside";
@@ -41,16 +41,16 @@ const StyledList = styled.ul<MenuPosition>`
     z-index: 900;
 `;
 
-const ItemList = forwardRef<
-    HTMLUListElement,
-    React.ComponentPropsWithoutRef<"ul"> & MenuPosition
->(({ children, $position, ...props }, ref) => {
-    return (
-        <StyledList ref={ref} $position={$position} {...props}>
-            {children}
-        </StyledList>
-    );
-});
+// const ItemList = forwardRef<
+//     HTMLUListElement,
+//     React.ComponentPropsWithoutRef<"ul"> & MenuPosition
+// >(({ children, $position, ...props }, ref) => {
+//     return (
+//         <StyledList ref={ref} $position={$position} {...props}>
+//             {children}
+//         </StyledList>
+//     );
+// });
 
 const StyledButton = styled.button`
     width: 100%;
@@ -166,16 +166,18 @@ Menu.Button = function MenuButton({
     disabled: boolean;
     children: ReactNode;
 }) {
-    const buttonRef = useRef<HTMLButtonElement | null>(null);
+    // const buttonRef = useRef<HTMLButtonElement | null>(null);
+    // const { closeMenu } = useMenuContext();
 
     const handler = (e: React.MouseEvent<HTMLButtonElement>) => {
         console.log("button handler running");
+        // closeMenu?.();
         // attached onClick handler in Modal.Open -> opens the corresponding modal Window
         onClick?.(e);
     };
 
     return (
-        <StyledButton ref={buttonRef} onClick={handler} disabled={disabled}>
+        <StyledButton onClick={handler} disabled={disabled}>
             {children}
         </StyledButton>
     );

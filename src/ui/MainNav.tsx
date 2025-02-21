@@ -4,6 +4,7 @@ import {
     HiOutlineHome,
     HiOutlineHomeModern,
     HiOutlineUsers,
+    HiOutlineWrench,
 } from "react-icons/hi2";
 import styled from "styled-components";
 import NavigationLink from "./NavigationLink";
@@ -51,6 +52,13 @@ const MainNav = () => {
                     <NavigationLink to='/settings'>
                         <HiOutlineCog6Tooth />
                         <span>Settings</span>
+                    </NavigationLink>
+                </NavListItem>
+                <hr />
+                <NavListItem>
+                    <NavigationLink to='/testing'>
+                        <HiOutlineWrench />
+                        <span>Testing</span>
                     </NavigationLink>
                 </NavListItem>
             </NavList>

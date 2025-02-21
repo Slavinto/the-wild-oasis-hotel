@@ -7,6 +7,7 @@ import {
     Login,
     PageNotFound,
     Settings,
+    Testing,
     Users,
 } from "@/pages";
 import { ErrorFallback, AppLayout } from "@/ui";
@@ -45,6 +46,11 @@ export const router = createBrowserRouter([
             {
                 path: "/settings",
                 element: <Settings />,
+                errorElement: <ErrorFallback />,
+            },
+            {
+                path: "/testing",
+                element: <Testing />,
                 errorElement: <ErrorFallback />,
             },
             {

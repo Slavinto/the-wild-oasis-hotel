@@ -2,6 +2,7 @@ import AddCabin from "@/features/cabins/AddCabin";
 import { CabinsContext } from "@/features/cabins/CabinContext";
 
 import CabinTable from "@/features/cabins/CabinTable";
+import CabinTableOperations from "@/features/cabins/CabinTableOperations";
 import { RowOrientations } from "@/types/enums";
 import { Heading, Row } from "@/ui";
 import { useState } from "react";
@@ -49,6 +50,7 @@ function Cabins() {
                     <Heading text='Manage Cabins' />
                 </Row>
                 <Row>
+                    <CabinTableOperations />
                     <CabinTable />
                     <AddCabin />
                 </Row>
