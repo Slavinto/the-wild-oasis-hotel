@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { useSearchParams } from "react-router";
 import styled, { css } from "styled-components";
 
 const StyledFilter = styled.div`
@@ -12,7 +12,7 @@ const StyledFilter = styled.div`
 `;
 
 interface FilterButtonProps {
-    $active: boolean;
+    $active?: boolean;
 }
 
 const FilterButton = styled.button<FilterButtonProps>`
@@ -39,16 +39,27 @@ const FilterButton = styled.button<FilterButtonProps>`
     }
 `;
 
-export default function Filter({
-    active,
-    children,
-}: {
-    active: boolean;
-    children: ReactNode;
-}) {
+export default function Filter() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [searchParams, setSearchParams] = useSearchParams();
+    const handleClickFilter = (value: string) => {
+        // const params = new URLSearchParams();
+        setSearchParams((prev: URLSearchParams) => {
+            prev.set("filter", value);
+            return prev;
+        });
+    };
     return (
         <StyledFilter>
-            <FilterButton $active={active}>{children}</FilterButton>
+            <FilterButton onClick={() => handleClickFilter("all")}>
+                All
+            </FilterButton>
+            <FilterButton onClick={() => handleClickFilter("discount")}>
+                With discount
+            </FilterButton>
+            <FilterButton onClick={() => handleClickFilter("no-discount")}>
+                No discount
+            </FilterButton>
         </StyledFilter>
     );
 }

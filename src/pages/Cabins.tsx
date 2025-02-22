@@ -9,48 +9,57 @@ import { useState } from "react";
 
 function Cabins() {
     const [currentCabinId, setCurrentCabinId] = useState<number>();
-
     const onSetCabinId = (cabinId: number) => setCurrentCabinId(cabinId);
 
-    // const outerDiv = document.querySelector(".outer-div");
-    // const innerDiv = document.querySelector(".inner-div");
-    // const childbutton = document.querySelector(".child-button");
-
     // useEffect(() => {
+    //     const outerDiv = document.querySelector(".outer-div");
+    //     const innerDiv = document.querySelector(".inner-div");
+    //     const childbutton = document.querySelector(".child-button");
+
     //     // defining listener functions
-    //     const outerDivListener = (e) => {
+    //     const outerDivHandler = (e: Event) => {
+    //         const mouseEvent = e as MouseEvent;
+    //         // mouseEvent.stopPropagation();
     //         console.log("outer div clicked");
-    //         // e.stopPropagation();
     //     };
-    //     const innerDivListener = (e) => {
+    //     const innerDivHandler = (e: Event) => {
+    //         const mouseEvent = e as MouseEvent;
+    //         // mouseEvent.stopPropagation();
     //         console.log("inner div clicked");
-    //         // e.stopPropagation();
     //     };
-    //     const childButtonListener = (e) => {
+    //     const childButtonHandler = (e: Event) => {
+    //         const mouseEvent = e as MouseEvent;
+    //         // mouseEvent.stopPropagation();
     //         console.log("Child Button clicked");
-    //         e.stopPropagation();
     //     };
+
     //     // adding listeners to elements
-    //     outerDiv?.addEventListener("click", outerDivListener);
-    //     innerDiv?.addEventListener("click", innerDivListener);
-    //     childbutton?.addEventListener("click", childButtonListener);
+    //     outerDiv?.addEventListener("click", outerDivHandler);
+    //     // outerDiv?.addEventListener("click", outerDivHandler, true);
+    //     innerDiv?.addEventListener("click", innerDivHandler);
+    //     // innerDiv?.addEventListener("click", innerDivHandler, true);
+    //     childbutton?.addEventListener("click", childButtonHandler);
+    //     // childbutton?.addEventListener("click", childButtonHandler, true);
     //     // cleaning up listeners
 
     //     return () => {
-    //         outerDiv?.removeEventListener("click", outerDivListener);
-    //         innerDiv?.removeEventListener("click", innerDivListener);
-    //         childbutton?.removeEventListener("click", childButtonListener);
+    //         outerDiv?.removeEventListener("click", outerDivHandler);
+    //         // outerDiv?.removeEventListener("click", outerDivHandler, true);
+    //         innerDiv?.removeEventListener("click", innerDivHandler);
+    //         // innerDiv?.removeEventListener("click", innerDivHandler, true);
+    //         childbutton?.removeEventListener("click", childButtonHandler);
+    //         // childbutton?.removeEventListener("click", childButtonHandler, true);
     //     };
-    // }, [childbutton, innerDiv, outerDiv]);
+    // }, []);
 
     return (
         <CabinsContext.Provider value={{ currentCabinId, onSetCabinId }}>
             <>
                 <Row type={RowOrientations.Horizontal}>
                     <Heading text='Manage Cabins' />
+                    <CabinTableOperations />
                 </Row>
                 <Row>
-                    <CabinTableOperations />
                     <CabinTable />
                     <AddCabin />
                 </Row>
@@ -60,6 +69,9 @@ function Cabins() {
                         width: "600px",
                         height: "350px",
                         backgroundColor: "red",
+                        margin: "0 auto",
+                        display: "flex",
+                        alignItems: "center",
                     }}
                 >
                     <div
@@ -68,10 +80,17 @@ function Cabins() {
                             width: "300px",
                             height: "150px",
                             backgroundColor: "blue",
+                            margin: "0 auto",
+                            display: "flex",
+                            alignItems: "center",
                         }}
                     >
-                        <span>Parent Div</span>
-                        <button className='child-button'>Child Button</button>
+                        <button
+                            style={{ margin: "0 auto", padding: "1rem" }}
+                            className='child-button'
+                        >
+                            Child Button
+                        </button>
                     </div>
                 </div> */}
             </>
