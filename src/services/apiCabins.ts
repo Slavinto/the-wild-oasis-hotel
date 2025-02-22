@@ -44,6 +44,22 @@ export const getCabinById = async (id: number): Promise<Tables<"cabins">> => {
 
 export const deleteCabinImage = async (cabin: Cabin | Tables<"cabins">) => {
     try {
+        // checking if this cabin image is used somewhere else - in some other cabin
+        const cabins = await getCabins();
+
+        // checking if image is still in use by some cabin
+        const duplicatedCabin = cabins.find(
+            (cabinItem) =>
+                checkIsTableCabin(cabin) &&
+                cabinItem.id !== cabin.id &&
+                cabin.image_url === cabinItem.image_url
+        );
+
+        //Skipping delete cabin image -> image still in use"
+        if (duplicatedCabin) {
+            return null;
+        }
+
         const bucketName = bucketNames.cabinImages;
         const fileUrl = new URL(
             checkIsTableCabin(cabin) ? cabin.image_url || "" : cabin.imageUrl
