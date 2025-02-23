@@ -29,6 +29,7 @@ export { default as NavigationLink } from "./NavigationLink";
 export { default as Row } from "./Row";
 // export { default as Select } from "./Select";
 export { default as Sidebar } from "./Sidebar";
+export { default as SortBy } from "./SortBy";
 export { default as Spinner } from "./Spinner";
 export { default as SpinnerMini } from "./SpinnerMini";
 export { default as Table } from "./table/Table";

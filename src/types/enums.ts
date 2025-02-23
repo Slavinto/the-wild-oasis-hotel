@@ -82,3 +82,12 @@ export enum InputIds {
     PasswordConfirm = "passwordConfirm",
 }
 // ==============================Input==========================
+// ==============================Filters==========================
+
+export enum CabinFilters {
+    All = "all",
+    Discount = "discount",
+    NoDiscount = "no-discount",
+}
+
+// ==============================Filters==========================

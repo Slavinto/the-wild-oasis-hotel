@@ -39,11 +39,9 @@ const FilterButton = styled.button<FilterButtonProps>`
     }
 `;
 
-export default function Filter() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function Filter({ filterOptions }: { filterOptions: string[] }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const handleClickFilter = (value: string) => {
-        // const params = new URLSearchParams();
         setSearchParams((prev: URLSearchParams) => {
             prev.set("filter", value);
             return prev;
@@ -51,15 +49,17 @@ export default function Filter() {
     };
     return (
         <StyledFilter>
-            <FilterButton onClick={() => handleClickFilter("all")}>
-                All
-            </FilterButton>
-            <FilterButton onClick={() => handleClickFilter("discount")}>
-                With discount
-            </FilterButton>
-            <FilterButton onClick={() => handleClickFilter("no-discount")}>
-                No discount
-            </FilterButton>
+            {filterOptions.map((option) => (
+                <FilterButton
+                    disabled={searchParams.get("filter") === option}
+                    $active={searchParams.get("filter") === option}
+                    key={option}
+                    onClick={() => handleClickFilter(option)}
+                >
+                    {option[0].toUpperCase() +
+                        option.replace("-", " ").slice(1)}
+                </FilterButton>
+            ))}
         </StyledFilter>
     );
 }

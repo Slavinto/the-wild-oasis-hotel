@@ -1,13 +1,11 @@
-import { FC } from "react";
 import styled, { css } from "styled-components";
 import { Headings } from "../types/enums";
 
 interface HeadingProps {
     as?: Headings;
-    text: string;
 }
 
-const StyledHeading = styled.h1<Omit<HeadingProps, "text">>`
+const StyledHeading = styled.h1<HeadingProps>`
     ${(props) =>
         props.as === Headings.H1
             ? css`
@@ -27,7 +25,13 @@ const StyledHeading = styled.h1<Omit<HeadingProps, "text">>`
             : ``}
 `;
 
-const Heading: FC<HeadingProps> = ({ as = Headings.H2, text }) => {
+const Heading = ({
+    as = Headings.H2,
+    text,
+}: {
+    as: Headings;
+    text: string;
+}) => {
     return <StyledHeading as={as}>{text}</StyledHeading>;
 };
 

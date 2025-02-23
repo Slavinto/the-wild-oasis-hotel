@@ -2,6 +2,7 @@ import { Tables } from "@/services/supabaseTypes";
 import { TableContext, useTableContext } from "@/ui/table/TableContext";
 import { ReactNode } from "react";
 import styled from "styled-components";
+import SortBy from "../SortBy";
 
 interface CommonRowProps {
     $columns?: string;
@@ -85,13 +86,13 @@ export default function Table({
 
 Table.Header = function TableHeader() {
     const { columns, colNames } = useTableContext();
-    // console.log({ colNames });
+
     return (
         <StyledHeader as='header' role='row' $columns={columns}>
             {colNames.map((colName, idx) => (
-                <div key={idx + colName}>
+                <SortBy key={idx + colName} colName={colName}>
                     {colName !== "" ? `${colName.toUpperCase()}` : ""}
-                </div>
+                </SortBy>
             ))}
         </StyledHeader>
     );
@@ -104,14 +105,14 @@ Table.Row = function TableRow({ children }: { children: ReactNode }) {
 };
 
 // a type for incoming table data
-type AppTables = Tables<"cabins">[];
+type AppTable = Tables<"cabins">;
 
 Table.Body = function TableBody({
     data,
     render,
 }: {
-    data: AppTables;
-    render: (item: Tables<"cabins">) => ReactNode;
+    data: AppTable[];
+    render: (item: AppTable) => ReactNode;
 }) {
     return <StyledBody>{data.map(render)}</StyledBody>;
 };

@@ -1,9 +1,10 @@
+import { CabinFilters } from "@/types/enums";
 import { Filter, TableOperations } from "@/ui";
 
 const CabinTableOperations = () => {
     return (
         <TableOperations>
-            <Filter />
+            <Filter filterOptions={Object.values(CabinFilters)} />
         </TableOperations>
     );
 };
