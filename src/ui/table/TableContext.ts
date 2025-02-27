@@ -1,9 +1,13 @@
+import { AppTables } from "@/types/enums";
 import { createContext, useContext } from "react";
 
-export const TableContext = createContext<{
+export interface ITableContext {
     columns: string;
     colNames: string[];
-}>({
+    tableType?: AppTables;
+}
+
+export const TableContext = createContext<ITableContext>({
     columns: "",
     colNames: [],
 });

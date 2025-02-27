@@ -1,5 +1,8 @@
-import { Tables } from "@/services/supabaseTypes";
-import { TableContext, useTableContext } from "@/ui/table/TableContext";
+import {
+    ITableContext,
+    TableContext,
+    useTableContext,
+} from "@/ui/table/TableContext";
 import { ReactNode } from "react";
 import styled from "styled-components";
 import SortBy from "../SortBy";
@@ -68,17 +71,18 @@ const Empty = styled.p`
     margin: 2.4rem;
 `;
 
+interface TableProps extends ITableContext {
+    children: ReactNode;
+}
+
 export default function Table({
     columns,
     colNames,
+    tableType,
     children,
-}: {
-    columns: string;
-    colNames: string[];
-    children: ReactNode;
-}) {
+}: TableProps) {
     return (
-        <TableContext.Provider value={{ columns, colNames }}>
+        <TableContext.Provider value={{ columns, colNames, tableType }}>
             <StyledTable role='table'>{children}</StyledTable>
         </TableContext.Provider>
     );
@@ -104,21 +108,23 @@ Table.Row = function TableRow({ children }: { children: ReactNode }) {
     return <StyledRow $columns={columns}>{children}</StyledRow>;
 };
 
-// a type for incoming table data
-type AppTable = Tables<"cabins">;
-
-Table.Body = function TableBody({
+Table.Body = function TableBody<T>({
     data,
     render,
 }: {
-    data: AppTable[];
-    render: (item: AppTable) => ReactNode;
+    data: T[];
+    render: (item: T) => ReactNode;
 }) {
-    return <StyledBody>{data.map(render)}</StyledBody>;
+    return data && data.length > 0 ? (
+        <StyledBody>{data.map(render)}</StyledBody>
+    ) : (
+        <Table.Empty />
+    );
 };
 
 Table.Empty = function TableEmty() {
-    return <Empty>No data to display at the moment</Empty>;
+    const { tableType } = useTableContext();
+    return <Empty>No {tableType} data to display at the moment</Empty>;
 };
 
 Table.Footer = function TableFooter({ children }: { children: ReactNode }) {

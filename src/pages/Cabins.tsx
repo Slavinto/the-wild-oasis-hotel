@@ -3,14 +3,15 @@ import { CabinsContext } from "@/features/cabins/CabinContext";
 
 import CabinTable from "@/features/cabins/CabinTable";
 import CabinTableOperations from "@/features/cabins/CabinTableOperations";
-import { RowOrientations } from "@/types/enums";
-import { Heading, Row } from "@/ui";
+import { useSortCabinsClient } from "@/features/cabins/useSortCabinsClient";
+import { Headings, RowOrientations } from "@/types/enums";
+import { Heading, Row, Spinner } from "@/ui";
 import { useState } from "react";
 
 function Cabins() {
     const [currentCabinId, setCurrentCabinId] = useState<number>();
     const onSetCabinId = (cabinId: number) => setCurrentCabinId(cabinId);
-
+    const { isLoading, sortedCabins } = useSortCabinsClient();
     // useEffect(() => {
     //     const outerDiv = document.querySelector(".outer-div");
     //     const innerDiv = document.querySelector(".inner-div");
@@ -56,11 +57,15 @@ function Cabins() {
         <CabinsContext.Provider value={{ currentCabinId, onSetCabinId }}>
             <>
                 <Row type={RowOrientations.Horizontal}>
-                    <Heading text='Manage Cabins' />
+                    <Heading as={Headings.H1} text='Manage Cabins' />
                     <CabinTableOperations />
                 </Row>
                 <Row>
-                    <CabinTable />
+                    {isLoading ? (
+                        <Spinner />
+                    ) : (
+                        <CabinTable cabins={sortedCabins} />
+                    )}
                     <AddCabin />
                 </Row>
                 {/* <div

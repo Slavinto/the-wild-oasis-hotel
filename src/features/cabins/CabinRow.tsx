@@ -5,7 +5,12 @@ import {
     HiOutlineTrash,
 } from "react-icons/hi2";
 import { Tables } from "@/services/supabaseTypes";
-import { AppEntities, CabinRowFunctions, ModalWindows } from "@/types/enums";
+import {
+    AppEntities,
+    AppTables,
+    CabinRowFunctions,
+    ModalWindows,
+} from "@/types/enums";
 import { ConfirmDelete, Modal, Table } from "@/ui";
 import {
     createCabinFromSupabaseTableCabin,
@@ -50,7 +55,7 @@ const Discount = styled.div`
 `;
 
 interface CabinRowProps {
-    cabin?: Tables<"cabins">;
+    cabin?: Tables<AppTables.Cabins>;
     setCurrentCabinId?: (id: number) => void;
 }
 

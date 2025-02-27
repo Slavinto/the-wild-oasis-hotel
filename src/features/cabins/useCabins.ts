@@ -1,4 +1,5 @@
 import { getCabins } from "@/services/apiCabins";
+import { AppTables } from "@/types/enums";
 import { useQuery } from "@tanstack/react-query";
 
 export const useCabins = () => {
@@ -7,7 +8,7 @@ export const useCabins = () => {
         error,
         isLoading,
     } = useQuery({
-        queryKey: ["cabins"],
+        queryKey: [AppTables.Cabins],
         queryFn: getCabins,
     });
 

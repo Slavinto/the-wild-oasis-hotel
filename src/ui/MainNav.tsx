@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi2";
 import styled from "styled-components";
 import NavigationLink from "./NavigationLink";
+import Uploader from "@/data/Uploader";
 
 const NavList = styled.ul`
     display: flex;
@@ -60,6 +61,9 @@ const MainNav = () => {
                         <HiOutlineWrench />
                         <span>Testing</span>
                     </NavigationLink>
+                </NavListItem>
+                <NavListItem>
+                    <Uploader />
                 </NavListItem>
             </NavList>
         </nav>

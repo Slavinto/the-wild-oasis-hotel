@@ -8,6 +8,7 @@ export { default as Checkbox } from "./Checkbox";
 export { default as ConfirmDelete } from "./ConfirmDelete";
 export { default as ContentContainer } from "./ContentContainer";
 export { default as DataItem } from "./DataItem";
+export { default as DatePicker } from "./DatePicker";
 export { default as Empty } from "./Empty";
 export { default as ErrorFallback } from "./ErrorFallback";
 export { default as FileInput } from "./FileInput";

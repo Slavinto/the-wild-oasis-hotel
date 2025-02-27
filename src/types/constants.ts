@@ -42,6 +42,15 @@ export const cabinTableColumns = [
     "Discount",
     "",
 ];
+
+export const bookingsTableColumns = [
+    "Cabin",
+    "Guest",
+    "Dates",
+    "Status",
+    "Amount",
+    "",
+];
 // ==============================Tables==========================
 // ==============================Menus==========================
 

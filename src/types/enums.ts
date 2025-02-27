@@ -4,6 +4,12 @@ export enum AppEntities {
     Cabin = "cabin",
 }
 
+export enum AppTables {
+    Bookings = "bookings",
+    Cabins = "cabins",
+    Guests = "guests",
+    Settings = "settings",
+}
 // ==============================Generic=======================
 // ==============================Headings=======================
 export enum Headings {

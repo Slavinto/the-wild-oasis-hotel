@@ -7,6 +7,7 @@ const StyledSortBy = styled.div`
     display: flex;
     align-items: center;
     gap: 0.3rem;
+    cursor: pointer;
 `;
 
 const SortBy = ({
@@ -23,12 +24,12 @@ const SortBy = ({
 
     return (
         <StyledSortBy onClick={handleClickColName}>
+            {children}
             {!sortIcon ? null : sortIcon === "asc" ? (
                 <HiMiniChevronUp size={20} />
             ) : (
                 <HiMiniChevronDown size={20} />
             )}
-            {children}
         </StyledSortBy>
     );
 };

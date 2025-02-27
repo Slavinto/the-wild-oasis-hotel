@@ -5,13 +5,14 @@ import {
 } from "@/utils/helpers";
 import supabase from "./supabaseClient";
 import { Cabin } from "@/types/interfaces";
-import { BucketNames, bucketNames, supabaseTables } from "@/types/constants";
+import { BucketNames, bucketNames } from "@/types/constants";
 import { Tables } from "./supabaseTypes";
+import { AppTables } from "@/types/enums";
 
 export const getCabins = async () => {
     try {
         const { data: cabins, error } = await supabase
-            .from(supabaseTables.cabins)
+            .from(AppTables.Cabins)
             .select("*");
         if (!cabins || error) {
             throw error;
@@ -22,10 +23,12 @@ export const getCabins = async () => {
     }
 };
 
-export const getCabinById = async (id: number): Promise<Tables<"cabins">> => {
+export const getCabinById = async (
+    id: number
+): Promise<Tables<AppTables.Cabins>> => {
     try {
         const { data, error } = await supabase
-            .from("cabins")
+            .from(AppTables.Cabins)
             .select()
             .eq("id", id);
         if (error) {
@@ -42,7 +45,9 @@ export const getCabinById = async (id: number): Promise<Tables<"cabins">> => {
     }
 };
 
-export const deleteCabinImage = async (cabin: Cabin | Tables<"cabins">) => {
+export const deleteCabinImage = async (
+    cabin: Cabin | Tables<AppTables.Cabins>
+) => {
     try {
         // checking if this cabin image is used somewhere else - in some other cabin
         const cabins = await getCabins();
@@ -92,7 +97,7 @@ export const createOrUpdateCabin = async (cabin?: Cabin, id?: number) => {
         : await getCabinById(id!);
 
     const bucketName = bucketNames.cabinImages;
-    const query = supabase.from(supabaseTables.cabins);
+    const query = supabase.from(AppTables.Cabins);
     // newCabin gets old imageUrl in case of updating a cabin
     // and if cabin object has image prop we upload it to supabase
     console.log({ newCabin });
@@ -141,14 +146,14 @@ export const createOrUpdateCabin = async (cabin?: Cabin, id?: number) => {
     }
 };
 
-export const removeCabin = async (cabin: Tables<"cabins">) => {
+export const removeCabin = async (cabin: Tables<AppTables.Cabins>) => {
     try {
         // 1. removing cabin image from cabin-images storage bucket
         deleteCabinImage(cabin);
 
         // 2. removing cabin entry from cabins table
         const { data, error } = await supabase
-            .from(supabaseTables.cabins)
+            .from(AppTables.Cabins)
             .delete()
             .eq("id", cabin.id)
             .select();

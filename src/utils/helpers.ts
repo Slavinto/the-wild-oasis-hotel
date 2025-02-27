@@ -1,7 +1,13 @@
 import { Tables } from "@/services/supabaseTypes";
 import { cabinValues } from "@/types/constants";
-import { Cabin, SupabaseCabin } from "@/types/interfaces";
-import { formatDistance, parseISO, differenceInDays } from "date-fns";
+import {
+    AppBooking,
+    BookingStatus,
+    Cabin,
+    SupabaseCabin,
+} from "@/types/interfaces";
+import { BookingsWithRelated } from "@/types/types";
+import { formatDistance, parseISO, differenceInDays, format } from "date-fns";
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
 export const subtractDates = (dateStr1: string, dateStr2: string) =>
@@ -13,6 +19,17 @@ export const formatDistanceFromNow = (dateStr: string) =>
     })
         .replace("about ", "")
         .replace("in", "In");
+
+export const formatDateUtc = (date: Date | null) => {
+    // const jsDate = new Date(date);
+    return date ? format(date, "yyyy-MM-dd hh:mm:ss") : "";
+};
+
+export const monthBeforeDate = (date?: Date) => {
+    const today = !date ? new Date() : date;
+
+    return new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+};
 
 // Supabase needs an ISO date string. However, that string will be different on every render because the MS or SEC have changed, which isn't good. So we use this trick to remove any time
 interface GetTodayOptions {
@@ -110,3 +127,26 @@ export const createCabinFromSupabaseTableCabin: CabinFromSupabaseTableCabin = (
         image: null,
     };
 };
+
+export const createAppBookingFromSupabaseBooking = (
+    booking: BookingsWithRelated
+): AppBooking => {
+    return {
+        bookingId: booking.id,
+        createdAt: booking.created_at,
+        startDate: booking.start_date,
+        endDate: booking.end_date,
+        numNights: booking.number_of_nights,
+        numGuests: booking.number_of_guests,
+        totalPrice: booking.total_price,
+        status: booking.status ? (booking.status as BookingStatus) : null,
+        guests: {
+            guestName: booking.guests?.full_name,
+            email: booking.guests?.email,
+        },
+        cabins: { cabinName: booking.cabins?.name },
+    };
+};
+
+export const makeLower = (str: string): string =>
+    str.toLowerCase().replace(" ", "-");

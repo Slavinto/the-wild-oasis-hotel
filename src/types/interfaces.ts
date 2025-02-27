@@ -19,3 +19,18 @@ export interface SupabaseCabin {
     description: string;
     image_url: string;
 }
+
+export type BookingStatus = "unconfirmed" | "checked-in" | "checked-out";
+
+export interface AppBooking {
+    bookingId: number;
+    createdAt: string;
+    startDate: string | null;
+    endDate: string | null;
+    numNights: number | null;
+    numGuests: number | null;
+    totalPrice: number | null;
+    status: BookingStatus | null;
+    guests: { guestName?: string | null; email?: string | null };
+    cabins: { cabinName?: string | null };
+}

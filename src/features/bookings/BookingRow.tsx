@@ -1,11 +1,15 @@
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
 
-import Tag from "../../ui/Tag";
-import Table from "../../ui/table/Table";
+import { Tag } from "@/ui";
+import Table from "@/ui/table/Table";
 
-import { formatCurrency } from "../../utils/helpers";
-import { formatDistanceFromNow } from "../../utils/helpers";
+import {
+    createAppBookingFromSupabaseBooking,
+    formatCurrency,
+    formatDistanceFromNow,
+} from "@/utils/helpers";
+import { BookingsWithRelated, SupabaseTable } from "@/types/types";
 
 const Cabin = styled.div`
     font-size: 1.6rem;
@@ -34,26 +38,27 @@ const Amount = styled.div`
     font-weight: 500;
 `;
 
-function BookingRow({
-    booking: {
-        id: bookingId,
-        created_at,
+function BookingRow({ booking }: { booking: SupabaseTable }) {
+    const {
+        // bookingId,
+        // createdAt,
         startDate,
         endDate,
         numNights,
-        numGuests,
+        // numGuests,
         totalPrice,
         status,
-        guests: { fullName: guestName, email },
-        cabins: { name: cabinName },
-    },
-}) {
+        guests: { guestName, email },
+        cabins: { cabinName },
+    } = createAppBookingFromSupabaseBooking(booking as BookingsWithRelated);
     const statusToTagName = {
         unconfirmed: "blue",
         "checked-in": "green",
         "checked-out": "silver",
     };
-
+    if (!status || !totalPrice) {
+        return null;
+    }
     return (
         <Table.Row>
             <Cabin>{cabinName}</Cabin>
@@ -65,18 +70,20 @@ function BookingRow({
 
             <Stacked>
                 <span>
-                    {isToday(new Date(startDate))
+                    {isToday(new Date(startDate || ""))
                         ? "Today"
-                        : formatDistanceFromNow(startDate)}{" "}
+                        : formatDistanceFromNow(startDate || "")}{" "}
                     &rarr; {numNights} night stay
                 </span>
                 <span>
-                    {format(new Date(startDate), "MMM dd yyyy")} &mdash;{" "}
-                    {format(new Date(endDate), "MMM dd yyyy")}
+                    {format(new Date(startDate || ""), "MMM dd yyyy")} &mdash;{" "}
+                    {format(new Date(endDate || ""), "MMM dd yyyy")}
                 </span>
             </Stacked>
 
-            <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
+            <Tag $type={statusToTagName[status]}>
+                {status.replace("-", " ")}
+            </Tag>
 
             <Amount>{formatCurrency(totalPrice)}</Amount>
         </Table.Row>
