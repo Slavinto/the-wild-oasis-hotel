@@ -1,16 +1,15 @@
-import { getBookings } from "@/services/apiBookings";
+import { getNumBookings } from "@/services/apiBookings";
 import { AppTables } from "@/types/enums";
-import { BookingStatus } from "@/types/interfaces";
 import { useQuery } from "@tanstack/react-query";
 
-export const useBookings = (status: BookingStatus) => {
+export const useNumBookings = () => {
     const {
-        data: bookings,
+        data: numBookings,
         isLoading,
         error,
     } = useQuery({
-        queryKey: [AppTables.Bookings, status],
-        queryFn: () => getBookings(status),
+        queryKey: [AppTables.Bookings],
+        queryFn: () => getNumBookings(),
     });
 
     if (error) {
@@ -19,5 +18,5 @@ export const useBookings = (status: BookingStatus) => {
         );
     }
 
-    return { bookings, isLoading };
+    return { numBookings, isLoading };
 };

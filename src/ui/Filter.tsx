@@ -43,6 +43,7 @@ export default function Filter({ filterOptions }: { filterOptions: string[] }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const handleClickFilter = (value: string) => {
         setSearchParams((prev: URLSearchParams) => {
+            prev.set("page", "1");
             prev.set("filter", value);
             return prev;
         });

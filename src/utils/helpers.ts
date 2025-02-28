@@ -150,3 +150,7 @@ export const createAppBookingFromSupabaseBooking = (
 
 export const makeLower = (str: string): string =>
     str.toLowerCase().replace(" ", "-");
+
+export const CreateArrayOfNum = (num: number): number[] => {
+    return Array.from({ length: num }, (_, i) => i + 1);
+};

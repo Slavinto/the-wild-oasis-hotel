@@ -5,6 +5,7 @@ import { BookingsInterval } from "@/types/types";
 import { formatDateUtc } from "@/utils/helpers";
 import { useSortBookingsClient } from "./useSortBookingsClient";
 import { useSearchParams } from "react-router-dom";
+import { bookingsPerPage } from "@/types/constants";
 
 // this returns sorted bookings for certain interval
 export const useBookingsInterval = (
@@ -19,19 +20,25 @@ export const useBookingsInterval = (
     // booking status comes from searchParams
     const [searchParams] = useSearchParams();
     const status = searchParams.get("filter") || "all";
+    const page = Number(searchParams.get("page")) || 1;
+    const fromIndex = (page - 1) * bookingsPerPage;
+    const toIndex = fromIndex + bookingsPerPage - 1;
+    const pageIndex = { fromIndex, toIndex };
 
     const {
-        data: bookingsInterval,
+        data: paginatedBookings,
         isLoading,
         error,
     } = useQuery({
-        queryKey: [AppTables.Bookings, interval, status],
-        queryFn: () => getBookingsWithStatusAndInterval(status, interval),
+        queryKey: [AppTables.Bookings, interval, status, pageIndex],
+        queryFn: () =>
+            getBookingsWithStatusAndInterval(status, interval, pageIndex),
     });
 
-    console.log({ bookingsInterval });
+    console.log({ paginatedBookings });
+    const { bookings, totalBookings } = paginatedBookings || {};
 
-    const { sortedBookings } = useSortBookingsClient(bookingsInterval);
+    const { sortedBookings } = useSortBookingsClient(bookings || []);
 
     if (error) {
         throw new Error(
@@ -39,5 +46,5 @@ export const useBookingsInterval = (
         );
     }
 
-    return { sortedBookings, isLoading };
+    return { sortedBookings, isLoading, totalBookings };
 };

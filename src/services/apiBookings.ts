@@ -2,32 +2,25 @@ import { AppTables } from "@/types/enums";
 import { getToday, handleError } from "../utils/helpers";
 import supabase from "./supabaseClient";
 import { SupabaseResponseItem, Tables } from "./supabaseTypes";
+import { PaginatedBookings } from "@/types/interfaces";
 import { BookingsInterval, BookingsWithRelated } from "@/types/types";
 
-// get all bookings
-export async function getBookings(
-    status = "all"
-): Promise<BookingsWithRelated[]> {
+// get number of bookings
+export async function getNumBookings(): Promise<number> {
     try {
-        let query = supabase
+        const query = supabase
             .from(AppTables.Bookings)
-            .select(
-                `*, ${AppTables.Guests}:guest_id(full_name, email), ${AppTables.Cabins}:cabin_id(name)`
-            );
+            .select(undefined, { count: "exact" });
 
-        if (status !== "all") {
-            query = query.eq("status", status);
-        }
+        const { count, error } = await query;
 
-        const { data, error } = await query;
-
-        if (!data || error) {
+        if (error) {
             throw new Error(
                 error.message || "Failed to get bookings data from database"
             );
         }
 
-        return data as BookingsWithRelated[];
+        return count ?? 0;
     } catch (error) {
         throw handleError(error);
     }
@@ -36,15 +29,16 @@ export async function getBookings(
 // get all bookings
 export async function getBookingsWithStatusAndInterval(
     status = "all",
-    interval: BookingsInterval
-): Promise<BookingsWithRelated[]> {
+    interval: BookingsInterval,
+    pageIndex: { fromIndex: number; toIndex: number }
+): Promise<PaginatedBookings> {
     try {
         let query = supabase
             .from(AppTables.Bookings)
             .select(
-                `*, ${AppTables.Guests}:guest_id(full_name, email), ${AppTables.Cabins}:cabin_id(name)`
+                `*, ${AppTables.Guests}:guest_id(full_name, email), ${AppTables.Cabins}:cabin_id(name)`,
+                { count: "exact" }
             );
-
         if (status !== "all") {
             query = query.eq("status", status);
         }
@@ -63,10 +57,10 @@ export async function getBookingsWithStatusAndInterval(
                     );
             }
 
-            console.log({ startDate, endDate });
+            // console.log({ startDate, endDate });
         }
-
-        const { data, error } = await query;
+        query = query.range(pageIndex.fromIndex, pageIndex.toIndex);
+        const { data, count, error } = await query;
 
         if (!data || error) {
             throw new Error(
@@ -74,7 +68,10 @@ export async function getBookingsWithStatusAndInterval(
             );
         }
 
-        return data as BookingsWithRelated[];
+        return {
+            bookings: data,
+            totalBookings: count || 0,
+        } as PaginatedBookings;
     } catch (error) {
         throw handleError(error);
     }

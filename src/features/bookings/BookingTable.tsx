@@ -1,10 +1,15 @@
 import BookingRow from "./BookingRow";
 import Table from "@/ui/table/Table";
-import { bookingsTableColumns } from "@/types/constants";
+import { bookingsPerPage, bookingsTableColumns } from "@/types/constants";
 import { BookingsWithRelated } from "@/types/types";
 import { AppTables } from "@/types/enums";
+import Pagination from "@/ui/Pagination";
+import { useBookingsContext } from "./BookingsContext";
 
 function BookingTable({ bookings }: { bookings: BookingsWithRelated[] }) {
+    // const { numBookings } = useNumBookings();
+    const { totalBookings } = useBookingsContext();
+
     return (
         <>
             <Table
@@ -23,6 +28,12 @@ function BookingTable({ bookings }: { bookings: BookingsWithRelated[] }) {
                 ) : (
                     <Table.Empty />
                 )}
+                <Table.Footer>
+                    <Pagination
+                        numItems={totalBookings}
+                        itemsPerPage={bookingsPerPage}
+                    />
+                </Table.Footer>
             </Table>
         </>
     );

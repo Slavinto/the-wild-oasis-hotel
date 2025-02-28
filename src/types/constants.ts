@@ -23,6 +23,8 @@ export const settingValues = {
     MaximumGuests: 10,
     MinimumGuests: 1,
 } as const;
+
+export const bookingsPerPage = 4 as const;
 // ==============================Settings==========================
 // ==============================Tables==========================
 export const supabaseTables = {

@@ -1,3 +1,5 @@
+import { BookingsWithRelated } from "./types";
+
 export interface Cabin {
     id?: number;
     name: string;
@@ -33,4 +35,9 @@ export interface AppBooking {
     status: BookingStatus | null;
     guests: { guestName?: string | null; email?: string | null };
     cabins: { cabinName?: string | null };
+}
+
+export interface PaginatedBookings {
+    bookings: BookingsWithRelated[];
+    totalBookings: number;
 }
