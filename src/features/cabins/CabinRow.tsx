@@ -101,12 +101,7 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
                     <Modal>
                         {/* edit button */}
                         <Modal.Open opens={ModalWindows.UpdateCabin}>
-                            <Menu.Button
-                                onClick={() => {
-                                    console.log("a props onClick");
-                                }}
-                                disabled={isDuplicating}
-                            >
+                            <Menu.Button disabled={isDuplicating}>
                                 <HiOutlinePencilSquare />
                                 <span>Edit</span>
                             </Menu.Button>

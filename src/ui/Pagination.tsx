@@ -1,4 +1,4 @@
-import { CreateArrayOfNum } from "@/utils/helpers";
+import { generatePages } from "@/utils/helpers";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
@@ -73,34 +73,6 @@ const Pagination = ({
     const activePage = Number(searchParams.get("page")) || 1;
     const numPages = Math.ceil(numItems / itemsPerPage);
 
-    const generatePages = () => {
-        if (numPages <= 5) {
-            return CreateArrayOfNum(numPages);
-        }
-
-        const pages: (number | string)[] = [1];
-        if (activePage > 3) {
-            pages.push("...");
-        }
-
-        // pages around the active page are rendered as buttons
-        const middlePages: (number | string)[] = [
-            activePage - 1,
-            activePage,
-            activePage + 1,
-        ].filter((page) => page > 1 && page < numPages);
-
-        pages.push(...middlePages);
-
-        if (activePage < numPages - 2) {
-            pages.push("...");
-        }
-
-        pages.push(numPages);
-
-        return pages;
-    };
-
     const handleClickPageButton = (
         e: React.MouseEvent<HTMLButtonElement>,
         pageIndex: number
@@ -115,7 +87,7 @@ const Pagination = ({
     return (
         <StyledPagination>
             <Buttons>
-                {generatePages().map((page, index) => {
+                {generatePages(numPages, activePage).map((page, index) => {
                     return typeof page === "number" ? (
                         <PaginationButton
                             key={index}
@@ -123,6 +95,7 @@ const Pagination = ({
                             onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                                 handleClickPageButton(e, page)
                             }
+                            disabled={activePage === page}
                         >
                             {page}
                         </PaginationButton>

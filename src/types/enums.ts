@@ -2,6 +2,7 @@
 
 export enum AppEntities {
     Cabin = "cabin",
+    Booking = "booking",
 }
 
 export enum AppTables {
@@ -73,10 +74,14 @@ export enum CabinRowFunctions {
 // ==============================Modals========================
 
 export enum ModalWindows {
+    // cabins
     CabinForm = "cabin-form",
     DeleteCabinConfirm = "delete-cabin-confirm",
     UpdateCabin = "update-cabin",
     Table = "table",
+    // bookings
+    DeleteBookingConfirm = "delete-booking-confirm",
+    UpdateBooking = "update-booking",
 }
 
 // ==============================Modals========================

@@ -3,7 +3,7 @@ import { getToday, handleError } from "../utils/helpers";
 import supabase from "./supabaseClient";
 import { SupabaseResponseItem, Tables } from "./supabaseTypes";
 import { PaginatedBookings } from "@/types/interfaces";
-import { BookingsInterval, BookingsWithRelated } from "@/types/types";
+import { BookingsInterval, BookingsWithRelatedFull } from "@/types/types";
 
 // get number of bookings
 export async function getNumBookings(): Promise<number> {
@@ -26,7 +26,9 @@ export async function getNumBookings(): Promise<number> {
     }
 }
 
-// get all bookings
+// gets bookings with particular status and interval; also used in pagination
+// accepts status filters and datepicker intervals -> returns bookings for date interval
+// supports paginated output through query.range method and pageIndex param
 export async function getBookingsWithStatusAndInterval(
     status = "all",
     interval: BookingsInterval,
@@ -77,11 +79,14 @@ export async function getBookingsWithStatusAndInterval(
     }
 }
 
-export async function getBooking(id: number) {
+export async function getBooking(id: number): Promise<BookingsWithRelatedFull> {
     try {
         const { data, error } = await supabase
             .from(AppTables.Bookings)
-            .select("*, cabins(*), guests(*)")
+            .select(
+                `*, ${AppTables.Guests}:guest_id(full_name, email, nationality, country_flag, national_id), ${AppTables.Cabins}:cabin_id(name)`,
+                { count: "exact" }
+            )
             .eq("id", id)
             .single();
 
@@ -91,41 +96,6 @@ export async function getBooking(id: number) {
         }
 
         return data;
-    } catch (error) {
-        throw handleError(error);
-    }
-}
-
-export async function getBookingsInterval(
-    interval: BookingsInterval
-): Promise<BookingsWithRelated[] | null> {
-    try {
-        if (!interval) {
-            return null;
-        }
-        let query = supabase
-            .from(AppTables.Bookings)
-            .select(
-                `*, ${AppTables.Guests}:guest_id(full_name, email), ${AppTables.Cabins}:cabin_id(name)`
-            );
-        console.log({ interval });
-        if (interval[0]) {
-            query = query.gte("start_date", interval[0]);
-        }
-
-        if (interval[1]) {
-            query = query.lte("end_date", interval[1]);
-        }
-
-        const { data, error } = await query;
-
-        if (!data || error) {
-            throw new Error(
-                error.message || "Failed to get bookings data from database"
-            );
-        }
-
-        return data as BookingsWithRelated[];
     } catch (error) {
         throw handleError(error);
     }

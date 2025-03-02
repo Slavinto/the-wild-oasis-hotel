@@ -3,6 +3,8 @@ import { HiOutlineCalendar } from "react-icons/hi2";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from "styled-components";
 import { useBookingsContext } from "@/features/bookings/BookingsContext";
+import { enGB } from "date-fns/locale/en-GB";
+import { useSearchParams } from "react-router-dom";
 
 const Wrapper = styled.div`
     position: relative;
@@ -19,6 +21,7 @@ const Wrapper = styled.div`
         display: flex;
         align-items: center;
     }
+
     .react-datepicker {
         border: none;
         font-size: 1.4rem; /* Adjust font size */
@@ -33,6 +36,20 @@ const Wrapper = styled.div`
     .react-datepicker__month-container {
         border: 1px solid var(--color-grey-100);
         box-shadow: var(--shadow-md);
+    }
+
+    .react-datepicker__day-names {
+        margin-left: 0.8rem;
+        display: flex;
+        gap: 0.8rem;
+    }
+
+    .react-datepicker__day-name {
+        font-size: 1.4rem !important;
+    }
+
+    .react-datepicker__current-month {
+        font-size: 1.4rem;
     }
 
     .react-datepicker__week {
@@ -53,12 +70,15 @@ const Wrapper = styled.div`
 `;
 
 const CustomDatePicker = () => {
+    const [, setSearchParams] = useSearchParams();
     const { startDate, setStart, endDate, setEnd } = useBookingsContext();
 
-    console.log({ startDate, endDate });
     const onChange = (dates: [Date | null, Date | null]) => {
         const [start, end] = dates;
-
+        setSearchParams((prev) => {
+            prev.set("page", "1");
+            return prev;
+        });
         setStart?.(start);
         setEnd?.(end);
     };
@@ -77,7 +97,8 @@ const CustomDatePicker = () => {
                 selectsRange
                 popperClassName='popper'
                 popperPlacement='bottom-start'
-                placeholderText='Select interval'
+                placeholderText='Booking date interval'
+                locale={enGB}
                 // withPortal
             />
         </Wrapper>

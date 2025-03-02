@@ -1,15 +1,21 @@
 import styled from "styled-components";
 
 import BookingDataBox from "./BookingDataBox";
-import Row from "../../ui/Row";
-import Heading from "../../ui/Heading";
-import Tag from "../../ui/Tag";
-import ButtonGroup from "../../ui/ButtonGroup";
-import Button from "../../ui/Button";
-import ButtonText from "../../ui/ButtonText";
+import {
+    Row,
+    Heading,
+    Tag,
+    ButtonGroup,
+    Button,
+    ButtonText,
+    Spinner,
+} from "@/ui";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
-import { ButtonVariations } from "@/types/enums";
+import { ButtonVariations, Headings, RowOrientations } from "@/types/enums";
+import { useParams } from "react-router-dom";
+import { useBookingDetails } from "./useBookingDetails";
+import { statusToTagName } from "@/types/constants";
 
 const HeadingGroup = styled.div`
     display: flex;
@@ -18,30 +24,31 @@ const HeadingGroup = styled.div`
 `;
 
 function BookingDetail() {
-    const booking = {};
+    const { id } = useParams();
+    const { bookingDetails, isLoading: isLoadingDetails } = useBookingDetails(
+        Number(id)
+    );
     const status = "checked-in";
 
     const moveBack = useMoveBack();
 
-    const statusToTagName = {
-        unconfirmed: "blue",
-        "checked-in": "green",
-        "checked-out": "silver",
-    };
-
     return (
         <>
-            <Row type='horizontal'>
+            <Row type={RowOrientations.Horizontal}>
                 <HeadingGroup>
-                    <Heading as='h1'>Booking #X</Heading>
-                    <Tag type={statusToTagName[status]}>
+                    <Heading as={Headings.H1} text='Booking #X' />
+                    <Tag $type={statusToTagName[status]}>
                         {status.replace("-", " ")}
                     </Tag>
                 </HeadingGroup>
                 <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
             </Row>
 
-            <BookingDataBox booking={booking} />
+            {isLoadingDetails ? (
+                <Spinner />
+            ) : (
+                <BookingDataBox booking={bookingDetails} />
+            )}
 
             <ButtonGroup>
                 <Button

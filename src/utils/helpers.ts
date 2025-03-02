@@ -2,11 +2,12 @@ import { Tables } from "@/services/supabaseTypes";
 import { cabinValues } from "@/types/constants";
 import {
     AppBooking,
+    AppBookingFull,
     BookingStatus,
     Cabin,
     SupabaseCabin,
 } from "@/types/interfaces";
-import { BookingsWithRelated } from "@/types/types";
+import { BookingsWithRelated, BookingsWithRelatedFull } from "@/types/types";
 import { formatDistance, parseISO, differenceInDays, format } from "date-fns";
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
@@ -148,9 +149,65 @@ export const createAppBookingFromSupabaseBooking = (
     };
 };
 
+export const createFullAppBookingFromSupabaseFullBooking = (
+    booking: BookingsWithRelatedFull
+): AppBookingFull => {
+    return {
+        bookingId: booking.id,
+        createdAt: booking.created_at,
+        startDate: booking.start_date,
+        endDate: booking.end_date,
+        numNights: booking.number_of_nights,
+        numGuests: booking.number_of_guests,
+        totalPrice: booking.total_price,
+        status: booking.status ? (booking.status as BookingStatus) : null,
+        cabinPrice: booking.cabin_price,
+        extrasPrice: booking.extras_price,
+        hasBreakfast: booking.has_breakfast,
+        observations: booking.observations,
+        isPaid: booking.is_paid,
+        guests: {
+            guestName: booking.guests.full_name,
+            email: booking.guests.email,
+            country: booking.guests.nationality,
+            countryFlag: booking.guests.country_flag,
+            nationalID: booking.guests.national_id,
+        },
+        cabins: { cabinName: booking.cabins.name },
+    };
+};
+
 export const makeLower = (str: string): string =>
     str.toLowerCase().replace(" ", "-");
 
 export const CreateArrayOfNum = (num: number): number[] => {
     return Array.from({ length: num }, (_, i) => i + 1);
+};
+
+export const generatePages = (numPages: number, activePage: number) => {
+    if (numPages <= 5) {
+        return CreateArrayOfNum(numPages);
+    }
+
+    const pages: (number | string)[] = [1];
+    if (activePage > 3) {
+        pages.push("...");
+    }
+
+    // pages around the active page are rendered as buttons
+    const middlePages: (number | string)[] = [
+        activePage - 1,
+        activePage,
+        activePage + 1,
+    ].filter((page) => page > 1 && page < numPages);
+
+    pages.push(...middlePages);
+
+    if (activePage < numPages - 2) {
+        pages.push("...");
+    }
+
+    pages.push(numPages);
+
+    return pages;
 };

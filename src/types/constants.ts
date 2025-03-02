@@ -16,6 +16,14 @@ export const bucketNames = {
 export type BucketNames = (typeof bucketNames)[keyof typeof bucketNames];
 
 // ==============================Cabin==========================
+// ==============================Booking==========================
+export const statusToTagName = {
+    unconfirmed: "blue",
+    "checked-in": "green",
+    "checked-out": "silver",
+} as const;
+
+// ==============================Booking==========================
 // ==============================Settings==========================
 export const settingValues = {
     MinimumNightsMinValue: 1,
@@ -24,7 +32,7 @@ export const settingValues = {
     MinimumGuests: 1,
 } as const;
 
-export const bookingsPerPage = 4 as const;
+export const bookingsPerPage = 5 as const;
 // ==============================Settings==========================
 // ==============================Tables==========================
 export const supabaseTables = {

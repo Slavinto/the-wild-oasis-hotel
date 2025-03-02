@@ -7,6 +7,17 @@ export type BookingsWithRelated = Tables<AppTables.Bookings> & {
     cabins: { name: string | null };
 };
 
+export type BookingsWithRelatedFull = Tables<AppTables.Bookings> & {
+    guests: {
+        full_name: string | null;
+        email: string | null;
+        nationality: string | null;
+        country_flag: string | null;
+        national_id: string | null;
+    } | null;
+    cabins: { name: string | null } | null;
+};
+
 // a type for querying bookings for specific time interval
 export type BookingsInterval =
     | [startDate: string, endDate?: string]

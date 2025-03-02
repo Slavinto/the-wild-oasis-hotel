@@ -11,6 +11,7 @@ import {
     Users,
 } from "@/pages";
 import { ErrorFallback, AppLayout } from "@/ui";
+import Booking from "./pages/Booking";
 
 export const router = createBrowserRouter([
     {
@@ -37,9 +38,15 @@ export const router = createBrowserRouter([
                 path: "/bookings",
                 element: <Bookings />,
                 errorElement: <ErrorFallback />,
+                children: [],
             },
             {
-                path: "cabins/",
+                path: "/bookings/:id",
+                element: <Booking />,
+                errorElement: <ErrorFallback />,
+            },
+            {
+                path: "/cabins",
                 element: <Cabins />,
                 errorElement: <ErrorFallback />,
             },
