@@ -1,5 +1,6 @@
 import { Tables } from "@/services/supabaseTypes";
 import { AppTables } from "./enums";
+import { AppBookingFull } from "./interfaces";
 
 // we're getting additional data from related tables "guests" and "cabins"
 export type BookingsWithRelated = Tables<AppTables.Bookings> & {
@@ -17,6 +18,10 @@ export type BookingsWithRelatedFull = Tables<AppTables.Bookings> & {
     } | null;
     cabins: { name: string | null } | null;
 };
+
+export type AppBookingUpdate = Partial<
+    Omit<AppBookingFull, "guests" | "cabins">
+>;
 
 // a type for querying bookings for specific time interval
 export type BookingsInterval =

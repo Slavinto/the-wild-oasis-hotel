@@ -67,7 +67,7 @@ const Modal = ({ children }: { children: ReactNode }) => {
     );
 
     const close = () => setOpenWindowName(null);
-    const open = setOpenWindowName;
+    const open = (windowName: ModalWindows) => setOpenWindowName(windowName);
 
     return (
         <ModalContext.Provider value={{ open, close, openWindowName }}>

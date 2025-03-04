@@ -11,6 +11,11 @@ export enum AppTables {
     Guests = "guests",
     Settings = "settings",
 }
+
+export enum AppOperations {
+    Delete = "Delete",
+    Payment = "Payment",
+}
 // ==============================Generic=======================
 // ==============================Headings=======================
 export enum Headings {
@@ -20,6 +25,7 @@ export enum Headings {
 }
 // ==============================Headings=======================
 // ==============================Rows===========================
+// cabins
 export enum RowOrientations {
     Horizontal = "horizontal",
     Vertical = "vertical",
@@ -40,6 +46,12 @@ export enum CreateCabinRowLabels {
     Discount = "Discount",
     DescriptionForWebsite = "Description for website",
     CabinPhoto = "Cabin photo",
+}
+// bookings
+export enum BookingStatus {
+    Unconfirmed = "unconfirmed",
+    CheckedIn = "checked-in",
+    CheckedOut = "checked-out",
 }
 
 export enum UpdateSettingsFormLabels {
@@ -81,7 +93,8 @@ export enum ModalWindows {
     Table = "table",
     // bookings
     DeleteBookingConfirm = "delete-booking-confirm",
-    UpdateBooking = "update-booking",
+    CheckIn = "check-in",
+    IsBookingPayedConfirm = "is-booking-payed-confirm",
 }
 
 // ==============================Modals========================

@@ -12,6 +12,7 @@ import {
 } from "@/pages";
 import { ErrorFallback, AppLayout } from "@/ui";
 import Booking from "./pages/Booking";
+import CheckIn from "./pages/CheckIn";
 
 export const router = createBrowserRouter([
     {
@@ -43,6 +44,11 @@ export const router = createBrowserRouter([
             {
                 path: "/bookings/:id",
                 element: <Booking />,
+                errorElement: <ErrorFallback />,
+            },
+            {
+                path: "/bookings/check-in/:id",
+                element: <CheckIn />,
                 errorElement: <ErrorFallback />,
             },
             {

@@ -5,7 +5,7 @@ export { default as ButtonGroup } from "./ButtonGroup";
 export { default as ButtonIcon } from "./ButtonIcon";
 export { default as ButtonText } from "./ButtonText";
 export { default as Checkbox } from "./Checkbox";
-export { default as ConfirmDelete } from "./ConfirmDelete";
+export { default as ConfirmDelete } from "./ConfirmOperation";
 export { default as ContentContainer } from "./ContentContainer";
 export { default as DataItem } from "./DataItem";
 export { default as DatePicker } from "./DatePicker";

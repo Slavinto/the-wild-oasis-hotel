@@ -51,6 +51,8 @@ export interface AppBookingFull {
     hasBreakfast: boolean | null;
     observations: string | null;
     isPaid: boolean | null;
+    cabinId: number | null;
+    guestId: number | null;
     guests: {
         guestName: string | null;
         email: string | null;

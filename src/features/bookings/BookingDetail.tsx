@@ -12,8 +12,13 @@ import {
 } from "@/ui";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
-import { ButtonVariations, Headings, RowOrientations } from "@/types/enums";
-import { useParams } from "react-router-dom";
+import {
+    BookingStatus,
+    ButtonVariations,
+    Headings,
+    RowOrientations,
+} from "@/types/enums";
+import { useNavigate, useParams } from "react-router-dom";
 import { useBookingDetails } from "./useBookingDetails";
 import { statusToTagName } from "@/types/constants";
 
@@ -28,17 +33,24 @@ function BookingDetail() {
     const { bookingDetails, isLoading: isLoadingDetails } = useBookingDetails(
         Number(id)
     );
-    const status = "checked-in";
-
+    const navigate = useNavigate();
+    const { status } = bookingDetails || {};
     const moveBack = useMoveBack();
 
     return (
         <>
             <Row type={RowOrientations.Horizontal}>
                 <HeadingGroup>
-                    <Heading as={Headings.H1} text='Booking #X' />
-                    <Tag $type={statusToTagName[status]}>
-                        {status.replace("-", " ")}
+                    <Heading
+                        as={Headings.H1}
+                        text={`Booking ${bookingDetails?.bookingId}`}
+                    />
+                    <Tag
+                        $type={
+                            statusToTagName[status || BookingStatus.Unconfirmed]
+                        }
+                    >
+                        {status?.replace("-", " ")}
                     </Tag>
                 </HeadingGroup>
                 <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
@@ -51,6 +63,13 @@ function BookingDetail() {
             )}
 
             <ButtonGroup>
+                {status === BookingStatus.Unconfirmed && (
+                    <Button
+                        onClick={() => navigate(`/bookings/check-in/${id}`)}
+                    >
+                        Check in booking #{id}
+                    </Button>
+                )}
                 <Button
                     $variation={ButtonVariations.Secondary}
                     onClick={moveBack}

@@ -1,9 +1,10 @@
 import { ModalWindows } from "@/types/enums";
-import { createContext, Dispatch, SetStateAction } from "react";
+import { createContext } from "react";
 
 // modal interface
 interface IModal {
-    open: Dispatch<SetStateAction<ModalWindows | null>>;
+    open: (windowName: ModalWindows) => void;
+    // open: Dispatch<SetStateAction<ModalWindows | null>>;
     close: () => void;
     openWindowName: ModalWindows | null;
 }

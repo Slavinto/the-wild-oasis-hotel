@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import styled from "styled-components";
 
 const StyledCheckbox = styled.div`
@@ -5,6 +6,7 @@ const StyledCheckbox = styled.div`
     gap: 1.6rem;
 
     & input[type="checkbox"] {
+        cursor: pointer;
         height: 2.4rem;
         width: 2.4rem;
         outline-offset: 2px;
@@ -25,9 +27,23 @@ const StyledCheckbox = styled.div`
     }
 `;
 
-function Checkbox({ checked, onChange, disabled = false, id, children }) {
+function Checkbox({
+    checked,
+    onChange,
+    onClick,
+    disabled = false,
+    id,
+    children,
+}: {
+    checked: boolean;
+    onChange?: () => void;
+    onClick?: () => void;
+    disabled: boolean;
+    id: string;
+    children: ReactNode;
+}) {
     return (
-        <StyledCheckbox>
+        <StyledCheckbox onClick={onClick} className='test'>
             <input
                 type='checkbox'
                 id={id}

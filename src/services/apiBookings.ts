@@ -1,9 +1,16 @@
 import { AppTables } from "@/types/enums";
-import { getToday, handleError } from "../utils/helpers";
+import {
+    createSupabaseFullBookingFromFullAppBooking,
+    getToday,
+    handleError,
+} from "../utils/helpers";
 import supabase from "./supabaseClient";
-import { SupabaseResponseItem, Tables } from "./supabaseTypes";
 import { PaginatedBookings } from "@/types/interfaces";
-import { BookingsInterval, BookingsWithRelatedFull } from "@/types/types";
+import {
+    AppBookingUpdate,
+    BookingsInterval,
+    BookingsWithRelatedFull,
+} from "@/types/types";
 
 // get number of bookings
 export async function getNumBookings(): Promise<number> {
@@ -167,18 +174,16 @@ export async function getStaysTodayActivity() {
     }
 }
 
-export async function updateBooking(
-    id: number,
-    obj: Tables<AppTables.Bookings>
-) {
+export async function updateBooking(id: number, obj: AppBookingUpdate) {
+    const supabaseObject = createSupabaseFullBookingFromFullAppBooking(obj);
+
     try {
-        const { data, error }: SupabaseResponseItem<AppTables.Bookings> =
-            await supabase
-                .from(AppTables.Bookings)
-                .update(obj)
-                .eq("id", id)
-                .select()
-                .single();
+        const { data, error } = await supabase
+            .from(AppTables.Bookings)
+            .update(supabaseObject)
+            .eq("id", id)
+            .select()
+            .single();
 
         if (error) {
             console.error(error);

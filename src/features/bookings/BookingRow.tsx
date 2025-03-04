@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
 
-import { ConfirmDelete, Menu, Modal, Tag } from "@/ui";
+import { Menu, Modal, Tag } from "@/ui";
 import Table from "@/ui/table/Table";
 
 import {
@@ -11,14 +11,20 @@ import {
 } from "@/utils/helpers";
 import { BookingsWithRelated } from "@/types/types";
 import {
+    HiArrowDownOnSquare,
     HiEllipsisVertical,
     HiEye,
-    HiOutlinePencilSquare,
     HiOutlineTrash,
 } from "react-icons/hi2";
-import { AppEntities, ModalWindows } from "@/types/enums";
+import {
+    AppEntities,
+    AppOperations,
+    BookingStatus,
+    ModalWindows,
+} from "@/types/enums";
 import { useNavigate } from "react-router-dom";
 import { statusToTagName } from "@/types/constants";
+import ConfirmOperation from "@/ui/ConfirmOperation";
 
 const Cabin = styled.div`
     font-size: 1.6rem;
@@ -66,7 +72,9 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
         return null;
     }
 
-    function handleConfirmDelete() {}
+    function handleConfirmDelete() {
+        console.log("booking deletion confirmed");
+    }
     return (
         <Table.Row>
             <Cabin>{cabinName}</Cabin>
@@ -106,17 +114,17 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
                         <HiEye />
                         <span>Inspect</span>
                     </Menu.Button>
-                    <Modal>
-                        <Modal.Open opens={ModalWindows.UpdateBooking}>
-                            <Menu.Button disabled={false}>
-                                <HiOutlinePencilSquare />
-                                <span>Edit</span>
-                            </Menu.Button>
-                        </Modal.Open>
-                        <Modal.Window
-                            name={ModalWindows.UpdateBooking}
-                        ></Modal.Window>
-                    </Modal>
+                    {booking.status === BookingStatus.Unconfirmed ? (
+                        <Menu.Button
+                            onClick={() =>
+                                navigate(`/bookings/check-in/${booking.id}`)
+                            }
+                            disabled={false}
+                        >
+                            <HiArrowDownOnSquare />
+                            <span>Check in</span>
+                        </Menu.Button>
+                    ) : null}
                     <Modal>
                         <Modal.Open opens={ModalWindows.DeleteBookingConfirm}>
                             <Menu.Button disabled={false}>
@@ -125,7 +133,8 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
                             </Menu.Button>
                         </Modal.Open>
                         <Modal.Window name={ModalWindows.DeleteBookingConfirm}>
-                            <ConfirmDelete
+                            <ConfirmOperation
+                                operation={AppOperations.Delete}
                                 onConfirm={handleConfirmDelete}
                                 disabled={false}
                                 resourceName={AppEntities.Booking}

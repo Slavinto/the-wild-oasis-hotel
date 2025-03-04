@@ -1,5 +1,6 @@
 import { Tables } from "@/services/supabaseTypes";
 import { cabinValues } from "@/types/constants";
+import { AppTables } from "@/types/enums";
 import {
     AppBooking,
     AppBookingFull,
@@ -7,7 +8,11 @@ import {
     Cabin,
     SupabaseCabin,
 } from "@/types/interfaces";
-import { BookingsWithRelated, BookingsWithRelatedFull } from "@/types/types";
+import {
+    AppBookingUpdate,
+    BookingsWithRelated,
+    BookingsWithRelatedFull,
+} from "@/types/types";
 import { formatDistance, parseISO, differenceInDays, format } from "date-fns";
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
@@ -149,6 +154,41 @@ export const createAppBookingFromSupabaseBooking = (
     };
 };
 
+export const createSupabaseFullBookingFromFullAppBooking = (
+    booking: AppBookingUpdate
+): Partial<Tables<AppTables.Bookings>> => {
+    const obj = {
+        id: booking?.bookingId,
+        created_at: booking?.createdAt,
+        start_date: booking?.startDate,
+        end_date: booking?.endDate,
+        number_of_nights: booking?.numNights,
+        number_of_guests: booking?.numGuests,
+        total_price: booking?.totalPrice,
+        status: booking?.status
+            ? (booking?.status as BookingStatus)
+            : undefined,
+        cabin_price: booking?.cabinPrice,
+        extras_price: booking?.extrasPrice,
+        has_breakfast: booking?.hasBreakfast,
+        observations: booking?.observations,
+        is_paid: booking?.isPaid,
+        cabin_id: booking?.cabinId,
+        guest_id: booking?.guestId,
+        // guests: {
+        //     full_name: booking.guests.guestName,
+        //     email: booking.guests.email,
+        //     nationality: booking.guests.country,
+        //     country_flag: booking.guests.countryFlag,
+        //     national_id: booking.guests.nationalID,
+        // },
+        // cabins: { name: booking.cabins.cabinName },
+    };
+    return Object.fromEntries(
+        Object.entries(obj).filter(([, value]) => value !== undefined)
+    );
+};
+
 export const createFullAppBookingFromSupabaseFullBooking = (
     booking: BookingsWithRelatedFull
 ): AppBookingFull => {
@@ -166,14 +206,16 @@ export const createFullAppBookingFromSupabaseFullBooking = (
         hasBreakfast: booking.has_breakfast,
         observations: booking.observations,
         isPaid: booking.is_paid,
+        cabinId: booking.cabin_id,
+        guestId: booking.guest_id,
         guests: {
-            guestName: booking.guests.full_name,
-            email: booking.guests.email,
-            country: booking.guests.nationality,
-            countryFlag: booking.guests.country_flag,
-            nationalID: booking.guests.national_id,
+            guestName: booking.guests?.full_name || null,
+            email: booking.guests?.email || null,
+            country: booking.guests?.nationality || null,
+            countryFlag: booking.guests?.country_flag || null,
+            nationalID: booking.guests?.national_id || null,
         },
-        cabins: { cabinName: booking.cabins.name },
+        cabins: { cabinName: booking.cabins?.name || null },
     };
 };
 

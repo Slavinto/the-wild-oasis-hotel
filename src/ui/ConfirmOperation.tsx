@@ -1,9 +1,14 @@
 import styled from "styled-components";
 import Button from "./Button";
-import { AppEntities, ButtonVariations, Headings } from "@/types/enums";
+import {
+    AppEntities,
+    AppOperations,
+    ButtonVariations,
+    Headings,
+} from "@/types/enums";
 import { Heading } from "@/ui";
 
-const StyledConfirmDelete = styled.div`
+const StyledConfirmOperation = styled.div`
     width: 40rem;
     display: flex;
     flex-direction: column;
@@ -21,26 +26,25 @@ const StyledConfirmDelete = styled.div`
     }
 `;
 
-function ConfirmDelete({
+function ConfirmOperation({
     resourceName,
+    operation,
     onConfirm,
     onCloseModal,
     // onCancel,
     disabled,
 }: {
     resourceName: AppEntities;
+    operation: AppOperations;
     onConfirm: () => void;
     onCloseModal?: () => void;
     // onCancel: () => void;
     disabled: boolean;
 }) {
     return (
-        <StyledConfirmDelete>
-            <Heading text={`Delete ${resourceName}`} as={Headings.H3} />
-            <p>
-                Are you sure you want to delete this {resourceName} permanently?
-                This action cannot be undone.
-            </p>
+        <StyledConfirmOperation>
+            <Heading text={`${operation} ${resourceName}`} as={Headings.H3} />
+            {getConfirmMessage(resourceName, operation)}
 
             <div>
                 <Button
@@ -55,11 +59,29 @@ function ConfirmDelete({
                     disabled={disabled}
                     onClick={onConfirm}
                 >
-                    Delete
+                    Confirm {operation}
                 </Button>
             </div>
-        </StyledConfirmDelete>
+        </StyledConfirmOperation>
     );
 }
 
-export default ConfirmDelete;
+export default ConfirmOperation;
+
+function getConfirmMessage(
+    resourceName: AppEntities,
+    operation: AppOperations
+): string {
+    switch (operation) {
+        case AppOperations.Delete:
+            return `
+            Are you sure you want to delete this ${resourceName} permanently?
+            This action cannot be undone.
+            `;
+        case AppOperations.Payment:
+            return `Are you sure you want to mark this ${resourceName} as "Payed"`;
+
+        default:
+            return `Unknown operation: ${operation}`;
+    }
+}
