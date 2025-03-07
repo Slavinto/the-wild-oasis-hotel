@@ -1,7 +1,13 @@
 import { ButtonSizes } from "@/types/enums";
-import Button from "../../ui/Button";
+import { Button } from "@/ui";
 
-function CheckoutButton({ bookingId }) {
+function CheckoutButton({
+    bookingId,
+    guestName = "Guest",
+}: {
+    bookingId: number;
+    guestName?: string;
+}) {
     return <Button size={ButtonSizes.Small}>Check out</Button>;
 }
 

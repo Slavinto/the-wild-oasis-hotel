@@ -15,6 +15,7 @@ export enum AppTables {
 export enum AppOperations {
     Delete = "Delete",
     Payment = "Payment",
+    CheckOut = "Check out",
 }
 // ==============================Generic=======================
 // ==============================Headings=======================
@@ -94,6 +95,7 @@ export enum ModalWindows {
     // bookings
     DeleteBookingConfirm = "delete-booking-confirm",
     CheckIn = "check-in",
+    CheckOut = "check-out",
     IsBookingPayedConfirm = "is-booking-payed-confirm",
 }
 

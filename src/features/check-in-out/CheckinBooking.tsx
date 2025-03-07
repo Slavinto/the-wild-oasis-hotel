@@ -1,27 +1,20 @@
 import styled from "styled-components";
+
+import { BookingStatus, ButtonVariations, Headings } from "@/types/enums";
+import {
+    Row,
+    Heading,
+    ButtonGroup,
+    Button,
+    ButtonText,
+    BookingIsPaidCheckbox,
+    Spinner,
+    Checkbox,
+} from "@/ui";
 import BookingDataBox from "../../features/bookings/BookingDataBox";
 
-import Row from "../../ui/Row";
-import Heading from "../../ui/Heading";
-import ButtonGroup from "../../ui/ButtonGroup";
-import Button from "../../ui/Button";
-import ButtonText from "../../ui/ButtonText";
-
-import { useMoveBack } from "../../hooks/useMoveBack";
-import {
-    AppEntities,
-    AppOperations,
-    BookingStatus,
-    ButtonVariations,
-    Headings,
-    ModalWindows,
-} from "@/types/enums";
-import { useNavigate, useParams } from "react-router-dom";
-import { useBookingDetails } from "../bookings/useBookingDetails";
-import { Checkbox, Modal, Spinner } from "@/ui";
-import { useEffect, useState } from "react";
-import ConfirmOperation from "@/ui/ConfirmOperation";
-import { useUpdateBooking } from "../bookings/useUpdateBooking";
+import CheckoutButton from "./CheckoutButton";
+import { useCheckinBooking } from "./useCheckinBooking";
 
 const Box = styled.div`
     /* Box */
@@ -37,44 +30,18 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
-    const [confirmIsPaid, setConfirmIsPaid] = useState<boolean | null>(null);
-
-    const navigate = useNavigate();
-    const moveBack = useMoveBack();
-    const params = useParams();
-    const id = Number(params.id);
-    const { bookingDetails, isLoading } = useBookingDetails(id);
-    const { mutate: updateBooking, isPending: isUpdating } = useUpdateBooking();
-
-    useEffect(() => {
-        if (bookingDetails) {
-            setConfirmIsPaid(bookingDetails.isPaid);
-        }
-    }, [bookingDetails, isLoading]);
-
-    // console.log({ bookingDetails });
-    // console.log({ confirmIsPaid });
-
-    // const { guests, totalPrice, numGuests, hasBreakfast, numNights } =
-    //     bookingDetails || {};
-
-    function handleCheckin() {
-        if (
-            !confirmIsPaid ||
-            bookingDetails?.status !== BookingStatus.Unconfirmed
-        ) {
-            return;
-        }
-        updateBooking({ id, obj: { status: BookingStatus.CheckedIn } });
-        navigate(`/bookings/${id}`);
-    }
-
-    function handleConfirmIsPaid() {
-        if (!bookingDetails) return;
-        const isPaid = !bookingDetails.isPaid;
-        updateBooking({ id, obj: { isPaid } });
-        // setConfirmIsPaid((prev) => !prev);
-    }
+    const {
+        id,
+        bookingDetails,
+        confirmIsPaid,
+        hasBreakfast,
+        moveBack,
+        isLoading,
+        isUpdating,
+        handleCheckin,
+        handleConfirmIsPaid,
+        handleToggleHasBreakfast,
+    } = useCheckinBooking();
 
     return (
         <>
@@ -89,54 +56,38 @@ function CheckinBooking() {
                 <>
                     <BookingDataBox booking={bookingDetails} />
 
-                    {isUpdating ? (
-                        <Spinner />
-                    ) : (
+                    {
                         <ButtonGroup>
                             {bookingDetails?.status ===
-                                BookingStatus.Unconfirmed && (
+                            BookingStatus.Unconfirmed ? (
                                 <>
+                                    {hasBreakfast !== null && !confirmIsPaid ? (
+                                        <Box>
+                                            <Checkbox
+                                                id={"breakfast-" + id}
+                                                disabled={
+                                                    isUpdating || confirmIsPaid!
+                                                }
+                                                onChange={
+                                                    handleToggleHasBreakfast
+                                                }
+                                                checked={hasBreakfast}
+                                            >
+                                                Breakfast is included
+                                            </Checkbox>
+                                        </Box>
+                                    ) : null}
                                     <Box>
                                         {confirmIsPaid !== null &&
                                         bookingDetails?.isPaid === false ? (
-                                            <Modal>
-                                                <Modal.Open
-                                                    opens={
-                                                        ModalWindows.IsBookingPayedConfirm
-                                                    }
-                                                >
-                                                    <Checkbox
-                                                        checked={confirmIsPaid}
-                                                        disabled={
-                                                            confirmIsPaid ||
-                                                            isUpdating
-                                                        }
-                                                        id={`${id}`}
-                                                        onChange={() => {}}
-                                                        // onChange={handleConfirmIsPaid}
-                                                    >
-                                                        Check for payed booking
-                                                    </Checkbox>
-                                                </Modal.Open>
-                                                <Modal.Window
-                                                    name={
-                                                        ModalWindows.IsBookingPayedConfirm
-                                                    }
-                                                >
-                                                    <ConfirmOperation
-                                                        operation={
-                                                            AppOperations.Payment
-                                                        }
-                                                        onConfirm={
-                                                            handleConfirmIsPaid
-                                                        }
-                                                        disabled={false}
-                                                        resourceName={
-                                                            AppEntities.Booking
-                                                        }
-                                                    />
-                                                </Modal.Window>
-                                            </Modal>
+                                            <BookingIsPaidCheckbox
+                                                handleConfirmIsPaid={
+                                                    handleConfirmIsPaid
+                                                }
+                                                isUpdating={isUpdating}
+                                                id={id}
+                                                confirmIsPaid={confirmIsPaid}
+                                            />
                                         ) : (
                                             <div>Booking has been paid</div>
                                         )}
@@ -148,7 +99,15 @@ function CheckinBooking() {
                                         Check in booking #{id}
                                     </Button>
                                 </>
-                            )}
+                            ) : bookingDetails?.status ===
+                              BookingStatus.CheckedIn ? (
+                                <CheckoutButton
+                                    bookingId={id}
+                                    guestName={
+                                        bookingDetails.guests.guestName || ""
+                                    }
+                                />
+                            ) : null}
                             <Button
                                 $variation={ButtonVariations.Secondary}
                                 onClick={moveBack}
@@ -156,7 +115,7 @@ function CheckinBooking() {
                                 Back
                             </Button>
                         </ButtonGroup>
-                    )}
+                    }
                 </>
             )}
         </>

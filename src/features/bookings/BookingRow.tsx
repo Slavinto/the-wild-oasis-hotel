@@ -12,6 +12,7 @@ import {
 import { BookingsWithRelated } from "@/types/types";
 import {
     HiArrowDownOnSquare,
+    HiArrowUpOnSquare,
     HiEllipsisVertical,
     HiEye,
     HiOutlineTrash,
@@ -25,6 +26,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { statusToTagName } from "@/types/constants";
 import ConfirmOperation from "@/ui/ConfirmOperation";
+import { useCheckoutBooking } from "../check-in-out/useCheckoutBooking";
+import { useGlobalSpinnerContext } from "@/ui/globalSpinner/GlobalSpinnerContext";
+import { useEffect } from "react";
 
 const Cabin = styled.div`
     font-size: 1.6rem;
@@ -55,7 +59,7 @@ const Amount = styled.div`
 
 function BookingRow({ booking }: { booking: BookingsWithRelated }) {
     const {
-        // bookingId,
+        bookingId: id,
         // createdAt,
         startDate,
         endDate,
@@ -67,6 +71,21 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
         cabins: { cabinName },
     } = createAppBookingFromSupabaseBooking(booking);
     const navigate = useNavigate();
+    const { checkoutBooking, isCheckingOut } = useCheckoutBooking(
+        id,
+        guestName || "Guest"
+    );
+    const { showGlobalSpinner, toggleGlobalSpinner } =
+        useGlobalSpinnerContext();
+
+    useEffect(() => {
+        if (
+            (isCheckingOut && !showGlobalSpinner) ||
+            (!isCheckingOut && showGlobalSpinner)
+        ) {
+            toggleGlobalSpinner?.();
+        }
+    }, [isCheckingOut, toggleGlobalSpinner, showGlobalSpinner]);
 
     if (!status || !totalPrice) {
         return null;
@@ -75,6 +94,7 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
     function handleConfirmDelete() {
         console.log("booking deletion confirmed");
     }
+
     return (
         <Table.Row>
             <Cabin>{cabinName}</Cabin>
@@ -119,11 +139,28 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
                             onClick={() =>
                                 navigate(`/bookings/check-in/${booking.id}`)
                             }
-                            disabled={false}
+                            disabled={isCheckingOut}
                         >
                             <HiArrowDownOnSquare />
                             <span>Check in</span>
                         </Menu.Button>
+                    ) : booking.status === BookingStatus.CheckedIn ? (
+                        <Modal>
+                            <Modal.Open opens={ModalWindows.CheckOut}>
+                                <Menu.Button disabled={isCheckingOut}>
+                                    <HiArrowUpOnSquare />
+                                    <span>Check out</span>
+                                </Menu.Button>
+                            </Modal.Open>
+                            <Modal.Window name={ModalWindows.CheckOut}>
+                                <ConfirmOperation
+                                    disabled={isCheckingOut}
+                                    onConfirm={checkoutBooking}
+                                    operation={AppOperations.CheckOut}
+                                    resourceName={AppEntities.Booking}
+                                />
+                            </Modal.Window>
+                        </Modal>
                     ) : null}
                     <Modal>
                         <Modal.Open opens={ModalWindows.DeleteBookingConfirm}>

@@ -8,7 +8,7 @@ import { useSearchParams } from "react-router-dom";
 
 const Wrapper = styled.div`
     position: relative;
-    z-index: 1000;
+    z-index: 100;
     box-shadow: var(--shadow-sm);
 
     .react-datepicker__input-container input {

@@ -1,5 +1,6 @@
 export { default as AppLayout } from "./AppLayout";
 export { default as AppToaster } from "./AppToaster";
+export { default as BookingIsPaidCheckbox } from "./BookingIsPaidCheckbox";
 export { default as Button } from "./Button";
 export { default as ButtonGroup } from "./ButtonGroup";
 export { default as ButtonIcon } from "./ButtonIcon";
@@ -16,6 +17,7 @@ export { default as Filter } from "./Filter";
 export { default as Flag } from "./Flag";
 export { default as Form } from "./Form";
 export { default as FormRow } from "./FormRow";
+export { default as GlobalSpinner } from "./globalSpinner/GlobalSpinner";
 export { default as Header } from "./Header";
 export { default as Heading } from "./Heading";
 export { default as Input } from "./Input";

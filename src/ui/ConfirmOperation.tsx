@@ -73,6 +73,11 @@ function getConfirmMessage(
     operation: AppOperations
 ): string {
     switch (operation) {
+        case AppOperations.CheckOut:
+            return `
+            This ${resourceName} will be checked out?
+            Please confirm this action.
+            `;
         case AppOperations.Delete:
             return `
             Are you sure you want to delete this ${resourceName} permanently?
