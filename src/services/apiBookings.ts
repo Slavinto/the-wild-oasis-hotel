@@ -9,6 +9,7 @@ import { PaginatedBookings } from "@/types/interfaces";
 import {
     AppBookingUpdate,
     BookingsInterval,
+    BookingSortBy,
     BookingsWithRelatedFull,
 } from "@/types/types";
 
@@ -39,7 +40,8 @@ export async function getNumBookings(): Promise<number> {
 export async function getBookingsWithStatusAndInterval(
     status = "all",
     interval: BookingsInterval,
-    pageIndex: { fromIndex: number; toIndex: number }
+    pageIndex: { fromIndex: number; toIndex: number },
+    sort: { sortBy: BookingSortBy; sortOrder: "asc" | "desc" }
 ): Promise<PaginatedBookings> {
     try {
         let query = supabase
@@ -68,6 +70,14 @@ export async function getBookingsWithStatusAndInterval(
 
             // console.log({ startDate, endDate });
         }
+
+        // we apply sorting before using range pagination functionality
+        if (sort.sortBy && sort.sortOrder) {
+            query = query.order(sort.sortBy, {
+                ascending: sort.sortOrder === "asc",
+            });
+        }
+
         query = query.range(pageIndex.fromIndex, pageIndex.toIndex);
         const { data, count, error } = await query;
 

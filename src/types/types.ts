@@ -27,3 +27,7 @@ export type AppBookingUpdate = Partial<
 export type BookingsInterval =
     | [startDate: string, endDate?: string]
     | undefined;
+
+export type BookingSortBy = "end_date" | "status" | "total_price";
+// | "full_name"
+// | "name"

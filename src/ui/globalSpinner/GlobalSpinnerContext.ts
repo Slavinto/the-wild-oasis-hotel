@@ -1,12 +1,13 @@
 import { createContext, useContext } from "react";
 
 interface IGlobalSpinnerContext {
-    showGlobalSpinner: boolean;
-    toggleGlobalSpinner?: () => void;
+    globalSpinnerVisible: boolean;
+    showGlobalSpinner?: () => void;
+    hideGlobalSpinner?: () => void;
 }
 
 export const GlobalSpinnerContext = createContext<IGlobalSpinnerContext>({
-    showGlobalSpinner: false,
+    globalSpinnerVisible: false,
 });
 
 export const useGlobalSpinnerContext = () => useContext(GlobalSpinnerContext);

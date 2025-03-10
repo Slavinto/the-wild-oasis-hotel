@@ -1,7 +1,7 @@
 import { getBookingsWithStatusAndInterval } from "@/services/apiBookings";
 import { AppTables } from "@/types/enums";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { BookingsInterval } from "@/types/types";
+import { BookingsInterval, BookingSortBy } from "@/types/types";
 import { formatDateUtc } from "@/utils/helpers";
 import { useSortBookingsClient } from "./useSortBookingsClient";
 import { useSearchParams } from "react-router-dom";
@@ -18,18 +18,33 @@ export const useBookings = (dates: [Date | null, Date | null | undefined]) => {
     // booking status comes from searchParams
     const [searchParams] = useSearchParams();
     const status = searchParams.get("filter") || "all";
+    const sortParam = searchParams.get("sort");
+    let sortBy: BookingSortBy = "end_date";
+
+    if (sortParam !== "dates") {
+        sortBy = sortParam === status ? "status" : "total_price";
+    }
+
+    const sortOrder: "asc" | "desc" =
+        searchParams.get("order") === "asc" ? "asc" : "desc";
+
+    // sorting
+    const sort = { sortBy, sortOrder };
+
+    // pagination
     const page = Number(searchParams.get("page")) || 1;
     const fromIndex = (page - 1) * bookingsPerPage;
     const toIndex = fromIndex + bookingsPerPage - 1;
     const pageIndex = { fromIndex, toIndex };
+
     const {
         data: paginatedBookings,
         isLoading,
         error,
     } = useQuery({
-        queryKey: [AppTables.Bookings, interval, status, pageIndex],
+        queryKey: [AppTables.Bookings, interval, status, pageIndex, sort],
         queryFn: () =>
-            getBookingsWithStatusAndInterval(status, interval, pageIndex),
+            getBookingsWithStatusAndInterval(status, interval, pageIndex, sort),
     });
 
     function prefetchBookingPages(pageIndexPrefetch: {
@@ -37,12 +52,19 @@ export const useBookings = (dates: [Date | null, Date | null | undefined]) => {
         toIndex: number;
     }) {
         queryClient.prefetchQuery({
-            queryKey: [AppTables.Bookings, interval, status, pageIndexPrefetch],
+            queryKey: [
+                AppTables.Bookings,
+                interval,
+                status,
+                pageIndexPrefetch,
+                sort,
+            ],
             queryFn: () =>
                 getBookingsWithStatusAndInterval(
                     status,
                     interval,
-                    pageIndexPrefetch
+                    pageIndexPrefetch,
+                    sort
                 ),
         });
     }

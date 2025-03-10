@@ -1,24 +1,28 @@
-import { ButtonVariations, FormRowLabels, InputIds } from "@/types/enums";
+import {
+    ButtonVariations,
+    CreateUserFormRowLabels,
+    InputIds,
+} from "@/types/enums";
 import { Button, Form, FormRow, Input } from "@/ui";
 
 // Email regex: /\S+@\S+\.\S+/
 
 function SignupForm() {
     return (
-        <Form>
-            <FormRow label={FormRowLabels.FullName} error={""}>
+        <Form type='normal'>
+            <FormRow label={CreateUserFormRowLabels.FullName} error={""}>
                 <Input type='text' id={InputIds.FullName} />
             </FormRow>
 
-            <FormRow label={FormRowLabels.EmailAddress} error={""}>
+            <FormRow label={CreateUserFormRowLabels.EmailAddress} error={""}>
                 <Input type='email' id={InputIds.Email} />
             </FormRow>
 
-            <FormRow label={FormRowLabels.Password} error={""}>
+            <FormRow label={CreateUserFormRowLabels.Password} error={""}>
                 <Input type='password' id={InputIds.Password} />
             </FormRow>
 
-            <FormRow label={FormRowLabels.RepeatPassword} error={""}>
+            <FormRow label={CreateUserFormRowLabels.RepeatPassword} error={""}>
                 <Input type='password' id={InputIds.PasswordConfirm} />
             </FormRow>
 

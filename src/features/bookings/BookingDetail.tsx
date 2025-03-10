@@ -9,18 +9,25 @@ import {
     Button,
     ButtonText,
     Spinner,
+    Modal,
 } from "@/ui";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
 import {
+    AppEntities,
+    AppOperations,
     BookingStatus,
     ButtonVariations,
     Headings,
+    ModalWindows,
     RowOrientations,
 } from "@/types/enums";
 import { useNavigate, useParams } from "react-router-dom";
 import { useBookingDetails } from "./useBookingDetails";
 import { statusToTagName } from "@/types/constants";
+import ConfirmOperation from "@/ui/ConfirmOperation";
+import { useDeleteBooking } from "./useDeleteBooking";
+import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
 
 const HeadingGroup = styled.div`
     display: flex;
@@ -34,8 +41,15 @@ function BookingDetail() {
         Number(id)
     );
     const navigate = useNavigate();
-    const { status } = bookingDetails || {};
     const moveBack = useMoveBack();
+    const { status } = bookingDetails || {};
+
+    const { mutate: deleteBooking, isPending: isDeleting } = useDeleteBooking();
+    const handleConfirmDelete = () => {
+        deleteBooking(Number(id), { onSuccess: () => navigate(`/bookings`) });
+    };
+
+    useGlobalSpinner(isDeleting);
 
     return (
         <>
@@ -63,6 +77,21 @@ function BookingDetail() {
             )}
 
             <ButtonGroup>
+                <Modal>
+                    <Modal.Open opens={ModalWindows.DeleteBookingConfirm}>
+                        <Button $variation={ButtonVariations.Danger}>
+                            Delete Booking
+                        </Button>
+                    </Modal.Open>
+                    <Modal.Window name={ModalWindows.DeleteBookingConfirm}>
+                        <ConfirmOperation
+                            operation={AppOperations.Delete}
+                            onConfirm={handleConfirmDelete}
+                            disabled={isDeleting}
+                            resourceName={AppEntities.Booking}
+                        />
+                    </Modal.Window>
+                </Modal>
                 {status === BookingStatus.Unconfirmed && (
                     <Button
                         onClick={() => navigate(`/bookings/check-in/${id}`)}

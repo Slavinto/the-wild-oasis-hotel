@@ -30,15 +30,17 @@ const Overlay = styled.div`
     transition: all 0.5s;
 `;
 const GlobalSpinner = ({ children }: { children: ReactNode }) => {
-    const [showGlobalSpinner, setShowGlobalSpinner] = useState(false);
+    const [globalSpinnerVisible, setGlobalSpinnerVisible] = useState(false);
 
-    const toggleGlobalSpinner = () => setShowGlobalSpinner((prev) => !prev);
+    const showGlobalSpinner = () => setGlobalSpinnerVisible(true);
+    const hideGlobalSpinner = () => setGlobalSpinnerVisible(false);
 
     return (
         <GlobalSpinnerContext.Provider
             value={{
                 showGlobalSpinner,
-                toggleGlobalSpinner,
+                hideGlobalSpinner,
+                globalSpinnerVisible,
             }}
         >
             {children}
@@ -47,8 +49,8 @@ const GlobalSpinner = ({ children }: { children: ReactNode }) => {
 };
 
 GlobalSpinner.Window = function GlobalSpinnerWindow() {
-    const { showGlobalSpinner } = useGlobalSpinnerContext();
-    return showGlobalSpinner ? (
+    const { globalSpinnerVisible } = useGlobalSpinnerContext();
+    return globalSpinnerVisible ? (
         <Overlay>
             <StyledModal>
                 <Spinner />

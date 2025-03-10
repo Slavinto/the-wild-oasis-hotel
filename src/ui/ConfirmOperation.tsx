@@ -57,7 +57,10 @@ function ConfirmOperation({
                 <Button
                     $variation={ButtonVariations.Danger}
                     disabled={disabled}
-                    onClick={onConfirm}
+                    onClick={() => {
+                        onConfirm();
+                        // onCloseModal?.();
+                    }}
                 >
                     Confirm {operation}
                 </Button>

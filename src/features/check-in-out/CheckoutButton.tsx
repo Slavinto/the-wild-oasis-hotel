@@ -1,5 +1,7 @@
 import { ButtonSizes } from "@/types/enums";
 import { Button } from "@/ui";
+import { useCheckoutBooking } from "./useCheckoutBooking";
+import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
 
 function CheckoutButton({
     bookingId,
@@ -8,7 +10,22 @@ function CheckoutButton({
     bookingId: number;
     guestName?: string;
 }) {
-    return <Button size={ButtonSizes.Small}>Check out</Button>;
+    const { checkoutBooking, isCheckingOut } = useCheckoutBooking(
+        bookingId,
+        guestName
+    );
+
+    useGlobalSpinner(isCheckingOut);
+
+    return (
+        <Button
+            size={ButtonSizes.Small}
+            onClick={checkoutBooking}
+            disabled={isCheckingOut}
+        >
+            Check out
+        </Button>
+    );
 }
 
 export default CheckoutButton;

@@ -27,8 +27,8 @@ import { useNavigate } from "react-router-dom";
 import { statusToTagName } from "@/types/constants";
 import ConfirmOperation from "@/ui/ConfirmOperation";
 import { useCheckoutBooking } from "../check-in-out/useCheckoutBooking";
-import { useGlobalSpinnerContext } from "@/ui/globalSpinner/GlobalSpinnerContext";
-import { useEffect } from "react";
+import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
+import { useDeleteBooking } from "./useDeleteBooking";
 
 const Cabin = styled.div`
     font-size: 1.6rem;
@@ -75,24 +75,16 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
         id,
         guestName || "Guest"
     );
-    const { showGlobalSpinner, toggleGlobalSpinner } =
-        useGlobalSpinnerContext();
+    const { mutate: deleteBooking, isPending: isDeleting } = useDeleteBooking();
 
-    useEffect(() => {
-        if (
-            (isCheckingOut && !showGlobalSpinner) ||
-            (!isCheckingOut && showGlobalSpinner)
-        ) {
-            toggleGlobalSpinner?.();
-        }
-    }, [isCheckingOut, toggleGlobalSpinner, showGlobalSpinner]);
+    useGlobalSpinner(isCheckingOut || isDeleting);
 
     if (!status || !totalPrice) {
         return null;
     }
-
+    console.log("table row renders");
     function handleConfirmDelete() {
-        console.log("booking deletion confirmed");
+        deleteBooking(id);
     }
 
     return (
@@ -173,7 +165,7 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
                             <ConfirmOperation
                                 operation={AppOperations.Delete}
                                 onConfirm={handleConfirmDelete}
-                                disabled={false}
+                                disabled={isDeleting}
                                 resourceName={AppEntities.Booking}
                             />
                         </Modal.Window>
