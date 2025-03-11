@@ -1,10 +1,20 @@
 import { Outlet } from "react-router-dom";
-import { ContentContainer, Header, LayoutWrapper, Main, Sidebar } from "@/ui";
+import {
+    ContentContainer,
+    Header,
+    LayoutWrapper,
+    LogoutButton,
+    Main,
+    Sidebar,
+} from "@/ui";
 
 const AppLayout = () => {
     return (
         <LayoutWrapper>
-            <Header />
+            <Header>
+                <span>Header Text here</span>
+                <LogoutButton />
+            </Header>
             <Sidebar />
             <Main>
                 <ContentContainer>

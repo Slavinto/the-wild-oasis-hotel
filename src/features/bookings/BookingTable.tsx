@@ -3,7 +3,7 @@ import Table from "@/ui/table/Table";
 import { bookingsPerPage, bookingsTableColumns } from "@/types/constants";
 import { BookingsWithRelated } from "@/types/types";
 import { AppTables } from "@/types/enums";
-import Pagination from "@/ui/Pagination";
+import { Pagination } from "@/ui";
 import { useBookingsContext } from "./BookingsContext";
 
 function BookingTable({ bookings }: { bookings: BookingsWithRelated[] }) {

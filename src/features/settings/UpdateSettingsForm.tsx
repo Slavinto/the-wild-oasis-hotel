@@ -41,24 +41,6 @@ function UpdateSettingsForm() {
 
     const currentValues = watch();
 
-    // function getDifferingValues(
-    //     currentValues: DbSettings,
-    //     defaultValues: AppSettings
-    // ): DifAppSettings {
-    //     const differingValues = {} as DifAppSettings;
-    //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //     const { created_at, id, ...curValues } = currentValues;
-    //     const curKeys = Object.keys(curValues);
-
-    //     curKeys.forEach((k) => {
-    //         const key = k as keyof AppSettings;
-    //         if (Number(currentValues[key]) !== Number(defaultValues[key])) {
-    //             differingValues[key] = Number(currentValues[key]);
-    //         }
-    //     });
-    //     return differingValues;
-    // }
-
     const createSetting = (propName: keyof AppSettings): Setting => {
         return {
             setting: {
@@ -77,7 +59,7 @@ function UpdateSettingsForm() {
     console.log({ currentValues });
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form type='normal' onSubmit={handleSubmit(onSubmit)}>
             <FormRow
                 label={UpdateSettingsFormLabels.MinNightsBooking}
                 error={errors.min_booking_period}

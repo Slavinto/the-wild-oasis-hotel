@@ -22,6 +22,12 @@ const StyledHeading = styled.h1<HeadingProps>`
                   font-size: 2rem;
                   font-weight: 500;
               `
+            : props.as === Headings.H4
+            ? css`
+                  font-size: 3rem;
+                  font-weight: 600;
+                  text-align: center;
+              `
             : ``}
 `;
 

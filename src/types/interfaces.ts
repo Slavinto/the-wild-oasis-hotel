@@ -1,3 +1,4 @@
+import { Session, User, WeakPassword } from "@supabase/supabase-js";
 import { BookingsWithRelated } from "./types";
 
 export interface Cabin {
@@ -66,4 +67,15 @@ export interface AppBookingFull {
 export interface PaginatedBookings {
     bookings: BookingsWithRelated[];
     totalBookings: number;
+}
+
+export interface AppUser {
+    user: User;
+    session: Session;
+    weakPassword?: WeakPassword;
+}
+
+export interface AppUserContext {
+    user: User | null;
+    setUser: (user: User | null) => void;
 }

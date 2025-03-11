@@ -3,6 +3,7 @@
 export enum AppEntities {
     Cabin = "cabin",
     Booking = "booking",
+    User = "user",
 }
 
 export enum AppTables {
@@ -23,6 +24,7 @@ export enum Headings {
     H1 = "h1",
     H2 = "h2",
     H3 = "h3",
+    H4 = "h4",
 }
 // ==============================Headings=======================
 // ==============================Rows===========================
@@ -30,6 +32,11 @@ export enum Headings {
 export enum RowOrientations {
     Horizontal = "horizontal",
     Vertical = "vertical",
+}
+
+export enum UserLoginFormRowLabels {
+    EmailAddress = "Email address",
+    Password = "Password",
 }
 
 export enum CreateUserFormRowLabels {

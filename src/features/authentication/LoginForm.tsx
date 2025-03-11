@@ -1,36 +1,77 @@
 import { useState } from "react";
-import { Button, Form, Input, FormRowVertical } from "@/ui";
+import { Button, Form, Input, FormRow } from "@/ui";
+import {
+    ButtonSizes,
+    RowOrientations,
+    UserLoginFormRowLabels,
+} from "@/types/enums";
+import { useLoginEmailPassword } from "./useLoginEmailPassword";
+import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("slava123@example.com");
+    const [password, setPassword] = useState("123123");
+    const navigate = useNavigate();
+    const { login, isLoggingIn, error } = useLoginEmailPassword();
 
-    function handleSubmit() {}
+    useGlobalSpinner(isLoggingIn && !error);
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+
+        if (!email || !password) {
+            return;
+        }
+
+        login(
+            { email, password },
+            {
+                onSuccess: () => navigate(`/`),
+                onError: () => {
+                    setPassword("");
+                    setEmail("");
+                },
+            }
+        );
+    }
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <FormRowVertical label='Email address'>
+        <Form type='normal' onSubmit={handleSubmit}>
+            <FormRow
+                orientation={RowOrientations.Vertical}
+                label={UserLoginFormRowLabels.EmailAddress}
+            >
                 <Input
+                    isControlled={true}
                     type='email'
                     id='email'
+                    placeholder='User Email'
                     // This makes this form better for password managers
                     autoComplete='username'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-            </FormRowVertical>
-            <FormRowVertical label='Password'>
+            </FormRow>
+            <FormRow
+                orientation={RowOrientations.Vertical}
+                label={UserLoginFormRowLabels.Password}
+            >
                 <Input
+                    isControlled={true}
                     type='password'
+                    placeholder='User Password'
                     id='password'
                     autoComplete='current-password'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-            </FormRowVertical>
-            <FormRowVertical>
-                <Button size='large'>Login</Button>
-            </FormRowVertical>
+            </FormRow>
+            <FormRow>
+                <Button type='submit' size={ButtonSizes.Large}>
+                    Login
+                </Button>
+            </FormRow>
         </Form>
     );
 }

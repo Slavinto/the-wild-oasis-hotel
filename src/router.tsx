@@ -10,14 +10,25 @@ import {
     Testing,
     Users,
 } from "@/pages";
-import { ErrorFallback, AppLayout } from "@/ui";
+import { ErrorFallback, AppLayout, ProtectedRoute, GlobalSpinner } from "@/ui";
 import Booking from "./pages/Booking";
 import CheckIn from "./pages/CheckIn";
+import { getCurrentUser } from "./services/apiAuth";
 
 export const router = createBrowserRouter([
     {
         // path: "/",
-        element: <AppLayout />,
+        element: (
+            <ProtectedRoute>
+                <AppLayout />
+            </ProtectedRoute>
+        ),
+        loader: getCurrentUser,
+        hydrateFallbackElement: (
+            <GlobalSpinner>
+                <></>
+            </GlobalSpinner>
+        ),
         errorElement: <ErrorFallback />,
         children: [
             {
