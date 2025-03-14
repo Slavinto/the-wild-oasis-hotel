@@ -76,7 +76,10 @@ interface TableProps extends ITableContext {
 }
 
 export default function Table({
+    // columns -> a css format string for styled component props
+    // something like "1fr 2fr 2fr"
     columns,
+    // column names -> array of column names
     colNames,
     tableType,
     children,

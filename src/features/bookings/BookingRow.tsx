@@ -82,7 +82,7 @@ function BookingRow({ booking }: { booking: BookingsWithRelated }) {
     if (!status || !totalPrice) {
         return null;
     }
-    console.log("table row renders");
+
     function handleConfirmDelete() {
         deleteBooking(id);
     }

@@ -29,8 +29,6 @@ function CreateCabinForm({
 }: {
     cabin?: Tables<"cabins">;
     setShowForm?: () => void;
-    // (state: boolean) => void;
-    // setCurrentCabinId?: (cabinId: number) => void;
     cabinFunction: CabinRowFunctions;
     onCloseModal?: () => void;
 }) {

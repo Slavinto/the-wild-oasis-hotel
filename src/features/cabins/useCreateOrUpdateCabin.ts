@@ -26,12 +26,14 @@ export const useCreateOrUpdateCabin = (
     const cabin = dbCabin
         ? createCabinFromSupabaseTableCabin(dbCabin)
         : undefined;
+    // =============form related code=============
     const defaultValues = cabin ? { defaultValues: cabin } : {};
     const form = useForm<Cabin>(defaultValues);
     const { reset, watch } = form;
     const currentValues = watch();
     const isFormChanged =
         JSON.stringify(currentValues) !== JSON.stringify(cabin);
+    // =============form related code=============
 
     const queryClient = useQueryClient();
     const { mutate, isPending: isUpdating } = useMutation({

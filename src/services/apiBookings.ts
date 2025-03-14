@@ -4,7 +4,7 @@ import {
     getToday,
     handleError,
 } from "../utils/helpers";
-import supabase from "./supabaseClient";
+import { supabase } from "./supabaseClient";
 import { PaginatedBookings } from "@/types/interfaces";
 import {
     AppBookingUpdate,

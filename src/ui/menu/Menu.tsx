@@ -81,18 +81,14 @@ export default function Menu({
     id,
     children,
 }: {
-    id: number;
+    id: number | string;
     children: ReactNode;
 }) {
-    const [openId, setOpenId] = useState<number | null>(null);
+    const [openId, setOpenId] = useState<number | string | null>(null);
     const [position, setPosition] = useState<MenuPosition>();
 
     const closeMenu = () => setOpenId(null);
     const openMenu = () => setOpenId(id);
-
-    // useEffect(() => {
-    //     console.log({ openId });
-    // }, [openId]);
 
     return (
         <MenuContext.Provider
@@ -141,12 +137,6 @@ Menu.List = function MenuList({ children }: { children: ReactNode }) {
     if (!position || !ref) return null;
 
     const output = openId ? (
-        // <ItemList
-        //     ref={ref as React.LegacyRef<HTMLUListElement>}
-        //     $position={position.$position}
-        // >
-        //     {children}
-        // </ItemList>
         <StyledList
             ref={ref as React.MutableRefObject<HTMLUListElement>}
             $position={position.$position}
@@ -166,12 +156,7 @@ Menu.Button = function MenuButton({
     disabled: boolean;
     children: ReactNode;
 }) {
-    // const buttonRef = useRef<HTMLButtonElement | null>(null);
-    // const { closeMenu } = useMenuContext();
-
     const handler = (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("button handler running");
-        // closeMenu?.();
         // attached onClick handler in Modal.Open -> opens the corresponding modal Window
         onClick?.(e);
     };

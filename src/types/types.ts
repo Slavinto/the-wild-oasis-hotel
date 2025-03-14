@@ -1,6 +1,6 @@
 import { Tables } from "@/services/supabaseTypes";
 import { AppTables } from "./enums";
-import { AppBookingFull } from "./interfaces";
+import { AppBookingFull, CreateUserFormFields } from "./interfaces";
 
 // we're getting additional data from related tables "guests" and "cabins"
 export type BookingsWithRelated = Tables<AppTables.Bookings> & {
@@ -31,3 +31,7 @@ export type BookingsInterval =
 export type BookingSortBy = "end_date" | "status" | "total_price";
 // | "full_name"
 // | "name"
+
+export type SignupUser = Omit<CreateUserFormFields, "confirmPassword"> & {
+    avatar?: string;
+};

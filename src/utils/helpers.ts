@@ -19,12 +19,15 @@ import { formatDistance, parseISO, differenceInDays, format } from "date-fns";
 export const subtractDates = (dateStr1: string, dateStr2: string) =>
     differenceInDays(parseISO(String(dateStr1)), parseISO(String(dateStr2)));
 
-export const formatDistanceFromNow = (dateStr: string) =>
-    formatDistance(parseISO(dateStr), new Date(), {
-        addSuffix: true,
-    })
-        .replace("about ", "")
-        .replace("in", "In");
+export const formatDistanceFromNow = (dateStr: string) => {
+    return dateStr === ""
+        ? "Unknown"
+        : formatDistance(parseISO(dateStr), new Date(), {
+              addSuffix: true,
+          })
+              .replace("about ", "")
+              .replace("in", "In");
+};
 
 export const formatDateUtc = (date: Date | null) => {
     // const jsDate = new Date(date);
@@ -252,4 +255,11 @@ export const generatePages = (numPages: number, activePage: number) => {
     pages.push(numPages);
 
     return pages;
+};
+
+export const allFormFieldsFilled = (valuesObject: unknown) => {
+    return (
+        Object.keys(valuesObject as object).length &&
+        Object.values(valuesObject as object).every((fieldValue) => fieldValue)
+    );
 };

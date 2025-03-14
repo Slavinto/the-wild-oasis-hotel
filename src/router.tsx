@@ -85,6 +85,12 @@ export const router = createBrowserRouter([
         ],
     },
     {
+        loader: getCurrentUser,
+        hydrateFallbackElement: (
+            <GlobalSpinner>
+                <></>
+            </GlobalSpinner>
+        ),
         path: "/login",
         element: <Login />,
         errorElement: <ErrorFallback />,

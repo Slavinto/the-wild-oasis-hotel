@@ -1,5 +1,5 @@
 import { handleError } from "@/utils/helpers";
-import supabase from "./supabaseClient";
+import { supabase } from "./supabaseClient";
 import { Setting } from "@/features/settings/settingsTypes";
 
 export async function getSettings() {

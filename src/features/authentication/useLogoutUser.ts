@@ -16,10 +16,10 @@ export const useLogoutUser = () => {
         mutationFn: logoutUser,
 
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [AppEntities.User] });
+            queryClient.removeQueries();
             setUser(null);
-            navigate("/login");
             toast.success(`User successfully logged out`);
+            navigate("/login", { replace: true });
         },
         onError: (error) => {
             toast.error(`User failed to log out: ${error.message}`);

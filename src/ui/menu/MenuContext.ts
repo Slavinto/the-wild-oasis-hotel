@@ -5,7 +5,7 @@ export interface MenuPosition {
 }
 
 interface IMenuContext {
-    openId: number | null;
+    openId: number | string | null;
     openMenu?: () => void;
     closeMenu?: () => void;
     position?: MenuPosition;

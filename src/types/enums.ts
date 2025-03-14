@@ -4,6 +4,7 @@ export enum AppEntities {
     Cabin = "cabin",
     Booking = "booking",
     User = "user",
+    AppUsers = "app-users",
 }
 
 export enum AppTables {
@@ -11,6 +12,7 @@ export enum AppTables {
     Cabins = "cabins",
     Guests = "guests",
     Settings = "settings",
+    Users = "users",
 }
 
 export enum AppOperations {
@@ -104,6 +106,8 @@ export enum ModalWindows {
     CheckIn = "check-in",
     CheckOut = "check-out",
     IsBookingPayedConfirm = "is-booking-payed-confirm",
+    // users
+    UserLoginForm = "user-login-form",
 }
 
 // ==============================Modals========================
@@ -112,7 +116,7 @@ export enum InputIds {
     FullName = "fullName",
     Email = "email",
     Password = "password",
-    PasswordConfirm = "passwordConfirm",
+    ConfirmPassword = "confirmPassword",
 }
 // ==============================Input==========================
 // ==============================Filters==========================

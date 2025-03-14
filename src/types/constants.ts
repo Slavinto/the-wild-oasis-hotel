@@ -24,6 +24,21 @@ export const statusToTagName = {
 } as const;
 
 // ==============================Booking==========================
+// ==============================Users==========================
+export const userValues = {
+    minPasswordLength: 6,
+    maxPasswordLength: 30,
+    minUserNameLength: 4,
+    maxUserNameLength: 15,
+};
+
+export const userTypeToTagName = {
+    user: "green",
+    admin: "purple",
+    unconfirmed: "grey",
+};
+
+// ==============================Users==========================
 // ==============================Settings==========================
 export const settingValues = {
     MinimumNightsMinValue: 1,
@@ -59,6 +74,15 @@ export const bookingsTableColumns = [
     "Dates",
     "Status",
     "Amount",
+    "",
+];
+
+export const userTableColumns = [
+    "",
+    "User name",
+    "Role",
+    "Email",
+    "Last sign in",
     "",
 ];
 

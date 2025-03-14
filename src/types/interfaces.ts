@@ -79,3 +79,10 @@ export interface AppUserContext {
     user: User | null;
     setUser: (user: User | null) => void;
 }
+
+export interface CreateUserFormFields {
+    fullName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}

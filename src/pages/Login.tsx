@@ -1,6 +1,8 @@
+import { useLoaderData } from "react-router-dom";
 import LoginForm from "@/features/authentication/LoginForm";
+import { useConditionalNavigate } from "@/hooks/useConditionalNavigate";
 import { Headings } from "@/types/enums";
-import { Heading, Logo } from "@/ui";
+import { GlobalSpinner, Heading, Logo } from "@/ui";
 import styled from "styled-components";
 
 const LoginLayout = styled.main`
@@ -14,7 +16,13 @@ const LoginLayout = styled.main`
 `;
 
 function Login() {
-    return (
+    const user = useLoaderData() || null;
+    useConditionalNavigate(!!user, "/");
+    return user ? (
+        <GlobalSpinner>
+            <></>
+        </GlobalSpinner>
+    ) : (
         <LoginLayout>
             <Logo />
             <Heading as={Headings.H4} text='User login' />

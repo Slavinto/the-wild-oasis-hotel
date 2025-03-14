@@ -3,7 +3,7 @@ import {
     createSupabaseCabinFromCabin,
     handleError,
 } from "@/utils/helpers";
-import supabase from "./supabaseClient";
+import { supabase } from "./supabaseClient";
 import { Cabin } from "@/types/interfaces";
 import { BucketNames, bucketNames } from "@/types/constants";
 import { Tables } from "./supabaseTypes";
