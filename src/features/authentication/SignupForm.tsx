@@ -4,7 +4,7 @@ import {
     Headings,
     InputIds,
 } from "@/types/enums";
-import { Button, Form, FormRow, Heading, Input } from "@/ui";
+import { Button, FileInput, Form, FormRow, Heading, Input } from "@/ui";
 import styled from "styled-components";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserFormFields } from "@/types/interfaces";
@@ -34,6 +34,7 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
         register,
         formState: { errors },
         watch,
+        setValue,
         handleSubmit,
         reset,
     } = form;
@@ -44,12 +45,18 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
     const currentValues = watch();
     const password = currentValues.password;
 
-    console.log({ currentValues });
-
     const onSignup: SubmitHandler<CreateUserFormFields> = (data) => {
         console.log({ submitData: data });
         signup(data, { onSettled: () => reset });
         onCloseModal?.();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        const file = e.target.files[0];
+        if (file) {
+            setValue("avatar", file);
+        }
     };
 
     return (
@@ -158,7 +165,26 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                         />
                     </StyledInputWrapper>
                 </FormRow>
-
+                <FormRow
+                    htmlFor='avatar'
+                    label={CreateUserFormRowLabels.AvatarImage}
+                    error={errors.avatar}
+                >
+                    {currentValues.avatar?.name ? (
+                        <span>{currentValues.avatar?.name}</span>
+                    ) : (
+                        <FileInput
+                            disabled={isLoading}
+                            id='avatar'
+                            accept='avatar/*'
+                            {...(register("avatar"),
+                            {
+                                required: false,
+                            })}
+                            onChange={handleFileChange}
+                        />
+                    )}
+                </FormRow>
                 <FormRow>
                     {/* type is an HTML attribute! */}
                     <Button

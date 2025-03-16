@@ -83,6 +83,7 @@ export interface AppUserContext {
 export interface CreateUserFormFields {
     fullName: string;
     email: string;
+    avatar: File;
     password: string;
     confirmPassword: string;
 }

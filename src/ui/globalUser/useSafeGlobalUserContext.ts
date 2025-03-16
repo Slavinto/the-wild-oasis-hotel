@@ -9,7 +9,5 @@ export const useSafeGlobalUserContext = () => {
         throw new Error(GLOBAL_CONTEXT_ERROR_MESSAGE);
     }
 
-    const { user, setUser } = context;
-
-    return { user, setUser };
+    return { ...context };
 };

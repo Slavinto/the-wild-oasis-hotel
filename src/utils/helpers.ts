@@ -1,5 +1,6 @@
+import { supabase } from "@/services/supabaseClient";
 import { Tables } from "@/services/supabaseTypes";
-import { cabinValues } from "@/types/constants";
+import { BucketNames, cabinValues } from "@/types/constants";
 import { AppTables } from "@/types/enums";
 import {
     AppBooking,
@@ -262,4 +263,29 @@ export const allFormFieldsFilled = (valuesObject: unknown) => {
         Object.keys(valuesObject as object).length &&
         Object.values(valuesObject as object).every((fieldValue) => fieldValue)
     );
+};
+
+export const uploadImageToBucket = async (
+    file: File,
+    bucketName: BucketNames
+) => {
+    try {
+        const { name } = file;
+        if (!name) {
+            throw new Error("Invalid file. Failed to upload");
+        }
+
+        const fileName = `${Date.now()}-${name}`;
+
+        const { error } = await supabase.storage
+            .from(bucketName)
+            .upload(fileName, file);
+        if (error) throw error;
+        const {
+            data: { publicUrl },
+        } = supabase.storage.from(bucketName).getPublicUrl(fileName);
+        return { fileName, publicUrl };
+    } catch (error) {
+        throw handleError(error);
+    }
 };

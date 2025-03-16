@@ -7,6 +7,8 @@ import {
     Headings,
 } from "@/types/enums";
 import { Heading } from "@/ui";
+import { ModalContext } from "./modal/ModalContext";
+import { useContext } from "react";
 
 const StyledConfirmOperation = styled.div`
     width: 40rem;
@@ -41,6 +43,8 @@ function ConfirmOperation({
     // onCancel: () => void;
     disabled: boolean;
 }) {
+    const { close } = useContext(ModalContext);
+
     return (
         <StyledConfirmOperation>
             <Heading text={`${operation} ${resourceName}`} as={Headings.H3} />
@@ -59,7 +63,11 @@ function ConfirmOperation({
                     disabled={disabled}
                     onClick={() => {
                         onConfirm();
-                        // onCloseModal?.();
+                        if (onCloseModal) {
+                            onCloseModal();
+                        } else {
+                            close();
+                        }
                     }}
                 >
                     Confirm {operation}

@@ -3,17 +3,11 @@ import { AppTables } from "@/types/enums";
 import { Spinner, Table } from "@/ui";
 import { useGetAllUsers } from "./useGetAllUsers";
 import UserRow from "./UserRow";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 const UserTable = () => {
-    const { users, getAllUsers, isLoading } = useGetAllUsers();
-    const isUserArray = !!(users?.length && users?.length > 0);
-
-    useEffect(() => {
-        if (!isUserArray) {
-            getAllUsers();
-        }
-    }, [getAllUsers, isUserArray]);
+    const { users, isLoading } = useGetAllUsers();
+    const isUserArray = users?.length && users?.length > 0;
 
     return (
         <Table

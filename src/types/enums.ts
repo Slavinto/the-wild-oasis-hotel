@@ -108,6 +108,7 @@ export enum ModalWindows {
     IsBookingPayedConfirm = "is-booking-payed-confirm",
     // users
     UserLoginForm = "user-login-form",
+    DeleteUserConfirm = "delete-user-confirm",
 }
 
 // ==============================Modals========================

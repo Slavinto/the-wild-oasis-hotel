@@ -4,10 +4,12 @@ import { AppEntities } from "@/types/enums";
 import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useCurrentUser = () => {
     const { setUser } = useSafeGlobalUserContext();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const {
         data: user,
@@ -26,9 +28,9 @@ export const useCurrentUser = () => {
     useEffect(() => {
         if (user === null) {
             queryClient.removeQueries();
-            console.log("removing queries data");
+            navigate("/login");
         }
-    }, [queryClient, user]);
+    }, [queryClient, user, navigate]);
 
     // writing user to app user context
     useEffect(() => {

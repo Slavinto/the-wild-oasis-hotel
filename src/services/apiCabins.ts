@@ -2,10 +2,11 @@ import {
     checkIsTableCabin,
     createSupabaseCabinFromCabin,
     handleError,
+    uploadImageToBucket,
 } from "@/utils/helpers";
 import { supabase } from "./supabaseClient";
 import { Cabin } from "@/types/interfaces";
-import { BucketNames, bucketNames } from "@/types/constants";
+import { bucketNames } from "@/types/constants";
 import { Tables } from "./supabaseTypes";
 import { AppTables } from "@/types/enums";
 
@@ -161,31 +162,6 @@ export const removeCabin = async (cabin: Tables<AppTables.Cabins>) => {
             throw error;
         }
         return data;
-    } catch (error) {
-        throw handleError(error);
-    }
-};
-
-export const uploadImageToBucket = async (
-    file: File,
-    bucketName: BucketNames
-) => {
-    try {
-        const { name } = file;
-        if (!name) {
-            throw new Error("Invalid file. Failed to upload");
-        }
-
-        const fileName = `${Date.now()}-${name}`;
-
-        const { error } = await supabase.storage
-            .from(bucketName)
-            .upload(fileName, file);
-        if (error) throw error;
-        const {
-            data: { publicUrl },
-        } = supabase.storage.from(bucketName).getPublicUrl(fileName);
-        return { fileName, publicUrl };
     } catch (error) {
         throw handleError(error);
     }

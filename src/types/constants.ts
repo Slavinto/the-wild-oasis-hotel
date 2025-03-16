@@ -92,3 +92,15 @@ export const userTableColumns = [
 // export const CabinRowMenuOptions = ["Duplicate", "Edit", "Delete"];
 
 // ==============================Menus==========================
+// ==============================Styles==========================
+
+export const headerButtonStyles = {
+    width: "3rem",
+    height: "3rem",
+    padding: "0",
+    // boxShadow: "var(--shadow-sm)",
+    boxShadow: "none",
+    border: "none",
+};
+
+// ==============================Styles==========================

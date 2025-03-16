@@ -7,6 +7,7 @@ import {
 import { Tables } from "@/services/supabaseTypes";
 import {
     AppEntities,
+    AppOperations,
     AppTables,
     CabinRowFunctions,
     ModalWindows,
@@ -131,6 +132,7 @@ const CabinRow: FC<CabinRowProps> = ({ cabin }) => {
                         </Modal.Open>
                         <Modal.Window name={ModalWindows.DeleteCabinConfirm}>
                             <ConfirmDelete
+                                operation={AppOperations.Delete}
                                 onConfirm={handleConfirmDelete}
                                 disabled={isDeleting}
                                 resourceName={AppEntities.Cabin}

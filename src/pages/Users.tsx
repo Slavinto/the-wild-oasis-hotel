@@ -1,6 +1,5 @@
 import { Headings, ModalWindows } from "@/types/enums";
-import Heading from "../ui/Heading";
-import { Button, Modal } from "@/ui";
+import { Heading, Button, Modal } from "@/ui";
 import SignupForm from "@/features/authentication/SignupForm";
 import UserTable from "@/features/authentication/UserTable";
 

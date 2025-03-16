@@ -3,6 +3,7 @@ import { ButtonVariations } from "@/types/enums";
 import { Button } from "@/ui";
 import { HiOutlineArrowRightStartOnRectangle } from "react-icons/hi2";
 import { useGlobalSpinner } from "./globalSpinner/useGlobalSpinner";
+import { headerButtonStyles } from "@/types/constants";
 
 const LogoutButton = () => {
     const { logout, isLoading } = useLogoutUser();
@@ -17,15 +18,12 @@ const LogoutButton = () => {
             onClick={handleClickLogout}
             disabled={isLoading}
             $variation={ButtonVariations.Secondary}
-            $customstyles={{
-                width: "4rem",
-                height: "4rem",
-                padding: "0",
-                // borderRadius: "",
-                boxShadow: "var(--shadow-sm)",
-            }}
+            $customstyles={headerButtonStyles}
         >
-            <HiOutlineArrowRightStartOnRectangle size={25} />
+            <HiOutlineArrowRightStartOnRectangle
+                size={20}
+                color={"var(--color-grey-400)"}
+            />
         </Button>
     );
 };

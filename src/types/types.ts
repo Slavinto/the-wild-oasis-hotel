@@ -33,5 +33,5 @@ export type BookingSortBy = "end_date" | "status" | "total_price";
 // | "name"
 
 export type SignupUser = Omit<CreateUserFormFields, "confirmPassword"> & {
-    avatar?: string;
+    avatar?: File;
 };

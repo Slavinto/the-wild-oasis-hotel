@@ -80,7 +80,6 @@ function CreateCabinForm({
         if (!e.target.files) return;
         const file = e.target.files[0];
         if (file) {
-            console.log(e.target.files[0]);
             setValue("image", file);
         }
     };
