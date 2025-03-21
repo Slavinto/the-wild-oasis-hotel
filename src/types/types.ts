@@ -1,6 +1,7 @@
 import { Tables } from "@/services/supabaseTypes";
 import { AppTables } from "./enums";
 import { AppBookingFull, CreateUserFormFields } from "./interfaces";
+import { User } from "@supabase/supabase-js";
 
 // we're getting additional data from related tables "guests" and "cabins"
 export type BookingsWithRelated = Tables<AppTables.Bookings> & {
@@ -33,5 +34,10 @@ export type BookingSortBy = "end_date" | "status" | "total_price";
 // | "name"
 
 export type SignupUser = Omit<CreateUserFormFields, "confirmPassword"> & {
-    avatar?: File;
+    avatar?: FileList;
+    signedUpBy: User | null;
 };
+
+export type UpdateUser = Partial<
+    Pick<CreateUserFormFields, "fullName" | "email" | "avatar" | "userStatus">
+>;

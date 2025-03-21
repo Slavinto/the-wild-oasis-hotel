@@ -16,7 +16,8 @@ const LoginLayout = styled.main`
 `;
 
 function Login() {
-    const user = useLoaderData() || null;
+    const user = useLoaderData();
+
     useConditionalNavigate(!!user, "/");
     return user ? (
         <GlobalSpinner>

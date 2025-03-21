@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, ReactNode } from "react";
 import styled from "styled-components";
 
 const StyledCheckbox = styled.div`
@@ -27,33 +27,36 @@ const StyledCheckbox = styled.div`
     }
 `;
 
-function Checkbox({
-    checked,
-    onChange,
-    onClick,
-    disabled = false,
-    id,
-    children,
-}: {
-    checked: boolean;
-    onChange?: () => void;
+interface CheckboxProps {
+    checked?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onClick?: () => void;
     disabled: boolean;
-    id: string;
+    id?: string;
+    name: string;
     children: ReactNode;
-}) {
+}
+
+const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function (
+    { checked, onChange, onClick, disabled = false, id, name, children },
+    ref
+) {
     return (
         <StyledCheckbox onClick={onClick} className='test'>
             <input
                 type='checkbox'
+                name={name}
                 id={id}
                 checked={checked}
                 onChange={onChange}
                 disabled={disabled}
+                ref={ref}
             />
             <label htmlFor={!disabled ? id : ""}>{children}</label>
         </StyledCheckbox>
     );
-}
+});
+
+Checkbox.displayName = "Checkbox";
 
 export default Checkbox;

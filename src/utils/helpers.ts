@@ -1,19 +1,22 @@
 import { supabase } from "@/services/supabaseClient";
 import { Tables } from "@/services/supabaseTypes";
 import { BucketNames, cabinValues } from "@/types/constants";
-import { AppTables } from "@/types/enums";
+import { AppTables, UserActions, UserRoles, UserStatus } from "@/types/enums";
 import {
+    ActionPermissionCheck,
     AppBooking,
     AppBookingFull,
     BookingStatus,
     Cabin,
     SupabaseCabin,
+    UserSimplified,
 } from "@/types/interfaces";
 import {
     AppBookingUpdate,
     BookingsWithRelated,
     BookingsWithRelatedFull,
 } from "@/types/types";
+import { User } from "@supabase/supabase-js";
 import { formatDistance, parseISO, differenceInDays, format } from "date-fns";
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
@@ -288,4 +291,86 @@ export const uploadImageToBucket = async (
     } catch (error) {
         throw handleError(error);
     }
+};
+
+// export const checkUserNotActiveOrNotAdvanced = (user: User | null) => {
+//     if (
+//         user === null ||
+//         user.user_metadata.userRole !== UserRoles.AdvancedUser ||
+//         user.user_metadata.userStatus !== UserStatus.Active
+//     ) {
+//         throw new Error("Only active advanced users are allowed");
+//     }
+// };
+
+export const checkUserActive = (user: User | null) => {
+    if (user === null || getUserStatus(user) === UserStatus.Suspended) {
+        throw new Error("Failed to perform action. User is suspended");
+    }
+};
+
+export const getUserRole = (user: User | UserSimplified) => {
+    return user.user_metadata.userRole;
+};
+
+export const getUserStatus = (user: User | UserSimplified) => {
+    return user.user_metadata.userStatus;
+};
+
+export const checkIsAllowedToUser = (data: ActionPermissionCheck) => {
+    const { initiatorUser, targetUser, action } = data;
+
+    const errMsgStart = `Failed to perform ${action} action. `;
+    const successMsg = "Success";
+
+    if (!initiatorUser) {
+        return {
+            allowed: false,
+            message: `${errMsgStart}Unknown initiator user`,
+        };
+    }
+
+    if (getUserStatus(initiatorUser) === UserStatus.Suspended) {
+        return {
+            allowed: false,
+            message: `${errMsgStart}Initiator is suspended`,
+        };
+    }
+
+    // if there's no target user we probably signing in so we're just
+    // checking initiatorUser status which we already done above
+    if (!targetUser) {
+        if (action === UserActions.SignIn) {
+            return {
+                allowed: true,
+                message: successMsg,
+            };
+        }
+        if (action === UserActions.GetAll) {
+            return {
+                allowed: true,
+                message: successMsg,
+            };
+        }
+        return {
+            allowed: false,
+            message: `${errMsgStart}Unknown action or no target user`,
+        };
+    }
+
+    // only advanced users can update other advanced users
+    if (
+        getUserRole(targetUser) === UserRoles.AdvancedUser &&
+        getUserRole(initiatorUser) === UserRoles.CommonUser
+    ) {
+        return {
+            allowed: false,
+            message: `${errMsgStart}Only advanced users are allowed`,
+        };
+    }
+
+    return {
+        allowed: true,
+        message: successMsg,
+    };
 };

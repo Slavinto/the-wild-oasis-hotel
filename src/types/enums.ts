@@ -20,6 +20,25 @@ export enum AppOperations {
     Payment = "Payment",
     CheckOut = "Check out",
 }
+
+export enum UserRoles {
+    CommonUser = "common_user",
+    AdvancedUser = "advanced_user",
+}
+
+export enum UserStatus {
+    Active = "active",
+    Suspended = "suspended",
+}
+
+export enum UserActions {
+    Delete = "delete",
+    Get = "get",
+    GetAll = "get-all",
+    SignIn = "signin",
+    SignUp = "signup",
+    Update = "update",
+}
 // ==============================Generic=======================
 // ==============================Headings=======================
 export enum Headings {
@@ -47,6 +66,13 @@ export enum CreateUserFormRowLabels {
     Password = "Password (min 8 characters)",
     RepeatPassword = "Repeat password",
     AvatarImage = "Avatar image",
+}
+
+export enum UpdateUserFormRowLabels {
+    FullName = "Full name",
+    EmailAddress = "Email address",
+    AvatarImage = "Avatar image",
+    SuspendUser = "Suspend user",
 }
 
 export enum CreateCabinRowLabels {
@@ -109,6 +135,7 @@ export enum ModalWindows {
     // users
     UserLoginForm = "user-login-form",
     DeleteUserConfirm = "delete-user-confirm",
+    UpdateUserForm = "update-user-form",
 }
 
 // ==============================Modals========================
@@ -118,6 +145,7 @@ export enum InputIds {
     Email = "email",
     Password = "password",
     ConfirmPassword = "confirmPassword",
+    Avatar = "avatar",
 }
 // ==============================Input==========================
 // ==============================Filters==========================

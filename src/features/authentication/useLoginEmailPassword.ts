@@ -1,6 +1,7 @@
 import { loginWithEmailPassword } from "@/services/apiAuth";
-import { AppEntities } from "@/types/enums";
+import { AppEntities, UserStatus } from "@/types/enums";
 import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
+import { getUserStatus } from "@/utils/helpers";
 import { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -23,14 +24,19 @@ export const useLoginEmailPassword = () => {
             password: string;
         }) => loginWithEmailPassword({ email, password }),
         onSuccess: (data) => {
-            setUser(data);
-            toast.success(`User successfully logged in`);
+            setUser(data.user);
+            if (getUserStatus(data.user) === UserStatus.Active) {
+                toast.success(`User successfully logged in`);
+            }
+            if (getUserStatus(data.user) === UserStatus.Suspended) {
+                toast.error(`User is suspended`);
+            }
 
             // setting user data in the reactQuery cache right away
             queryClient.setQueryData<User | null>(
                 [AppEntities.User],
                 (oldData: User | null | undefined) =>
-                    oldData ? { ...oldData, ...data } : data
+                    oldData ? { ...oldData, ...data.user } : data.user
             );
         },
         onError: (error) => {

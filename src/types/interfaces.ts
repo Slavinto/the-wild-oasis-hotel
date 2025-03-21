@@ -1,5 +1,6 @@
 import { Session, User, WeakPassword } from "@supabase/supabase-js";
 import { BookingsWithRelated } from "./types";
+import { UserActions, UserRoles, UserStatus } from "./enums";
 
 export interface Cabin {
     id?: number;
@@ -80,10 +81,32 @@ export interface AppUserContext {
     setUser: (user: User | null) => void;
 }
 
+// can be used only when creating new user
+// user status is always active
+export interface UserSimplified {
+    email: string;
+    user_metadata: {
+        password: string;
+        fullName: string;
+        avatar: FileList;
+        userRole: UserRoles;
+        userStatus: UserStatus.Active;
+        signedUpBy: User;
+    };
+}
+
 export interface CreateUserFormFields {
     fullName: string;
     email: string;
-    avatar: File;
+    avatar: FileList;
     password: string;
     confirmPassword: string;
+    userRole: UserRoles;
+    userStatus: UserStatus;
+}
+
+export interface ActionPermissionCheck {
+    initiatorUser: User | null;
+    targetUser?: User | UserSimplified;
+    action: UserActions;
 }

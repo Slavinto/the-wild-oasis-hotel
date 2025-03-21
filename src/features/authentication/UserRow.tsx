@@ -1,18 +1,32 @@
 import { userTypeToTagName } from "@/types/constants";
 import { Menu, Modal, Table, Tag } from "@/ui";
-import { formatDistanceFromNow } from "@/utils/helpers";
+import {
+    formatDistanceFromNow,
+    getUserRole,
+    getUserStatus,
+} from "@/utils/helpers";
 import { User } from "@supabase/supabase-js";
 import {
     HiEllipsisVertical,
+    HiOutlineEye,
     HiOutlineEyeSlash,
     HiOutlineTrash,
     HiOutlineUserCircle,
 } from "react-icons/hi2";
 import styled from "styled-components";
 import UserAvatar from "./UserAvatar";
-import { AppEntities, AppOperations, ModalWindows } from "@/types/enums";
+import {
+    AppEntities,
+    AppOperations,
+    ModalWindows,
+    UserRoles,
+    UserStatus,
+} from "@/types/enums";
 import ConfirmOperation from "@/ui/ConfirmOperation";
 import { useDeleteUser } from "./useDeleteUser";
+import UpdateUserDataForm from "./UpdateUserDataForm";
+import { useUpdateUser } from "./useUpdateUser";
+import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
 
 const Stacked = styled.div`
     display: flex;
@@ -38,57 +52,147 @@ const Highlighted = styled.div`
 
 const UserRow = ({ user }: { user: User }) => {
     const { deleteUser, isDeleting } = useDeleteUser();
+    const { updateUser, isUpdating } = useUpdateUser();
+    const { user: currentUser } = useSafeGlobalUserContext();
 
-    const userType = user?.email_confirmed_at ? "user" : "unconfirmed";
-    return (
+    if (!currentUser) {
+        return null;
+    }
+
+    const userTag =
+        user?.user_metadata.userStatus === UserStatus.Suspended
+            ? "suspended_user"
+            : user?.user_metadata.userRole === UserRoles.AdvancedUser
+            ? UserRoles.AdvancedUser
+            : UserRoles.CommonUser;
+
+    const userType =
+        user?.user_metadata.userRole === UserRoles.AdvancedUser
+            ? UserRoles.AdvancedUser
+            : UserRoles.CommonUser;
+
+    const isBusy = isDeleting || isUpdating;
+
+    // allow suspend/activate advanced users only to advanced users
+    const allowAdvanced =
+        getUserStatus(currentUser) === UserStatus.Active &&
+        (getUserRole(user) === UserRoles.CommonUser ||
+            (getUserRole(user) === UserRoles.AdvancedUser &&
+                getUserRole(currentUser) === UserRoles.AdvancedUser));
+
+    const handleClickSuspend = () => {
+        // toggling userStatus between active and suspended
+        updateUser({
+            userId: user.id,
+            userUpdate: {
+                userStatus:
+                    user.user_metadata.userStatus === UserStatus.Active
+                        ? UserStatus.Suspended
+                        : UserStatus.Active,
+            },
+        });
+    };
+
+    return user ? (
         <Table.Row>
             <UserAvatar user={user} />
             <Stacked>{user.user_metadata.fullName}</Stacked>
             <Stacked>
-                <Tag $type={userTypeToTagName[userType]}>{userType}</Tag>
-                {user.role}
+                <Tag $type={userTypeToTagName[userTag]}>
+                    {userType.replace("_", " ")}
+                </Tag>
+                {user.user_metadata.userStatus}
             </Stacked>
             <Stacked>
                 <Highlighted>{user.email}</Highlighted>
             </Stacked>
             <Stacked>
-                {userType === "user"
+                {user.last_sign_in_at
                     ? formatDistanceFromNow(user.last_sign_in_at || "")
                     : "Haven't logged in yet"}
             </Stacked>
-            <Menu id={user.id}>
-                <Menu.Toggle>
-                    <HiEllipsisVertical />
-                </Menu.Toggle>
-                <Menu.List>
-                    <Menu.Button onClick={() => {}} disabled={false}>
-                        <HiOutlineUserCircle />
-                        <span>Update</span>
-                    </Menu.Button>
-                    <Menu.Button disabled={false}>
-                        <HiOutlineEyeSlash />
-                        <span>Suspend</span>
-                    </Menu.Button>
-                    <Modal>
-                        <Modal.Open opens={ModalWindows.DeleteUserConfirm}>
-                            <Menu.Button onClick={() => {}} disabled={false}>
-                                <HiOutlineTrash />
-                                <span>Delete</span>
+            {allowAdvanced && (
+                <Menu id={user.id}>
+                    <Menu.Toggle>
+                        <HiEllipsisVertical />
+                    </Menu.Toggle>
+                    <Menu.List>
+                        <Modal>
+                            <Modal.Open opens={ModalWindows.UpdateUserForm}>
+                                <Menu.Button
+                                    onClick={() => {}}
+                                    disabled={isBusy}
+                                >
+                                    <HiOutlineUserCircle />
+                                    <span>Update</span>
+                                </Menu.Button>
+                            </Modal.Open>
+                            <Modal.Window name={ModalWindows.UpdateUserForm}>
+                                <UpdateUserDataForm userId={user.id} />
+                            </Modal.Window>
+                        </Modal>
+                        {currentUser.email === user.email ? (
+                            <></>
+                        ) : (
+                            <Menu.Button
+                                disabled={isBusy}
+                                onClick={handleClickSuspend}
+                            >
+                                {user.user_metadata.userStatus ===
+                                UserStatus.Active ? (
+                                    <>
+                                        <HiOutlineEyeSlash />
+                                        <span>Suspend</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <HiOutlineEye />
+                                        <span>Activate</span>
+                                    </>
+                                )}
                             </Menu.Button>
-                        </Modal.Open>
-                        <Modal.Window name={ModalWindows.DeleteUserConfirm}>
-                            <ConfirmOperation
-                                onConfirm={() => deleteUser(user.id)}
-                                disabled={isDeleting}
-                                resourceName={AppEntities.User}
-                                operation={AppOperations.Delete}
-                            />
-                        </Modal.Window>
-                    </Modal>
-                </Menu.List>
-            </Menu>
+                        )}
+                        {
+                            // allow deleting users only to advanced user
+                            getUserStatus(currentUser) === UserStatus.Active &&
+                                getUserRole(currentUser) ===
+                                    UserRoles.AdvancedUser && (
+                                    <Modal>
+                                        <Modal.Open
+                                            opens={
+                                                ModalWindows.DeleteUserConfirm
+                                            }
+                                        >
+                                            <Menu.Button
+                                                onClick={() => {}}
+                                                disabled={isBusy}
+                                            >
+                                                <HiOutlineTrash />
+                                                <span>Delete</span>
+                                            </Menu.Button>
+                                        </Modal.Open>
+                                        <Modal.Window
+                                            name={
+                                                ModalWindows.DeleteUserConfirm
+                                            }
+                                        >
+                                            <ConfirmOperation
+                                                onConfirm={() =>
+                                                    deleteUser(user.id)
+                                                }
+                                                disabled={isDeleting}
+                                                resourceName={AppEntities.User}
+                                                operation={AppOperations.Delete}
+                                            />
+                                        </Modal.Window>
+                                    </Modal>
+                                )
+                        }
+                    </Menu.List>
+                </Menu>
+            )}{" "}
         </Table.Row>
-    );
+    ) : null;
 };
 
 export default UserRow;

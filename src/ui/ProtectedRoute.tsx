@@ -11,6 +11,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     const { getUser, isLoading, isAuthenticated } = useCurrentUser();
 
     useGlobalSpinner(isLoading);
+
     // if there's no user in the user context and in the reactQuery cache the
     // user will be redirected to the login page
     useConditionalNavigate(
@@ -27,6 +28,11 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         getUser();
     }, [getUser]);
+
+    if (!userFromLoader) {
+        setUser(null);
+        return null;
+    }
 
     return userFromContext || isAuthenticated ? <>{children}</> : null;
 };

@@ -3,15 +3,25 @@ import {
     CreateUserFormRowLabels,
     Headings,
     InputIds,
+    UserRoles,
 } from "@/types/enums";
-import { Button, FileInput, Form, FormRow, Heading, Input } from "@/ui";
+import {
+    Button,
+    Checkbox,
+    FileInput,
+    Form,
+    FormRow,
+    Heading,
+    Input,
+} from "@/ui";
 import styled from "styled-components";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserFormFields } from "@/types/interfaces";
 import { userValues } from "@/types/constants";
-import { allFormFieldsFilled } from "@/utils/helpers";
 import { useSignup } from "./useSignup";
 import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
+import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
+import { getUserRole } from "@/utils/helpers";
 
 // Email regex: /\S+@\S+\.\S+/
 
@@ -30,11 +40,13 @@ const StyledInputWrapper = styled.div`
 function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
     const defaultValues = {};
     const form = useForm<CreateUserFormFields>(defaultValues);
+    const { user: currentUser } = useSafeGlobalUserContext();
+
     const {
         register,
         formState: { errors },
         watch,
-        setValue,
+        // setValue,
         handleSubmit,
         reset,
     } = form;
@@ -47,17 +59,27 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
 
     const onSignup: SubmitHandler<CreateUserFormFields> = (data) => {
         console.log({ submitData: data });
-        signup(data, { onSettled: () => reset });
+        signup(
+            {
+                ...data,
+                signedUpBy: currentUser,
+                // if checked user role is advanced user
+                userRole: data.userRole
+                    ? UserRoles.AdvancedUser
+                    : UserRoles.CommonUser,
+            },
+            { onSettled: () => reset }
+        );
         onCloseModal?.();
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
-        const file = e.target.files[0];
-        if (file) {
-            setValue("avatar", file);
-        }
-    };
+    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     if (!e.target.files) return;
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         setValue("avatar", file);
+    //     }
+    // };
 
     return (
         <StyledFormWrapper>
@@ -170,22 +192,33 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                     label={CreateUserFormRowLabels.AvatarImage}
                     error={errors.avatar}
                 >
-                    {currentValues.avatar?.name ? (
+                    {/* {
+                    currentValues.avatar?.name ? (
                         <span>{currentValues.avatar?.name}</span>
-                    ) : (
-                        <FileInput
-                            disabled={isLoading}
-                            id='avatar'
-                            accept='avatar/*'
-                            {...(register("avatar"),
-                            {
-                                required: false,
-                            })}
-                            onChange={handleFileChange}
-                        />
-                    )}
+                    ) : ( */}
+                    <FileInput
+                        id={InputIds.Avatar}
+                        accept='image/*'
+                        {...register("avatar")}
+                        // onChange={handleFileChange}
+                    />
+
+                    {/* )} */}
                 </FormRow>
                 <FormRow>
+                    {currentUser &&
+                        getUserRole(currentUser) === UserRoles.AdvancedUser && (
+                            <Checkbox
+                                disabled={
+                                    isLoading ||
+                                    currentUser?.user_metadata.userRole ===
+                                        UserRoles.CommonUser
+                                }
+                                {...register("userRole")}
+                            >
+                                Sign up as an advanced user
+                            </Checkbox>
+                        )}
                     {/* type is an HTML attribute! */}
                     <Button
                         disabled={isLoading}
@@ -197,14 +230,8 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                     </Button>
                     <Button
                         type='submit'
-                        disabled={
-                            !allFormFieldsFilled(currentValues) || isLoading
-                        }
-                        $variation={
-                            allFormFieldsFilled(currentValues)
-                                ? ButtonVariations.Primary
-                                : ButtonVariations.Secondary
-                        }
+                        disabled={isLoading}
+                        $variation={ButtonVariations.Primary}
                     >
                         Create new user
                     </Button>

@@ -3,6 +3,7 @@ import {
     CreateUserFormRowLabels,
     RowOrientations,
     UpdateSettingsFormLabels,
+    UpdateUserFormRowLabels,
     UserLoginFormRowLabels,
 } from "@/types/enums";
 import { FC, PropsWithChildren } from "react";
@@ -62,9 +63,11 @@ interface FormRowProps {
     htmlFor?: string;
     label?:
         | CreateCabinRowLabels
-        | UpdateSettingsFormLabels
         | CreateUserFormRowLabels
+        | UpdateSettingsFormLabels
+        | UpdateUserFormRowLabels
         | UserLoginFormRowLabels;
+
     error?: FieldError;
     orientation?: RowOrientations;
 }

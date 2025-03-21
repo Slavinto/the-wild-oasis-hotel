@@ -10,7 +10,9 @@ import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
 import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
-    const [email, setEmail] = useState("slava123@example.com");
+    // slava@test1.com -> common user
+    // sdfsad@sfd.com -> advanced user
+    const [email, setEmail] = useState("sdfsad@sfd.com");
     const [password, setPassword] = useState("123123");
     const navigate = useNavigate();
     const { login, isLoggingIn, error } = useLoginEmailPassword();

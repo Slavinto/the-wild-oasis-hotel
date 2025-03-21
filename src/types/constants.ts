@@ -33,9 +33,9 @@ export const userValues = {
 };
 
 export const userTypeToTagName = {
-    user: "green",
-    admin: "purple",
-    unconfirmed: "grey",
+    common_user: "green",
+    advanced_user: "brand",
+    suspended_user: "grey",
 };
 
 // ==============================Users==========================
