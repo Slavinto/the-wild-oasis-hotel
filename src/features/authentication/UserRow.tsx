@@ -153,10 +153,10 @@ const UserRow = ({ user }: { user: User }) => {
                             </Menu.Button>
                         )}
                         {
-                            // allow deleting users only to advanced user
-                            getUserStatus(currentUser) === UserStatus.Active &&
-                                getUserRole(currentUser) ===
-                                    UserRoles.AdvancedUser && (
+                            // allow deleting users only to advanced user and user
+                            // can not delete himself
+                            allowAdvanced &&
+                                currentUser.email !== user.email && (
                                     <Modal>
                                         <Modal.Open
                                             opens={

@@ -17,7 +17,11 @@ import {
 import styled from "styled-components";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserFormFields } from "@/types/interfaces";
-import { userValues } from "@/types/constants";
+import {
+    validateUserEmail,
+    validateUserFullName,
+    validateUserPassword,
+} from "@/types/constants";
 import { useSignup } from "./useSignup";
 import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
 import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
@@ -96,17 +100,10 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                             type='text'
                             placeholder='Full user name'
                             id={InputIds.FullName}
-                            {...register(InputIds.FullName, {
-                                required: "Full name of the user is required",
-                                minLength: {
-                                    value: userValues.minUserNameLength,
-                                    message: `Full user name must contain at least ${userValues.minUserNameLength} characters`,
-                                },
-                                maxLength: {
-                                    value: userValues.maxUserNameLength,
-                                    message: `Full user name must contain maximum of ${userValues.maxUserNameLength} characters`,
-                                },
-                            })}
+                            {...register(
+                                InputIds.FullName,
+                                validateUserFullName
+                            )}
                         />
                     </StyledInputWrapper>
                 </FormRow>
@@ -122,13 +119,7 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                             placeholder='Email'
                             type='email'
                             id={InputIds.Email}
-                            {...register(InputIds.Email, {
-                                required: "User email is required",
-                                pattern: {
-                                    value: /\S+@\S+\.\S+/,
-                                    message: "Invalid email format",
-                                },
-                            })}
+                            {...register(InputIds.Email, validateUserEmail)}
                         />
                     </StyledInputWrapper>
                 </FormRow>
@@ -144,17 +135,10 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                             type='password'
                             placeholder='Password'
                             id={InputIds.Password}
-                            {...register(InputIds.Password, {
-                                required: "Password is required",
-                                minLength: {
-                                    value: userValues.minPasswordLength,
-                                    message: `Password length must be over ${userValues.minPasswordLength} characters`,
-                                },
-                                maxLength: {
-                                    value: userValues.maxPasswordLength,
-                                    message: `Password length must be under ${userValues.maxPasswordLength} characters`,
-                                },
-                            })}
+                            {...register(
+                                InputIds.Password,
+                                validateUserPassword
+                            )}
                         />
                     </StyledInputWrapper>
                 </FormRow>
@@ -171,15 +155,7 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                             type='password'
                             id={InputIds.ConfirmPassword}
                             {...register(InputIds.ConfirmPassword, {
-                                required: "Password is required",
-                                minLength: {
-                                    value: userValues.minPasswordLength,
-                                    message: `Password length must be over ${userValues.minPasswordLength} characters`,
-                                },
-                                maxLength: {
-                                    value: userValues.maxPasswordLength,
-                                    message: `Password length must be under ${userValues.maxPasswordLength} characters`,
-                                },
+                                ...validateUserPassword,
                                 validate: (value) =>
                                     value === password ||
                                     "Passwords don't match",

@@ -105,6 +105,15 @@ export interface CreateUserFormFields {
     userStatus: UserStatus;
 }
 
+export interface UpdateUserFormFields {
+    email: string;
+    fullName: string;
+    avatar: FileList;
+    suspendUser: boolean;
+    oldPassword: string;
+    newPassword: string;
+}
+
 export interface ActionPermissionCheck {
     initiatorUser: User | null;
     targetUser?: User | UserSimplified;

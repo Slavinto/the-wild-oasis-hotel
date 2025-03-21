@@ -38,6 +38,49 @@ export const userTypeToTagName = {
     suspended_user: "grey",
 };
 
+export const validateUserFullName = {
+    required: "Full name of the user is required",
+    minLength: {
+        value: userValues.minUserNameLength,
+        message: `Full user name must contain at least ${userValues.minUserNameLength} characters`,
+    },
+    maxLength: {
+        value: userValues.maxUserNameLength,
+        message: `Full user name must contain maximum of ${userValues.maxUserNameLength} characters`,
+    },
+};
+
+export const validateUserEmail = {
+    required: "User email is required",
+    pattern: {
+        value: /\S+@\S+\.\S+/,
+        message: "Invalid email format",
+    },
+};
+
+export const validateUserPassword = {
+    required: "Password is required",
+    minLength: {
+        value: userValues.minPasswordLength,
+        message: `Password length must be over ${userValues.minPasswordLength} characters`,
+    },
+    maxLength: {
+        value: userValues.maxPasswordLength,
+        message: `Password length must be under ${userValues.maxPasswordLength} characters`,
+    },
+};
+
+export const validateOldUserPassword = {
+    required: false,
+    minLength: {
+        value: userValues.minPasswordLength,
+        message: `Password length must be over ${userValues.minPasswordLength} characters`,
+    },
+    maxLength: {
+        value: userValues.maxPasswordLength,
+        message: `Password length must be under ${userValues.maxPasswordLength} characters`,
+    },
+};
 // ==============================Users==========================
 // ==============================Settings==========================
 export const settingValues = {

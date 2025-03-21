@@ -256,6 +256,33 @@ export const updateUserById = async (
     currentUser: User
 ) => {
     try {
+        // handling user password change attempt
+        // checking old password
+        if (
+            currentUser.email &&
+            userUpdate.oldPassword &&
+            userUpdate.newPassword
+        ) {
+            const data = await loginWithEmailPassword({
+                email: currentUser.email,
+                password: userUpdate.oldPassword,
+            });
+            console.log({ data });
+            if (!data || !data.user || data.user.email !== currentUser.email) {
+                throw new Error(
+                    "Failed to change user password. Wrong old password"
+                );
+            }
+
+            const { error } = await supabase.auth.updateUser({
+                password: userUpdate.newPassword,
+            });
+
+            if (error) {
+                throw error;
+            }
+        }
+
         const adminClient = getAdminClient();
         const { user: userToUpdate } = await getUserById(userId, currentUser);
         console.log({ userUpdate });

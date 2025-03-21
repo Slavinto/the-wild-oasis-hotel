@@ -39,5 +39,8 @@ export type SignupUser = Omit<CreateUserFormFields, "confirmPassword"> & {
 };
 
 export type UpdateUser = Partial<
-    Pick<CreateUserFormFields, "fullName" | "email" | "avatar" | "userStatus">
+    Pick<
+        CreateUserFormFields,
+        "fullName" | "email" | "avatar" | "userStatus"
+    > & { oldPassword?: string; newPassword?: string }
 >;

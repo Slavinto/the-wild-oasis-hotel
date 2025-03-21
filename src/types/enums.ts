@@ -73,6 +73,8 @@ export enum UpdateUserFormRowLabels {
     EmailAddress = "Email address",
     AvatarImage = "Avatar image",
     SuspendUser = "Suspend user",
+    OldPassword = "Old Password",
+    NewPassword = "New Password",
 }
 
 export enum CreateCabinRowLabels {
@@ -145,6 +147,8 @@ export enum InputIds {
     Email = "email",
     Password = "password",
     ConfirmPassword = "confirmPassword",
+    OldPassword = "oldPassword",
+    NewPassword = "newPassword",
     Avatar = "avatar",
 }
 // ==============================Input==========================
