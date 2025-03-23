@@ -2,6 +2,7 @@ import { updateUserById } from "@/services/apiAuth";
 import { AppEntities } from "@/types/enums";
 import { UpdateUser } from "@/types/types";
 import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
+import { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -22,12 +23,29 @@ export const useUpdateUser = () => {
             userId: string;
             userUpdate: UpdateUser;
         }) => updateUserById(userId, userUpdate, currentUser),
-        onSuccess: (user) => {
-            queryClient.invalidateQueries({
-                queryKey: [AppEntities.AppUsers],
+        onSuccess: async (updatedUser) => {
+            if (!updatedUser) {
+                return;
+            }
+
+            const cachedAppUsers = queryClient.getQueryData<{
+                users: User[];
+            }>([AppEntities.AppUsers]) || { users: [] };
+
+            queryClient.setQueryData([AppEntities.AppUsers], {
+                ...cachedAppUsers,
+                users: cachedAppUsers.users.map((cachedUser) =>
+                    cachedUser.id !== updatedUser.id ? cachedUser : updatedUser
+                ),
             });
+
+            // update user in the header
+            if (updatedUser && updatedUser.id === currentUser.id) {
+                queryClient.setQueryData([AppEntities.User], updatedUser);
+            }
+
             toast.success(
-                `User ${user?.user_metadata.fullName} successfully updated`
+                `User ${updatedUser?.user_metadata.fullName} successfully updated`
             );
         },
         onError: (error) => {

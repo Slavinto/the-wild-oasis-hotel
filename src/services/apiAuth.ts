@@ -256,6 +256,8 @@ export const updateUserById = async (
     currentUser: User
 ) => {
     try {
+        console.log({ currentUser });
+        console.log({ userUpdate });
         // handling user password change attempt
         // checking old password
         if (
@@ -267,7 +269,7 @@ export const updateUserById = async (
                 email: currentUser.email,
                 password: userUpdate.oldPassword,
             });
-            console.log({ data });
+            console.log({ checkLoginData: data });
             if (!data || !data.user || data.user.email !== currentUser.email) {
                 throw new Error(
                     "Failed to change user password. Wrong old password"
@@ -316,7 +318,6 @@ export const updateUserById = async (
             );
 
             publicUrl = avatarUrl;
-            // console.log({ avatarUrl });
         }
 
         const updateObject = {

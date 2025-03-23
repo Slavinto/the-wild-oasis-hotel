@@ -60,28 +60,26 @@ export const validateUserEmail = {
 
 export const validateUserPassword = {
     required: "Password is required",
-    minLength: {
-        value: userValues.minPasswordLength,
-        message: `Password length must be over ${userValues.minPasswordLength} characters`,
-    },
-    maxLength: {
-        value: userValues.maxPasswordLength,
-        message: `Password length must be under ${userValues.maxPasswordLength} characters`,
-    },
 };
 
 export const validateOldUserPassword = {
     required: false,
+};
+
+export const validateUserPasswordLength = {
     minLength: {
         value: userValues.minPasswordLength,
-        message: `Password length must be over ${userValues.minPasswordLength} characters`,
+        message: `Password length must be ${userValues.minPasswordLength} characters or more`,
     },
     maxLength: {
         value: userValues.maxPasswordLength,
-        message: `Password length must be under ${userValues.maxPasswordLength} characters`,
+        message: `Password length must be less than ${userValues.maxPasswordLength} characters`,
     },
 };
 // ==============================Users==========================
+// ==============================Dashboard==========================
+export const dashboardFilters = ["last-7-days", "last-30-days", "last-90-days"];
+// ==============================Dashboard==========================
 // ==============================Settings==========================
 export const settingValues = {
     MinimumNightsMinValue: 1,

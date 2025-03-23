@@ -3,7 +3,6 @@ import { Logo, MainNav } from "@/ui";
 
 const StyledSidebar = styled.aside`
     background-color: var(--color-grey-0);
-    border: solid silver 1px;
     grid-row: 1 / -1;
     display: flex;
     flex-direction: column;

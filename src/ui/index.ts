@@ -9,6 +9,7 @@ export { default as ButtonText } from "./ButtonText";
 export { default as Checkbox } from "./Checkbox";
 export { default as ConfirmDelete } from "./ConfirmOperation";
 export { default as ContentContainer } from "./ContentContainer";
+export { default as DarkModeToggle } from "./DarkModeToggle";
 export { default as DataItem } from "./DataItem";
 export { default as DatePicker } from "./DatePicker";
 export { default as Empty } from "./Empty";

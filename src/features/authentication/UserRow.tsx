@@ -50,6 +50,10 @@ const Highlighted = styled.div`
     font-family: "Sono";
 `;
 
+const CenteredText = styled.span`
+    text-align: center;
+`;
+
 const UserRow = ({ user }: { user: User }) => {
     const { deleteUser, isDeleting } = useDeleteUser();
     const { updateUser, isUpdating } = useUpdateUser();
@@ -101,7 +105,7 @@ const UserRow = ({ user }: { user: User }) => {
                 <Tag $type={userTypeToTagName[userTag]}>
                     {userType.replace("_", " ")}
                 </Tag>
-                {user.user_metadata.userStatus}
+                <CenteredText>{user.user_metadata.userStatus}</CenteredText>
             </Stacked>
             <Stacked>
                 <Highlighted>{user.email}</Highlighted>

@@ -3,6 +3,7 @@ import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserConte
 import { User } from "@supabase/supabase-js";
 
 const StyledUserAvatar = styled.div`
+    max-height: 3rem;
     display: flex;
     gap: 1.2rem;
     align-items: center;
@@ -14,7 +15,6 @@ const StyledUserAvatar = styled.div`
 const Avatar = styled.img`
     display: block;
     width: 4rem;
-    width: 3.6rem;
     aspect-ratio: 1;
     object-fit: cover;
     object-position: center;

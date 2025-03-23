@@ -1,32 +1,24 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import Button from "./Button";
-import { headerButtonStyles } from "@/types/constants";
-import { ButtonVariations } from "@/types/enums";
-import { HiOutlineUser } from "react-icons/hi2";
+import { ReactNode } from "react";
+import Modal from "./modal/Modal";
+import Menu from "./menu/Menu";
+import UpdateUserDataForm from "@/features/authentication/UpdateUserDataForm";
+import { useSafeGlobalUserContext } from "./globalUser/useSafeGlobalUserContext";
+import { ModalWindows } from "@/types/enums";
 
-const AccountButton = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const isAccountRoute = location.pathname === "/account";
+const AccountButton = ({ children }: { children: ReactNode }) => {
+    const { user } = useSafeGlobalUserContext();
 
     return (
-        <Button
-            disabled={isAccountRoute}
-            onClick={() => {
-                navigate("/account");
-            }}
-            $customstyles={headerButtonStyles}
-            $variation={ButtonVariations.Secondary}
-        >
-            <HiOutlineUser
-                size={20}
-                color={
-                    isAccountRoute
-                        ? "var(--color-brand-600)"
-                        : "var(--color-grey-400)"
-                }
-            />
-        </Button>
+        <Modal>
+            <Modal.Open opens={ModalWindows.UpdateUserForm}>
+                <Menu.Button onClick={() => {}} disabled={false}>
+                    {children}
+                </Menu.Button>
+            </Modal.Open>
+            <Modal.Window name={ModalWindows.UpdateUserForm}>
+                <UpdateUserDataForm userId={user?.id || ""} />
+            </Modal.Window>
+        </Modal>
     );
 };
 

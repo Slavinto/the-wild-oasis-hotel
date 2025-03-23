@@ -4,13 +4,22 @@ import { Spinner, Table } from "@/ui";
 import { useGetAllUsers } from "./useGetAllUsers";
 import UserRow from "./UserRow";
 import { User } from "@supabase/supabase-js";
-// import { useEffect } from "react";
+import styled, { css } from "styled-components";
+import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
+
+const CurrentUserWrapper = styled.div<{ $isVisible: boolean }>`
+    ${(props) =>
+        props.$isVisible &&
+        css`
+            background-color: var(--color-grey-50);
+        `}
+`;
 
 const UserTable = () => {
     const { data, isLoading } = useGetAllUsers();
     const users = data?.users;
     const isUserArray = users?.length && users?.length > 0;
-    console.log({ users });
+    const { user: currentUser } = useSafeGlobalUserContext();
 
     if (!users) {
         return null;
@@ -21,7 +30,7 @@ const UserTable = () => {
     ) : (
         <Table
             tableType={AppTables.Users}
-            columns='4rem 15rem 2fr 4fr 2fr 2rem'
+            columns='4rem 13rem 12rem 4fr 2fr 2rem'
             colNames={userTableColumns}
         >
             <Table.Header />
@@ -29,7 +38,13 @@ const UserTable = () => {
                 <Table.Body
                     data={users}
                     render={(user: User) => (
-                        <UserRow key={user.email} user={user} />
+                        <CurrentUserWrapper
+                            $isVisible={
+                                user.email === currentUser?.email || false
+                            }
+                        >
+                            <UserRow key={user.email} user={user} />
+                        </CurrentUserWrapper>
                     )}
                 />
             ) : (

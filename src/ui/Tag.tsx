@@ -5,6 +5,7 @@ interface ITag {
 }
 
 const Tag = styled.span<ITag>`
+    text-align: center;
     width: fit-content;
     text-transform: uppercase;
     font-size: 1.1rem;

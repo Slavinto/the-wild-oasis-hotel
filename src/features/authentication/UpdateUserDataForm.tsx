@@ -14,10 +14,9 @@ import { useUpdateUser } from "./useUpdateUser";
 import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
 import { getUserStatus } from "@/utils/helpers";
 import {
-    validateOldUserPassword,
     validateUserEmail,
     validateUserFullName,
-    validateUserPassword,
+    validateUserPasswordLength,
 } from "@/types/constants";
 import { UpdateUserFormFields } from "@/types/interfaces";
 
@@ -68,24 +67,25 @@ function UpdateUserDataForm({
         return <h1>Failed to load user data</h1>;
     }
     console.log({ currentValues });
-    const handleUpdateUserData: SubmitHandler<UpdateUserFormFields> = async (
+    const handleUpdateUserData: SubmitHandler<UpdateUserFormFields> = (
         data
     ) => {
-        console.log({ data });
-        updateUser(
-            {
-                userId: userId,
-                userUpdate: {
-                    avatar: data.avatar,
-                    email: data.email,
-                    fullName: data.fullName,
-                    userStatus: data.suspendUser
-                        ? UserStatus.Suspended
-                        : UserStatus.Active,
-                },
+        const updateObject = {
+            userId: userId,
+            userUpdate: {
+                avatar: data.avatar,
+                email: data.email,
+                fullName: data.fullName,
+                userStatus: data.suspendUser
+                    ? UserStatus.Suspended
+                    : UserStatus.Active,
+                oldPassword: data.oldPassword,
+                newPassword: data.newPassword,
             },
-            { onSettled: () => reset }
-        );
+        };
+        console.log({ updateObject });
+
+        updateUser(updateObject, { onSettled: () => reset });
         onCloseModal?.();
     };
 
@@ -128,11 +128,14 @@ function UpdateUserDataForm({
                                 placeholder='Password'
                                 id={InputIds.OldPassword}
                                 {...register(InputIds.OldPassword, {
-                                    ...validateOldUserPassword,
+                                    ...validateUserPasswordLength,
                                     validate: (value) => {
                                         return (
+                                            // checking both passwords are filled
                                             (newPassword?.length > 0 &&
                                                 value?.length > 0) ||
+                                            // checking both passwords are empty
+                                            (!newPassword && !value) ||
                                             "Old password is required"
                                         );
                                     },
@@ -147,15 +150,17 @@ function UpdateUserDataForm({
                             <Input
                                 disabled={isLoading || !oldPassword?.length}
                                 isControlled={true}
-                                placeholder='Confirm password'
+                                placeholder='Password'
                                 type='password'
                                 id={InputIds.ConfirmPassword}
                                 {...register(InputIds.NewPassword, {
-                                    ...validateOldUserPassword,
+                                    ...validateUserPasswordLength,
                                     validate: (value) => {
                                         return (
                                             (oldPassword?.length > 0 &&
                                                 value?.length > 0) ||
+                                            // checking both passwords are empty
+                                            (!oldPassword && !value) ||
                                             "New password is required"
                                         );
                                     },
@@ -182,7 +187,6 @@ function UpdateUserDataForm({
                         <Checkbox
                             disabled={isBusy}
                             {...register("suspendUser")}
-                            // checked={currentValues.suspendUser}
                         >
                             {UpdateUserFormRowLabels.SuspendUser}
                         </Checkbox>

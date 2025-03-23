@@ -21,6 +21,7 @@ import {
     validateUserEmail,
     validateUserFullName,
     validateUserPassword,
+    validateUserPasswordLength,
 } from "@/types/constants";
 import { useSignup } from "./useSignup";
 import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
@@ -135,10 +136,10 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                             type='password'
                             placeholder='Password'
                             id={InputIds.Password}
-                            {...register(
-                                InputIds.Password,
-                                validateUserPassword
-                            )}
+                            {...register(InputIds.Password, {
+                                ...validateUserPassword,
+                                ...validateUserPasswordLength,
+                            })}
                         />
                     </StyledInputWrapper>
                 </FormRow>
@@ -156,6 +157,7 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
                             id={InputIds.ConfirmPassword}
                             {...register(InputIds.ConfirmPassword, {
                                 ...validateUserPassword,
+                                ...validateUserPasswordLength,
                                 validate: (value) =>
                                     value === password ||
                                     "Passwords don't match",

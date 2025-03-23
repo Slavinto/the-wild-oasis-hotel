@@ -58,7 +58,10 @@ export default function Filter({ filterOptions }: { filterOptions: string[] }) {
                     onClick={() => handleClickFilter(option)}
                 >
                     {option[0].toUpperCase() +
-                        option.replace("-", " ").slice(1)}
+                        [...option]
+                            .map((char) => (char === "-" ? " " : char))
+                            .join("")
+                            .slice(1)}
                 </FilterButton>
             ))}
         </StyledFilter>
