@@ -14,6 +14,8 @@ export const useRecentStays = () => {
     const dateMs = Date.now() - dayMs * filter;
     const date = new Date(dateMs).toISOString();
 
+    // const queryDate = subDays(new Date(), filter).toISOString();
+
     const {
         data: stays,
         error,
