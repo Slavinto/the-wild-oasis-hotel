@@ -63,7 +63,6 @@ function SignupForm({ onCloseModal }: { onCloseModal?: () => void }) {
     const password = currentValues.password;
 
     const onSignup: SubmitHandler<CreateUserFormFields> = (data) => {
-        console.log({ submitData: data });
         signup(
             {
                 ...data,

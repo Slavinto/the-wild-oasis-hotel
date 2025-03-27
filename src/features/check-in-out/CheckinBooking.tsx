@@ -64,6 +64,7 @@ function CheckinBooking() {
                                     {hasBreakfast !== null && !confirmIsPaid ? (
                                         <Box>
                                             <Checkbox
+                                                name='has-breakfast'
                                                 id={"breakfast-" + id}
                                                 disabled={
                                                     isUpdating || confirmIsPaid!

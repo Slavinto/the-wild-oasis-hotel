@@ -109,7 +109,6 @@ function BookingDataBox({ booking }: { booking: AppBookingFull | null }) {
     if (!booking) {
         return null;
     }
-    console.log({ booking });
     const {
         createdAt,
         startDate,
@@ -125,7 +124,6 @@ function BookingDataBox({ booking }: { booking: AppBookingFull | null }) {
         guests: { guestName, email, country, countryFlag, nationalID },
         cabins: { cabinName },
     } = booking;
-    console.log({ cabinPrice });
     return (
         <StyledBookingDataBox>
             <Header>

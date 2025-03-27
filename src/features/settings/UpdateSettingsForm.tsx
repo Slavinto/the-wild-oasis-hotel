@@ -55,9 +55,6 @@ function UpdateSettingsForm() {
         // mutate({ setting });
     };
 
-    console.log({ defaultValues });
-    console.log({ currentValues });
-
     return (
         <Form type='normal' onSubmit={handleSubmit(onSubmit)}>
             <FormRow

@@ -1,8 +1,9 @@
 import { ReactNode, useState } from "react";
 import styled from "styled-components";
-import { MenuContext, MenuPosition, useMenuContext } from "./MenuContext";
+import { MenuContext, MenuPosition } from "./MenuContext";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { createPortal } from "react-dom";
+import { useMenuContext } from "./useMenuContext";
 
 const StyledMenu = styled.div`
     display: flex;
@@ -110,10 +111,13 @@ export default function Menu({
 }
 
 Menu.Toggle = function MenuToggle({ children }: { children: ReactNode }) {
-    const { openId, openMenu, closeMenu, setPosition } = useMenuContext();
-
+    const { openId, openMenu, closeMenu, setPosition, position } =
+        useMenuContext();
     const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!openId) {
+        if (openId || position) {
+            closeMenu?.();
+            setPosition?.(undefined);
+        } else {
             const rect = e.currentTarget.getBoundingClientRect();
 
             const position = {
@@ -122,10 +126,8 @@ Menu.Toggle = function MenuToggle({ children }: { children: ReactNode }) {
                     y: rect.bottom + 8,
                 },
             };
-            setPosition?.(position);
             openMenu?.();
-        } else {
-            closeMenu?.();
+            setPosition?.(position);
         }
     };
 
@@ -136,6 +138,14 @@ Menu.List = function MenuList({ children }: { children: ReactNode }) {
     const { openId, position, closeMenu } = useMenuContext();
 
     // if false is being passed as second arg closeMenu or other handler will run at bubbling phase
+    // const { ref } = useClickOutside(
+    //     () => {
+    //         console.log("close from click outside");
+    //         closeMenu?.();
+    //     },
+    //     true,
+    //     ".modal-content"
+    // );
     const { ref } = useClickOutside(closeMenu!, true, ".modal-content");
 
     if (!position || !ref) return null;

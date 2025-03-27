@@ -18,6 +18,7 @@ const BookingIsPaidCheckbox = ({
         <Modal>
             <Modal.Open opens={ModalWindows.IsBookingPayedConfirm}>
                 <Checkbox
+                    name='ispaid-checkbox'
                     checked={confirmIsPaid}
                     disabled={confirmIsPaid || isUpdating}
                     id={`${id}`}

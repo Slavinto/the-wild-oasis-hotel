@@ -13,7 +13,6 @@ export async function getSettings() {
             console.error(error);
             throw error;
         }
-        console.log({ data });
         return data;
     } catch (error) {
         throw handleError(error);

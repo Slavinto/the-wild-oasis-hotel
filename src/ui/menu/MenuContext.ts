@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useContext } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 
 export interface MenuPosition {
     $position: { x: number; y: number };
@@ -15,11 +15,3 @@ interface IMenuContext {
 export const MenuContext = createContext<IMenuContext>({
     openId: null,
 });
-
-export const useMenuContext = () => {
-    const context = useContext(MenuContext);
-    if (!context) {
-        throw new Error("Menu components must be wrapped with <Menu>");
-    }
-    return context;
-};

@@ -10,6 +10,7 @@ import {
     ButtonText,
     Spinner,
     Modal,
+    Empty,
 } from "@/ui";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
@@ -27,7 +28,6 @@ import { useBookingDetails } from "./useBookingDetails";
 import { statusToTagName } from "@/types/constants";
 import ConfirmOperation from "@/ui/ConfirmOperation";
 import { useDeleteBooking } from "./useDeleteBooking";
-import { useGlobalSpinner } from "@/ui/globalSpinner/useGlobalSpinner";
 
 const HeadingGroup = styled.div`
     display: flex;
@@ -49,9 +49,17 @@ function BookingDetail() {
         deleteBooking(Number(id), { onSuccess: () => navigate(`/bookings`) });
     };
 
-    useGlobalSpinner(isDeleting);
+    console.log({ bookingDetails });
 
-    return (
+    const isBusy = isDeleting || isLoadingDetails;
+
+    if (!isBusy && !bookingDetails) {
+        return <Empty resource={AppEntities.Booking} />;
+    }
+
+    return isBusy ? (
+        <Spinner />
+    ) : (
         <>
             <Row type={RowOrientations.Horizontal}>
                 <HeadingGroup>
@@ -70,11 +78,7 @@ function BookingDetail() {
                 <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
             </Row>
 
-            {isLoadingDetails ? (
-                <Spinner />
-            ) : (
-                <BookingDataBox booking={bookingDetails} />
-            )}
+            <BookingDataBox booking={bookingDetails} />
 
             <ButtonGroup>
                 <Modal>
@@ -87,7 +91,7 @@ function BookingDetail() {
                         <ConfirmOperation
                             operation={AppOperations.Delete}
                             onConfirm={handleConfirmDelete}
-                            disabled={isDeleting}
+                            disabled={isBusy}
                             resourceName={AppEntities.Booking}
                         />
                     </Modal.Window>

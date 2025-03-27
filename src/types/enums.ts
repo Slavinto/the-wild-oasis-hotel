@@ -5,6 +5,7 @@ export enum AppEntities {
     Booking = "booking",
     User = "user",
     AppUsers = "app-users",
+    TodayBookingActivity = "today-booking-activity",
 }
 
 export enum AppTables {
@@ -12,6 +13,7 @@ export enum AppTables {
     Cabins = "cabins",
     Guests = "guests",
     Settings = "settings",
+    Stays = "stays",
     Users = "users",
 }
 

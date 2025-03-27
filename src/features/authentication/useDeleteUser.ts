@@ -3,9 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteUser as deleteUserApi } from "@/services/apiAuth";
 import toast from "react-hot-toast";
 import { User } from "@supabase/supabase-js";
+import { useSafeGlobalUserContext } from "@/ui/globalUser/useSafeGlobalUserContext";
 
 export const useDeleteUser = () => {
     const queryClient = useQueryClient();
+    const { user: currentUser } = useSafeGlobalUserContext();
 
     const { mutate: deleteUser, isPending: isDeleting } = useMutation<
         User | null,
@@ -14,7 +16,7 @@ export const useDeleteUser = () => {
         unknown
     >({
         mutationKey: [AppEntities.AppUsers],
-        mutationFn: (id) => deleteUserApi(id),
+        mutationFn: (id) => deleteUserApi(id, currentUser),
 
         onSuccess: (user) => {
             queryClient.invalidateQueries({ queryKey: [AppEntities.AppUsers] });

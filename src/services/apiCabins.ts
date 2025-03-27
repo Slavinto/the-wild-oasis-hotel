@@ -41,7 +41,6 @@ export const getCabinById = async (
         return data[0];
     } catch (error) {
         const newError = handleError(error);
-        console.log({ newError });
         throw handleError(newError);
     }
 };
@@ -101,8 +100,6 @@ export const createOrUpdateCabin = async (cabin?: Cabin, id?: number) => {
     const query = supabase.from(AppTables.Cabins);
     // newCabin gets old imageUrl in case of updating a cabin
     // and if cabin object has image prop we upload it to supabase
-    console.log({ newCabin });
-    // return;
     try {
         // if we have cabin image -> we're either updating
         // existing cabin or we're creating new cabin

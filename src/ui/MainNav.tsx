@@ -4,11 +4,9 @@ import {
     HiOutlineHome,
     HiOutlineHomeModern,
     HiOutlineUsers,
-    HiOutlineWrench,
 } from "react-icons/hi2";
 import styled from "styled-components";
 import NavigationLink from "./NavigationLink";
-import Uploader from "@/data/Uploader";
 
 const NavList = styled.ul`
     display: flex;
@@ -55,6 +53,7 @@ const MainNav = () => {
                         <span>Settings</span>
                     </NavigationLink>
                 </NavListItem>
+                {/* 
                 <hr />
                 <NavListItem>
                     <NavigationLink to='/testing'>
@@ -64,7 +63,7 @@ const MainNav = () => {
                 </NavListItem>
                 <NavListItem>
                     <Uploader />
-                </NavListItem>
+                </NavListItem> */}
             </NavList>
         </nav>
     );

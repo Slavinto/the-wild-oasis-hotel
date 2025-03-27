@@ -19,7 +19,6 @@ function Bookings() {
         startDate,
         endDate,
     ]);
-
     return (
         <>
             <BookingsContext.Provider
@@ -36,12 +35,14 @@ function Bookings() {
                     <BookingTableOperations />
                 </Row>
                 <Row>
-                    {isLoading || !sortedBookings ? (
+                    {isLoading ? (
                         <Spinner />
-                    ) : (
+                    ) : sortedBookings ? (
                         <>
                             <BookingTable bookings={sortedBookings} />
                         </>
+                    ) : (
+                        <></>
                     )}
                 </Row>
             </BookingsContext.Provider>

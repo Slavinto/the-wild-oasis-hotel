@@ -66,7 +66,6 @@ function UpdateUserDataForm({
     if (!data && !isLoading && !isUpdating) {
         return <h1>Failed to load user data</h1>;
     }
-    console.log({ currentValues });
     const handleUpdateUserData: SubmitHandler<UpdateUserFormFields> = (
         data
     ) => {
@@ -83,7 +82,6 @@ function UpdateUserDataForm({
                 newPassword: data.newPassword,
             },
         };
-        console.log({ updateObject });
 
         updateUser(updateObject, { onSettled: () => reset });
         onCloseModal?.();

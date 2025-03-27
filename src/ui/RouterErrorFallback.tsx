@@ -1,11 +1,11 @@
+import { handleError } from "@/utils/helpers";
+import { useRouteError } from "react-router-dom";
 import styled from "styled-components";
 import Heading from "./Heading";
 import { Headings } from "@/types/enums";
-import { FallbackProps } from "react-error-boundary";
 import Button from "./Button";
-import GlobalStyles from "@/styles/GlobalStyles";
 
-const StyledErrorFallback = styled.main`
+const StyledRouterErrorFallback = styled.main`
     height: 100vh;
     background-color: var(--color-grey-50);
     display: flex;
@@ -43,27 +43,25 @@ const ButtonContainer = styled.div`
     align-items: center;
 `;
 
-export default function ErrorFallback({
-    error,
-    resetErrorBoundary,
-}: FallbackProps) {
-    // const routerError = handleError(useRouteError());
+export default function RouterErrorFallback() {
+    const routerError = handleError(useRouteError());
 
     return (
         <>
-            <GlobalStyles />
-            <StyledErrorFallback>
+            <StyledRouterErrorFallback>
                 <StyledBox>
                     <Heading as={Headings.H1} text='Something went wrong' />
-                    <p>{error && error.message}</p>
+                    <p>{routerError && routerError.message}</p>
                     <ButtonContainer>
-                        <Button onClick={resetErrorBoundary}>Try again</Button>
+                        <Button onClick={() => window.location.reload()}>
+                            Try again
+                        </Button>
                         <Button onClick={() => window.location.replace("/")}>
                             Go to homepage
                         </Button>
                     </ButtonContainer>
                 </StyledBox>
-            </StyledErrorFallback>
+            </StyledRouterErrorFallback>
         </>
     );
 }

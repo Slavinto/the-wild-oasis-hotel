@@ -1,5 +1,12 @@
 import styled from "styled-components";
-import RecentStays from "./RecentStays";
+import Stats from "./Stats";
+import SalesChart from "./SalesChart";
+import { useRecentBookings } from "./useRecentBookings";
+import { useRecentStays } from "./useRecentStays";
+import { useCabins } from "../cabins/useCabins";
+import { Spinner } from "@/ui";
+import DurationChart from "./DurationChart";
+import TodayActivity from "../check-in-out/TodayActivity";
 
 const StyledDashboardLayout = styled.div`
     display: grid;
@@ -9,13 +16,43 @@ const StyledDashboardLayout = styled.div`
 `;
 
 const DashboardLayout = () => {
+    const {
+        bookings,
+        filter,
+        isLoading: isLoadingBookings,
+        headerText: bookingsHeader,
+    } = useRecentBookings();
+    const {
+        stays,
+        isLoading: isLoadingStays,
+        headerText: staysHeader,
+    } = useRecentStays();
+    const { cabins, isLoading: isLoadingCabins } = useCabins();
+
+    const isBusy = isLoadingBookings || isLoadingStays || isLoadingCabins;
+    if (!bookings || !stays || !cabins) {
+        return null;
+    }
     return (
         <StyledDashboardLayout>
-            <RecentStays />
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
+            {isBusy ? (
+                <Spinner />
+            ) : (
+                <>
+                    <Stats
+                        bookings={bookings}
+                        stays={stays}
+                        cabins={cabins}
+                        filter={filter}
+                    />
+                    <SalesChart
+                        bookings={bookings}
+                        bookingsHeader={bookingsHeader}
+                    />
+                    <TodayActivity />
+                    <DurationChart stays={stays} staysHeader={staysHeader} />
+                </>
+            )}
         </StyledDashboardLayout>
     );
 };

@@ -141,10 +141,8 @@ export async function getBookingsAfterDate(date: string) {
 // Returns all STAYS that are were created after the given date
 export async function getStaysAfterDate(date: string) {
     try {
-        console.log({ date });
         const { data, error } = await supabase
             .from(AppTables.Bookings)
-            // .select('*')
             .select("*, guests(full_name)")
             .gte("start_date", date)
             .lte("start_date", getToday());
@@ -162,13 +160,12 @@ export async function getStaysAfterDate(date: string) {
 
 // Activity means that there is a check in or a check out today
 export async function getStaysTodayActivity() {
+    const today = getToday().split("T")[0];
     try {
         const { data, error } = await supabase
             .from(AppTables.Bookings)
             .select("*, guests(full_name, nationality, country_flag)")
-            .or(
-                `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`
-            )
+            .or(`start_date.eq.${today},end_date.eq.${today}`)
             .order("created_at");
 
         // Equivalent to this. But by querying this, we only download the data we actually need, otherwise we would need ALL bookings ever created

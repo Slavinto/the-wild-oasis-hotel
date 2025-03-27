@@ -7,19 +7,16 @@ import { useQuery } from "@tanstack/react-query";
 export const useBookingDetails = (
     id: number
 ): { bookingDetails: AppBookingFull | null; isLoading: boolean } => {
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: [AppTables.Bookings, id],
         queryFn: () => getBooking(id),
     });
-
-    if (error) {
-        throw error;
-    }
 
     return {
         bookingDetails: data
             ? createFullAppBookingFromSupabaseFullBooking(data)
             : null,
+
         isLoading,
     };
 };

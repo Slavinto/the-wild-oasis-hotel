@@ -1,5 +1,4 @@
 import { createContext, useContext } from "react";
-import { bookingsPerPage } from "@/types/constants";
 
 interface IBookingsContext {
     startDate: Date | null;

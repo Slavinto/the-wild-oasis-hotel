@@ -9,11 +9,6 @@ import { Tables } from "@/services/supabaseTypes";
 import { useCreateOrUpdateCabin } from "@/features/cabins/useCreateOrUpdateCabin";
 import { CabinRowFunctions } from "./enums";
 import { Menu } from "@/ui";
-import { createCabinFromSupabaseTableCabin } from "@/utils/helpers";
-
-// interface StyledMenuItemContainerProps {
-//     disabled;
-// }
 
 const StyledMenuItemContainer = styled.div`
     display: flex;
@@ -32,17 +27,19 @@ onClick={duplicateCabin}
 > */
 }
 export const useCabinRowMenuOptions = (cabin: Tables<"cabins">) => {
-    const { mutate: deleteCabin, isDeleting } = useDeleteCabinRow(cabin!);
-    const { mutate: duplicateCabin, isUpdating: isDuplicating } =
-        useCreateOrUpdateCabin(cabin!, CabinRowFunctions.Duplicate);
+    const { isDeleting } = useDeleteCabinRow(cabin!);
+    const { isUpdating: isDuplicating } = useCreateOrUpdateCabin(
+        cabin!,
+        CabinRowFunctions.Duplicate
+    );
 
-    const handleDuplicate = () => {
-        console.log("running duplicate handler");
-        duplicateCabin(createCabinFromSupabaseTableCabin(cabin));
-    };
+    // const handleDuplicate = () => {
+    //     console.log("running duplicate handler");
+    //     duplicateCabin(createCabinFromSupabaseTableCabin(cabin));
+    // };
 
     const CabinRowMenuOptions = [
-        <Menu.Button onClick={() => console.log("test")}>
+        <Menu.Button disabled={isDeleting || isDuplicating}>
             <StyledMenuItemContainer>
                 <HiOutlineDocumentDuplicate />
                 <span>Duplicate</span>

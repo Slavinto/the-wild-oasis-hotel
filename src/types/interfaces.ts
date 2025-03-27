@@ -70,6 +70,12 @@ export interface PaginatedBookings {
     totalBookings: number;
 }
 
+export interface RecentBookings {
+    created_at: string;
+    total_price: number | null;
+    extras_price: number | null;
+}
+
 export interface AppUser {
     user: User;
     session: Session;
@@ -79,6 +85,11 @@ export interface AppUser {
 export interface AppUserContext {
     user: User | null;
     setUser: (user: User | null) => void;
+}
+
+export interface IThemeContext {
+    isDark: boolean;
+    setTheme?: (arg: boolean) => void;
 }
 
 // can be used only when creating new user

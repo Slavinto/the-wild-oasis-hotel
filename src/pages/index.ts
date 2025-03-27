@@ -1,4 +1,3 @@
-export { default as Account } from "@/pages/Account";
 export { default as Bookings } from "@/pages/Bookings";
 export { default as Cabins } from "@/pages/Cabins";
 export { default as Dashboard } from "@/pages/Dashboard";

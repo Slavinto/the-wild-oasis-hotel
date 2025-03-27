@@ -1,11 +1,18 @@
 import { HiOutlineMoon, HiOutlineSun } from "react-icons/hi2";
 import ButtonIcon from "./ButtonIcon";
 import { useEffect, useState } from "react";
+import { useThemeContext } from "./theme/ThemeContext";
 
 const DarkModeToggle = () => {
+    const systemDarkMode = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "true"
+        : "false";
+    const customDarkMode = localStorage.getItem("isDarkModeActive");
     const [isOn, setIsOn] = useState<string | null>(
-        localStorage.getItem("isDarkModeActive")
+        customDarkMode ?? systemDarkMode
     );
+    const { setTheme } = useThemeContext();
 
     // a condition when dark mode is not on
     const isNotOn = isOn === "false" || isOn === null;
@@ -14,10 +21,12 @@ const DarkModeToggle = () => {
     useEffect(() => {
         if (isNotOn && htmlElClassList.contains("dark")) {
             htmlElClassList.remove("dark");
+            setTheme?.(false);
         } else if (isOn === "true" && !htmlElClassList.contains("dark")) {
             htmlElClassList.add("dark");
+            setTheme?.(true);
         }
-    }, [htmlElClassList, isNotOn, isOn]);
+    }, [htmlElClassList, isNotOn, isOn, setTheme]);
 
     const handleToggleDark = () => {
         localStorage.setItem("isDarkModeActive", isNotOn ? "true" : "false");

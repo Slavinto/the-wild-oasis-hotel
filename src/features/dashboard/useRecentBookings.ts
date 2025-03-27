@@ -1,11 +1,11 @@
-import { getStaysAfterDate } from "@/services/apiBookings";
+import { getBookingsAfterDate } from "@/services/apiBookings";
 import { AppTables } from "@/types/enums";
 import { formatDateEu } from "@/utils/helpers";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
-export const useRecentStays = () => {
+export const useRecentBookings = () => {
     const [searchParams] = useSearchParams();
     const dayMs = 24 * 60 * 60 * 1000;
     const filter = useMemo(
@@ -15,19 +15,19 @@ export const useRecentStays = () => {
     const dateMs = Date.now() - dayMs * filter;
     const date = new Date(dateMs).toISOString();
 
-    const headerText = `Stays from ${formatDateEu(
+    const headerText = `Bookings from ${formatDateEu(
         new Date(dateMs)
     )} till today (last ${filter} days)`;
 
     // const queryDate = subDays(new Date(), filter).toISOString();
 
     const {
-        data: stays,
+        data: bookings,
         error,
         isLoading,
     } = useQuery({
-        queryKey: [AppTables.Stays, filter],
-        queryFn: () => getStaysAfterDate(date),
+        queryKey: [AppTables.Bookings, filter],
+        queryFn: () => getBookingsAfterDate(date),
         staleTime: 60 * 1000,
     });
 
@@ -35,5 +35,5 @@ export const useRecentStays = () => {
         throw error;
     }
 
-    return { stays, headerText, filter, isLoading };
+    return { bookings, headerText, filter, isLoading };
 };

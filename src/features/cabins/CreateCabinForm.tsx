@@ -69,7 +69,6 @@ function CreateCabinForm({
     };
 
     const onError: SubmitErrorHandler<Cabin> = async (formData) => {
-        console.log({ errorSubmit: formData });
         const error = Object.entries(formData)[0];
         if (error[1]?.message) {
             toast(error[1].message);

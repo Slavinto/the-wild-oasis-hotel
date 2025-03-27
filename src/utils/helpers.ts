@@ -1,6 +1,6 @@
 import { supabase } from "@/services/supabaseClient";
 import { Tables } from "@/services/supabaseTypes";
-import { BucketNames, cabinValues } from "@/types/constants";
+import { BucketNames, cabinValues, months } from "@/types/constants";
 import { AppTables, UserActions, UserRoles, UserStatus } from "@/types/enums";
 import {
     ActionPermissionCheck,
@@ -15,6 +15,7 @@ import {
     AppBookingUpdate,
     BookingsWithRelated,
     BookingsWithRelatedFull,
+    Month,
 } from "@/types/types";
 import { User } from "@supabase/supabase-js";
 import { formatDistance, parseISO, differenceInDays, format } from "date-fns";
@@ -38,10 +39,19 @@ export const formatDateUtc = (date: Date | null) => {
     return date ? format(date, "yyyy-MM-dd hh:mm:ss") : "";
 };
 
+export const formatDateEu = (date: Date | null) => {
+    // const jsDate = new Date(date);
+    return date ? format(date, "dd.MM.yyyy") : "";
+};
+
 export const monthBeforeDate = (date?: Date) => {
     const today = !date ? new Date() : date;
 
     return new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+};
+
+export const getMonthNumber = (month: Month) => {
+    return months[month];
 };
 
 // Supabase needs an ISO date string. However, that string will be different on every render because the MS or SEC have changed, which isn't good. So we use this trick to remove any time

@@ -2,6 +2,7 @@ import { Tables } from "@/services/supabaseTypes";
 import { AppTables } from "./enums";
 import { AppBookingFull, CreateUserFormFields } from "./interfaces";
 import { User } from "@supabase/supabase-js";
+import { months } from "./constants";
 
 // we're getting additional data from related tables "guests" and "cabins"
 export type BookingsWithRelated = Tables<AppTables.Bookings> & {
@@ -44,3 +45,5 @@ export type UpdateUser = Partial<
         "fullName" | "email" | "avatar" | "userStatus"
     > & { oldPassword?: string; newPassword?: string }
 >;
+
+export type Month = keyof typeof months;

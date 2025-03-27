@@ -1,6 +1,6 @@
 import { updateBooking } from "@/services/apiBookings";
 import { getSettings } from "@/services/apiSettings";
-import { AppTables } from "@/types/enums";
+import { AppEntities, AppTables } from "@/types/enums";
 import { AppBookingUpdate } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -11,8 +11,6 @@ export const useUpdateBooking = () => {
     return useMutation({
         mutationFn: async ({
             id,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            guestName,
             obj,
         }: {
             id: number;
@@ -54,6 +52,9 @@ export const useUpdateBooking = () => {
             toast.success(`${guestName}'s booking successfully updated`);
             queryClient.invalidateQueries({
                 queryKey: [AppTables.Bookings],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [AppEntities.TodayBookingActivity],
             });
         },
         onError: (error, { guestName }) => {

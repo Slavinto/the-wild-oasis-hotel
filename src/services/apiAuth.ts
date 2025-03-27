@@ -129,8 +129,6 @@ export const signupUserEmailPassword = async ({
         if (data.user) {
             await supabase.auth.signOut();
         }
-        console.log({ data });
-        console.log({ error });
         return data;
     } catch (error) {
         const newError = handleError(error);
@@ -144,7 +142,6 @@ export const signupUserEmailPassword = async ({
 export const listUsers = async (currentUser: User | null) => {
     try {
         // checkUserNotActiveOrNotAdvanced(currentUser);
-        console.log({ currentUser });
         const { allowed, message } = checkIsAllowedToUser({
             initiatorUser: currentUser,
             // targetUser: user,
@@ -194,11 +191,7 @@ export const deleteUser = async (id: string, currentUser: User | null) => {
         }
 
         // 2. deleting user from supabase
-        const {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            data,
-            error: deleteError,
-        } = await adminClient.deleteUser(id);
+        const { error: deleteError } = await adminClient.deleteUser(id);
 
         // 3. deleting avatar image from the bucket
         await deleteUserAvatar(user?.user_metadata.avatar);
@@ -228,7 +221,6 @@ const deleteUserAvatar = async (fullFilePath: string) => {
         if (fullFilePath === "") {
             return;
         }
-        console.log({ fullFilePath });
         const baseUrl = import.meta.env.VITE_SUPABASE_PROJECT_URL;
         const bucketPath = "/storage/v1/object/public/avatars/";
 
@@ -256,8 +248,6 @@ export const updateUserById = async (
     currentUser: User
 ) => {
     try {
-        console.log({ currentUser });
-        console.log({ userUpdate });
         // handling user password change attempt
         // checking old password
         if (
@@ -269,7 +259,6 @@ export const updateUserById = async (
                 email: currentUser.email,
                 password: userUpdate.oldPassword,
             });
-            console.log({ checkLoginData: data });
             if (!data || !data.user || data.user.email !== currentUser.email) {
                 throw new Error(
                     "Failed to change user password. Wrong old password"
@@ -287,7 +276,6 @@ export const updateUserById = async (
 
         const adminClient = getAdminClient();
         const { user: userToUpdate } = await getUserById(userId, currentUser);
-        console.log({ userUpdate });
 
         const { allowed, message } = checkIsAllowedToUser({
             initiatorUser: currentUser,
@@ -328,7 +316,6 @@ export const updateUserById = async (
                 ...(avatarNotEmpty ? { avatar: publicUrl } : {}),
             },
         };
-        console.log({ updateObjectApi: updateObject });
         const {
             data: { user },
             error,
